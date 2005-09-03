@@ -1,0 +1,288 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  d <- 5
+>  nface <- 20
+>  set.seed(42)
+>  a <- matrix(rnorm(nface * d), nface)
+> 
+>  foo <- makeH(a, 1)
+>  foo[1:3, ]
+     [,1] [,2]       [,3]      [,4]       [,5]       [,6]        [,7]
+[1,]    0    1 -1.3709584 0.3066386 -0.2059986  0.3672346 -1.51270701
+[2,]    0    1  0.5646982 1.7813084  0.3610573 -0.1852306 -0.25792144
+[3,]    0    1 -0.3631284 0.1719174 -0.7581632 -0.5818237 -0.08844023
+> 
+>  ## for simplicity, round to 4 decimal places and convert to GMP rational
+> 
+>  bar <- round(1e4 * as.vector(foo))
+>  baz <- z2q(bar, rep(1e4, length(bar)))
+>  attributes(baz) <- attributes(foo)
+>  baz[1:3, ]
+     [,1] [,2] [,3]          [,4]          [,5]         [,6]        
+[1,] "0"  "1"  "-1371/1000"  "1533/5000"   "-103/500"   "459/1250"  
+[2,] "0"  "1"  "5647/10000"  "17813/10000" "3611/10000" "-463/2500" 
+[3,] "0"  "1"  "-3631/10000" "1719/10000"  "-3791/5000" "-2909/5000"
+     [,7]          
+[1,] "-15127/10000"
+[2,] "-2579/10000" 
+[3,] "-221/2500"   
+>  all.equal(round(foo, 4), q2d(baz))
+[1] TRUE
+> 
+>  out <- scdd(baz, incidence = TRUE, inputincidence = TRUE)
+>  names(out)
+[1] "output"         "incidence"      "inputincidence" "input"         
+>  attributes(out$input)
+$dim
+[1] 20  7
+
+$representation
+[1] "H"
+
+>  attributes(out$output)
+$dim
+[1] 130   7
+
+$representation
+[1] "V"
+
+>  class(out$incidence)
+[1] "list"
+>  length(out$incidence)
+[1] 130
+>  class(out$inputincidence)
+[1] "list"
+>  length(out$inputincidence)
+[1] 21
+> 
+>  unique(out$output[ , 1])
+[1] "0"
+>  unique(out$output[ , 2])
+[1] "1"
+> 
+>  v <- out$output[ , - c(1, 2)]
+>  v[1:3, ]
+     [,1]                                          
+[1,] "-113125999863250090000/300316503640919270861"
+[2,] "-86136101694574190000/226170043409491869351" 
+[3,] "-158313118058315340000/481224131061228366293"
+     [,2]                                           
+[1,] "-1469408406640022500/4573347771181511739"     
+[2,] "-473441640744257020000/1583190303866443085457"
+[3,] "-72087554068101420000/481224131061228366293"  
+     [,3]                                          
+[1,] "159174254477929915000/900949510922757812583" 
+[2,] "212739383108080480000/1583190303866443085457"
+[3,] "-8074121322318870000/481224131061228366293"  
+     [,4]                                         
+[1,] "216704748625957915000/900949510922757812583"
+[2,] "175008867760584460000/527730101288814361819"
+[3,] "151931490319053610000/481224131061228366293"
+     [,5]                                          
+[1,] "175967552494168297500/300316503640919270861" 
+[2,] "881502678127155520000/1583190303866443085457"
+[3,] "390518187543555110000/481224131061228366293" 
+> 
+>  v <- q2d(v)
+>  v[1:3, ]
+           [,1]       [,2]        [,3]      [,4]      [,5]
+[1,] -0.3766893 -0.3212982  0.17667389 0.2405293 0.5859403
+[2,] -0.3808466 -0.2990428  0.13437385 0.3316257 0.5567888
+[3,] -0.3289800 -0.1498004 -0.01677830 0.3157188 0.8115100
+> 
+>  sally <- out$inputincidence
+>  sally[[length(sally)]] <- NULL
+>  length(sally)
+[1] 20
+> 
+>  ##### 4-D faces (facets)
+> 
+>  inies <- maximal(sally)
+>  all(inies)
+[1] TRUE
+>  face4d <- sally
+> 
+>  ##### 3-D faces
+> 
+>  sally <- face4d
+>  fred <- all.intersect(sally)
+>  length(fred)
+[1] 190
+>  inies <- maximal(fred)
+>  length(inies)
+[1] 190
+>  sum(inies)
+[1] 119
+>  face3d <- fred[inies]
+> 
+>  ##### 3-D faces check
+> 
+>  outies <- fred[!inies]
+>  lout <- sapply(outies, length)
+>  all(lout == 0)
+[1] TRUE
+> 
+>  ##### 2-D faces
+> 
+>  sally <- face3d
+>  fred <- all.intersect(sally)
+>  length(fred)
+[1] 7021
+>  inies <- maximal(fred)
+>  length(inies)
+[1] 7021
+>  sum(inies)
+[1] 296
+>  face2d <- fred[inies]
+> 
+>  ##### 2-D faces check
+> 
+>  outies <- fred[!inies]
+>  lout <- sapply(outies, length)
+>  all(lout == 0)
+[1] FALSE
+> 
+>  outies <- outies[lout > 0]
+>  length(outies)
+[1] 1567
+> 
+>  # each outie is redundant ???
+> 
+>  for (i in seq(along = outies)) {
++      set1 <- outies[[i]]
++      foo <- FALSE
++      for (j in seq(along = face2d)) {
++          set2 <- face2d[[j]]
++          if (all(is.element(set1, set2))) {
++              foo <- TRUE
++          }
++      }
++      if (! foo)
++          cat("outie set, number", i, "not redundant\n")
++  }
+> 
+>  # each face2d is non-redundant ???
+> 
+>  for (i in seq(along = face2d)) {
++      set1 <- face2d[[i]]
++      for (j in seq(along = face2d)) {
++          set2 <- face2d[[j]]
++          if (i != j && all(is.element(set1, set2)))
++              cat("face2d set number", i, "subset of face2d set number", j, "\n")
++      }
++  }
+> 
+>  ##### 1-D faces
+> 
+>  sally <- face2d
+>  fred <- all.intersect(sally)
+>  length(fred)
+[1] 43660
+>  inies <- maximal(fred)
+>  length(inies)
+[1] 43660
+>  sum(inies)
+[1] 325
+>  face1d <- fred[inies]
+> 
+>  ##### 1-D faces check
+> 
+>  outies <- fred[!inies]
+>  lout <- sapply(outies, length)
+>  all(lout == 0)
+[1] FALSE
+> 
+>  outies <- outies[lout > 0]
+>  length(outies)
+[1] 3575
+> 
+>  # each outie is redundant ???
+> 
+>  for (i in seq(along = outies)) {
++      set1 <- outies[[i]]
++      foo <- FALSE
++      for (j in seq(along = face1d)) {
++          set2 <- face1d[[j]]
++          if (all(is.element(set1, set2))) {
++              foo <- TRUE
++          }
++      }
++      if (! foo)
++          cat("outie set, number", i, "not redundant\n")
++  }
+> 
+>  # each face1d is non-redundant ???
+> 
+>  for (i in seq(along = face2d)) {
++      set1 <- face1d[[i]]
++      for (j in seq(along = face2d)) {
++          set2 <- face1d[[j]]
++          if (i != j && all(is.element(set1, set2)))
++              cat("face1d set number", i, "subset of face1d set number", j, "\n")
++      }
++  }
+> 
+>  ##### 0-D faces
+> 
+>  sally <- face1d
+>  fred <- all.intersect(sally)
+>  length(fred)
+[1] 52650
+>  inies <- maximal(fred)
+>  length(inies)
+[1] 52650
+>  sum(inies)
+[1] 130
+>  face0d <- fred[inies]
+> 
+>  ##### 0-D faces check
+> 
+>  unique(sapply(face0d, length))
+[1] 1
+> 
+>  all(sort(unlist(face0d)) == 1:nrow(out$output))
+[1] TRUE
+> 
+>  ##### summary #####
+> 
+>  length(face4d)
+[1] 20
+>  length(face3d)
+[1] 119
+>  length(face2d)
+[1] 296
+>  length(face1d)
+[1] 325
+>  length(face0d)
+[1] 130
+> 
+>  sort(unique(sapply(face4d, length)))
+ [1]  8 11 15 16 25 26 29 30 32 33 35 36 38 43 44 45 52 57 59
+>  sort(unique(sapply(face3d, length)))
+ [1]  4  6  8 10 12 14 16 18 20 22 24
+>  sort(unique(sapply(face2d, length)))
+[1] 3 4 5 6 7 8
+>  sort(unique(sapply(face1d, length)))
+[1] 2
+>  sort(unique(sapply(face0d, length)))
+[1] 1
+> 
+> 
+> 

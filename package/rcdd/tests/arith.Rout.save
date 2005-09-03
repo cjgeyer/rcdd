@@ -1,0 +1,70 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  foo <- z2q(c(1:5), c(6:10))
+> 
+>  bar <- z2q(c(0:4), c(11:15))
+> 
+>  print(foo)
+[1] "1/6" "2/7" "3/8" "4/9" "1/2"
+> 
+>  print(bar)
+[1] "0"    "1/12" "2/13" "3/14" "4/15"
+> 
+>  ##### addition #####
+> 
+>  .Call("qoq", foo, bar, as.integer(1))
+[1] "1/6"    "31/84"  "55/104" "83/126" "23/30" 
+> 
+>  qpq(foo, bar)
+[1] "1/6"    "31/84"  "55/104" "83/126" "23/30" 
+> 
+>  ##### subtraction #####
+> 
+>  .Call("qoq", foo, bar, as.integer(2))
+[1] "1/6"    "17/84"  "23/104" "29/126" "7/30"  
+> 
+>  qmq(foo, bar)
+[1] "1/6"    "17/84"  "23/104" "29/126" "7/30"  
+> 
+>  ##### multiplication #####
+> 
+>  .Call("qoq", foo, bar, as.integer(3))
+[1] "0"    "1/42" "3/52" "2/21" "2/15"
+> 
+>  qxq(foo, bar)
+[1] "0"    "1/42" "3/52" "2/21" "2/15"
+> 
+>  ##### division #####
+> 
+>  .Call("qoq", bar, foo, as.integer(4))
+[1] "0"     "7/24"  "16/39" "27/56" "8/15" 
+> 
+>  qdq(bar, foo)
+[1] "0"     "7/24"  "16/39" "27/56" "8/15" 
+> 
+>  options(error=dump.frames)
+> 
+>  .Call("qoq", foo, bar, as.integer(4))
+Error: rational divide by zero
+> 
+>  qdq(foo, bar)
+Error in qdq(foo, bar) : rational divide by zero
+> 
+> 

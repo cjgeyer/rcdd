@@ -1,0 +1,97 @@
+
+R : Copyright 2005, The R Foundation for Statistical Computing
+Version 2.1.0 beta (2005-04-10), ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  qux <- matrix(0, 0, 6)
+> 
+>  out <- scdd(qux, representation = "H")
+>  print(out)
+$output
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    0    1    0    0    0
+[2,]    1    0    0    1    0    0
+[3,]    1    0    0    0    1    0
+[4,]    1    0    0    0    0    1
+attr(,"representation")
+[1] "V"
+
+> 
+>  scdd(out$output)
+$output
+     [,1] [,2] [,3] [,4] [,5] [,6]
+attr(,"representation")
+[1] "H"
+
+> 
+>  out <- scdd(qux, representation = "H", adjacency = TRUE,
++      inputadjacency = TRUE, incidence = TRUE, inputincidence = TRUE)
+>  print(out)
+$output
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    0    1    0    0    0
+[2,]    1    0    0    1    0    0
+[3,]    1    0    0    0    1    0
+[4,]    1    0    0    0    0    1
+attr(,"representation")
+[1] "V"
+
+$adjacency
+$adjacency[[1]]
+[1] 1 2 3 4
+
+$adjacency[[2]]
+[1] 1 2 3 4
+
+$adjacency[[3]]
+[1] 1 2 3 4
+
+$adjacency[[4]]
+[1] 1 2 3 4
+
+
+$inputadjacency
+list()
+
+$incidence
+$incidence[[1]]
+numeric(0)
+
+$incidence[[2]]
+numeric(0)
+
+$incidence[[3]]
+numeric(0)
+
+$incidence[[4]]
+numeric(0)
+
+
+$inputincidence
+list()
+
+$input
+     [,1] [,2] [,3] [,4] [,5] [,6]
+
+> 
+>  options(error=dump.frames)
+> 
+>  out <- scdd(qux, representation = "V")
+Error in scdd(qux, representation = "V") : 
+	no rows in 'm', not allowed for V-representation
+> 
+> 

@@ -1,0 +1,58 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  d <- 4
+>  qux <- makeH(- diag(d), rep(0, d), rep(1, d), 1)
+>  qux <- d2q(qux)
+>  print(qux)
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,] "1"  "1"  "-1" "-1" "-1" "-1"
+[2,] "0"  "0"  "1"  "0"  "0"  "0" 
+[3,] "0"  "0"  "0"  "1"  "0"  "0" 
+[4,] "0"  "0"  "0"  "0"  "1"  "0" 
+[5,] "0"  "0"  "0"  "0"  "0"  "1" 
+attr(,"representation")
+[1] "H"
+> 
+>  out <- scdd(qux)
+>  print(out)
+$output
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,] "0"  "1"  "0"  "0"  "0"  "1" 
+[2,] "0"  "1"  "0"  "0"  "1"  "0" 
+[3,] "0"  "1"  "0"  "1"  "0"  "0" 
+[4,] "0"  "1"  "1"  "0"  "0"  "0" 
+attr(,"representation")
+[1] "V"
+
+> 
+>  out <- scdd(out$output)
+>  print(out)
+$output
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,] "0"  "1"  "-1" "-1" "-1" "0" 
+[2,] "0"  "0"  "1"  "0"  "0"  "0" 
+[3,] "0"  "0"  "0"  "1"  "0"  "0" 
+[4,] "0"  "0"  "0"  "0"  "1"  "0" 
+[5,] "1"  "-1" "1"  "1"  "1"  "1" 
+attr(,"representation")
+[1] "H"
+
+> 
+> 

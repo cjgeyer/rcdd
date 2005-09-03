@@ -1,0 +1,64 @@
+
+R : Copyright 2005, The R Foundation for Statistical Computing
+Version 2.1.0 beta (2005-04-10), ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  load("oops.RData")
+> 
+>  out <- try(scdd(oops))
+Error in scdd(oops) : Computation failed, floating-point arithmetic problem
+>  inherits(out, "try-error")
+[1] TRUE
+> 
+>  qux <- d2q(oops)
+> 
+>  out <- try(scdd(qux))
+>  inherits(out, "try-error")
+[1] FALSE
+> 
+>  foo <- out$output
+> 
+>  dim(oops)
+[1] 30 26
+>  dim(foo)
+[1] 1313   26
+> 
+>  attributes(foo)
+$dim
+[1] 1313   26
+
+$representation
+[1] "V"
+
+> 
+>  bar <- foo[ , 1]
+>  all(is.element(bar, 0:1))
+[1] TRUE
+>  sum(bar == 0)
+[1] 1313
+>  sum(bar == 1)
+[1] 0
+>  
+>  bar <- foo[ , 2]
+>  all(is.element(bar, 0:1))
+[1] TRUE
+>  sum(bar == 0)
+[1] 0
+>  sum(bar == 1)
+[1] 1313
+>  
+> 

@@ -1,0 +1,84 @@
+
+ 0.1  first version, two functions "matrix2poly" and "scdd". 
+
+      "matrix2poly" the former is deprecated and should be removed
+
+      "scdd" successfully does conversion between H-representation and
+      V-representation (both ways) using real arithmetic (as opposed
+      to other two possibilities: integer arithmetic or GNU multiple
+      precision arithmetic)
+
+      To do: other arithmetic modes are essential
+
+ 0.2  second version, function "matrix2poly" removed.
+
+      functions "d2q", "q2d", "q2q", and "z2q" added -- conversion between
+      IEEE floating point and GMP rationals.
+
+      "scdd" now takes GMP rational arguments as well as IEEE reals.
+
+      function "validcdd" -- validates H-representations and V-representations
+
+      functions "validcdd", "makeH", "addH", and "dropH" added --
+      construction and adjustment of H-representations
+
+ 0.3  many changes
+
+      completely redesigned "cdd objects", now former "linearity" component
+      is represented in first column of matrix, and former "representation"
+      component is now "representation" attribute of matrix, so "cdd objects"
+      are just matrices having a certain form (first column of
+      H-representation is zero-or-one valued, first two columns of
+      V-representation are zero-or-one valued)
+
+      removed "dropH", replaced "addH" by "addHeq" and "addHin"
+      former "dropH" can now just be done by matrix indexing,
+      e. g., if "qux" is cdd object, then qux[-3, ] drops row 3.
+      added argument "x" to "makeH" so "addHeq" and "addHin" can
+      be implemented simply as calls to "makeH"
+
+      function "qmq" added -- subtraction of GMP rationals -- useful
+      for exact comparison.
+
+      also completely revised and expanded description in inst/doc/design.tex
+
+ 0.4  GPL, Makevars
+
+ 0.5  changed name of package from cdd to rcdd per request from Fukuda
+
+ 0.6  added maximal, all.intersect
+
+      added convex hull example to scdd (how absurdly simple, how stupid
+         of me not to have seen that).
+
+      added qpq, qxq, qdq
+
+ 0.6-1  fixed bug in nonred.c, using uninitialized variables, found by
+        valgrind
+
+      cleaned up qoq.c, removed unnecessary initialization mpq_init
+      always initializes to zero
+
+      added autoconf
+
+ 0.6-2  autoconf changes
+
+          * changed LIBS to LDFLAGS following autoconf conventions
+
+      scdd (and scdd_f) change, H-representation now allowed to be
+      matrix with zero rows (represents the whole space).  Important
+      that this be allowed because scdd can produce such a representation
+      (when the whole space is the convex polytope in question).
+      OTOH an empty V-representation (representing the empty set)
+      is NOT allowed because (1) scdd does not produce such and (2)
+      error exits when given such.
+
+      fixed z2q so it preserves attributes (expecially "dim"), just like
+      the qoq functions.
+
+      added rudimentary vignette
+
+      modified error messages as per Writing R Extensions, Sec 1.8
+
+ 0.6-3  autoconf changes, now checks for libraries
+
