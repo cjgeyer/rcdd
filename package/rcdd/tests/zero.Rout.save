@@ -1,6 +1,7 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0 beta (2005-04-10), ISBN 3-900051-07-0
+R version 2.6.0 (2007-10-03)
+Copyright (C) 2007 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
@@ -51,34 +52,23 @@ attr(,"representation")
 [1] "V"
 
 $adjacency
-$adjacency[[1]]
-[1] 1 2 3 4
-
-$adjacency[[2]]
-[1] 1 2 3 4
-
-$adjacency[[3]]
-[1] 1 2 3 4
-
-$adjacency[[4]]
-[1] 1 2 3 4
-
+list()
 
 $inputadjacency
 list()
 
 $incidence
 $incidence[[1]]
-numeric(0)
+integer(0)
 
 $incidence[[2]]
-numeric(0)
+integer(0)
 
 $incidence[[3]]
-numeric(0)
+integer(0)
 
 $incidence[[4]]
-numeric(0)
+integer(0)
 
 
 $inputincidence
@@ -92,6 +82,7 @@ $input
 > 
 >  out <- scdd(qux, representation = "V")
 Error in scdd(qux, representation = "V") : 
-	no rows in 'm', not allowed for V-representation
+  no rows in 'm', not allowed for V-representation
+Calls: scdd -> .Call
 > 
 > 

@@ -1,0 +1,2 @@
+sed -e 's/ddf_/dd_/g' -e 's/rrf_/rr_/g' -e 's/_f//g' scdd_f.c | diff scdd.c - | less
+

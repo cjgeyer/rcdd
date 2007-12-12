@@ -7,8 +7,6 @@ PKG_LDFLAGS=$LDFLAGS
 
 AC_CHECK_LIB(gmp, __gmpz_init, ,
     [AC_MSG_ERROR([GNU MP not found, see README])])
-AC_CHECK_LIB(cddgmp, dd_DDMatrix2Poly2, ,
-    [AC_MSG_ERROR([cddgmp not found or built with C++, see README])])
 
 AC_SUBST(PKG_CPPFLAGS)
 AC_SUBST(PKG_CFLAGS)

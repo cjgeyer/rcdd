@@ -125,7 +125,7 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
         }
 
     ddf_RowOrderType strategy = ddf_LexMin;
-    char *row_str = CHAR(STRING_ELT(roworder, 0));
+    const char *row_str = CHAR(STRING_ELT(roworder, 0));
     if(strcmp(row_str, "maxindex") == 0)
         strategy = ddf_MaxIndex;
     else if(strcmp(row_str, "minindex") == 0)

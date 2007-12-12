@@ -77,7 +77,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
         error("no cols in m[ , - c(1, 2)]");
 
     for (i = 0; i < nrow; i++) {
-        char *foo = CHAR(STRING_ELT(m, i));
+        char *foo = (char *) CHAR(STRING_ELT(m, i));
         if (strlen(foo) != 1)
             error("column one of 'm' not zero-or-one valued");
         if (! (foo[0] == '0' || foo[0] == '1'))
@@ -85,7 +85,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     }
     if (! LOGICAL(h)[0])
         for (i = nrow; i < 2 * nrow; i++) {
-            char *foo = CHAR(STRING_ELT(m, i));
+            char *foo = (char *) CHAR(STRING_ELT(m, i));
             if (strlen(foo) != 1)
                 error("column two of 'm' not zero-or-one valued");
             if (! (foo[0] == '0' || foo[0] == '1'))
@@ -111,7 +111,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
 
     /* linearity */
     for (i = 0; i < nrow; i++) {
-        char *foo = CHAR(STRING_ELT(m, i));
+        char *foo = (char *) CHAR(STRING_ELT(m, i));
         if (foo[0] == '1')
             set_addelem(mf->linset, i + 1);
         /* note conversion from zero-origin to one-origin indexing */
@@ -120,7 +120,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     /* matrix */
     for (j = 1, k = nrow; j < ncol; j++)
         for (i = 0; i < nrow; i++, k++) {
-            char *rat_str = CHAR(STRING_ELT(m, k));
+            char *rat_str = (char *) CHAR(STRING_ELT(m, k));
             if (mpq_set_str(value, rat_str, 10) == -1)
                 error("error converting string to GMP rational");
             mpq_canonicalize(value);
@@ -129,7 +129,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
         }
 
     dd_RowOrderType strategy = dd_LexMin;
-    char *row_str = CHAR(STRING_ELT(roworder, 0));
+    char *row_str = (char *) CHAR(STRING_ELT(roworder, 0));
     if(strcmp(row_str, "maxindex") == 0)
         strategy = dd_MaxIndex;
     else if(strcmp(row_str, "minindex") == 0)

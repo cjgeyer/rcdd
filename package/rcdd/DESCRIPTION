@@ -1,6 +1,6 @@
 Package: rcdd
-Version: 0.6-3
-Date: 19 April 2005
+Version: 0.7
+Date: 12 January 2007
 Title: rcdd (C Double Description for R)
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>
@@ -8,7 +8,6 @@ Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
 Depends: R (>= 1.8.0)
 SystemRequirements: GMP (GNU MP bignum library), cddlib
 Description: R interface to (some of) cddlib,
-    see http://www.cs.mcgill.ca/~fukuda/soft/cdd_home/
-License: GPL version 2 or newer
+    see http://www.ifor.math.ethz.ch/~fukuda/cdd_home/cdd.html
+License: GPL version 2 or later
 URL: http://www.stat.umn.edu/geyer/rcdd/
-Packaged: Tue Apr 19 15:57:19 2005; charlie

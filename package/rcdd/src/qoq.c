@@ -52,12 +52,12 @@ SEXP qoq(SEXP foo, SEXP bar, SEXP op)
 
         char *zstr;
 
-        zstr = CHAR(STRING_ELT(foo, k));
+        zstr = (char *) CHAR(STRING_ELT(foo, k));
         if (mpq_set_str(value1, zstr, 10) == -1)
             error("error converting string to GMP rational");
         mpq_canonicalize(value1);
 
-        zstr = CHAR(STRING_ELT(bar, k));
+        zstr = (char *) CHAR(STRING_ELT(bar, k));
         if (mpq_set_str(value2, zstr, 10) == -1)
             error("error converting string to GMP rational");
         mpq_canonicalize(value2);
