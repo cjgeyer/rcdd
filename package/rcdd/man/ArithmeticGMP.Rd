@@ -4,6 +4,8 @@
 \alias{qmq}
 \alias{qxq}
 \alias{qdq}
+\alias{qsum}
+\alias{qprod}
 \title{GMP Rational Arithmetic}
 \description{
   Add, subtract, multiply, or divide one object to/from/by another using
@@ -15,6 +17,8 @@ qpq(x, y)
 qmq(x, y)
 qxq(x, y)
 qdq(x, y)
+qsum(x)
+qprod(x)
 }
 \arguments{
   \item{x,y}{objects of type \code{"numeric"}
@@ -27,6 +31,8 @@ qdq(x, y)
   \code{qxq} is \dQuote{times},
   \code{qdq} is \dQuote{divide}.
   Divide by zero is an error.  There are no rational NA, NaN, Inf.
+  \code{qsum} is vectorizing summation like \code{sum} for ordinary numeric.
+  \code{qprod} is vectorizing product like \code{prod} for ordinary numeric.
 }
 \value{
   an object of the same form as \code{x} that is the sum, difference,
@@ -38,5 +44,7 @@ qmq("1/3", "1/2")
 # note inexactness of floating point representations
 qmq("1/5", 1/5)
 qdq("1/5", 1/5)
+qsum(c("1", "1/2", "1/4", "1/8"))
+qprod(c("1", "1/2", "1/4", "1/8"))
 }
 \keyword{misc}

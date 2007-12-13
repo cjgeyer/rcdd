@@ -89,3 +89,9 @@
 
       fixed a bunch of complaints about the CHAR macro in Rinternals.h
       returning (const char *)
+
+      fixed bug in documentation of scdd function
+
+      copied cddlibman.pdf from cddlib distribution into inst/doc
+
+      added qsum and qprod to GMP arithmetic functions

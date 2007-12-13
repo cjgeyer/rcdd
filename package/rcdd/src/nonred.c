@@ -20,6 +20,7 @@
  */
 
 #include <Rinternals.h>
+#include <string.h>
 
 static void hash_setup(int pow2);
 static int my_subset(SEXP set1, SEXP set2);

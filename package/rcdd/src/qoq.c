@@ -21,6 +21,7 @@
 
 #include <Rinternals.h>
 #include <gmp.h>
+#include <stdlib.h>
 
 SEXP qoq(SEXP foo, SEXP bar, SEXP op)
 {

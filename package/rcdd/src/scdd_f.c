@@ -23,6 +23,7 @@
 #include "cdd_f.h"
 #include <Rinternals.h>
 #include "mycddio_f.h"
+#include <string.h>
 
 SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     SEXP inputadjacency, SEXP incidence, SEXP inputincidence)

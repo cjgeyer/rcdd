@@ -36,11 +36,8 @@ or vice versa.
       if present.}
 }
 \details{
-  See \url{http://www.cs.mcgill.ca/~fukuda/soft/cddlibman/node2.html}
-  (web pages for the \code{cddlib} library), which this function uses
-  or \url{http://www.cs.mcgill.ca/~fukuda/soft/cddman/node4.html}
-  (web pages for the \code{cdd} main program), which also uses the
-  same library.
+  See \code{cddlibman.pdf} in the \code{doc} directory of this package,
+  especially Sections 1 and 2.
 
   Both representations are (in R) matrices, the first two rows are
   special.  Let \code{foo} be either an H-representation or
@@ -48,7 +45,7 @@ or vice versa.
   \preformatted{
       l <- foo[ , 1]
       b <- foo[ , 2]
-      a <- foo[ , - c(1, 2)]
+      a <- (- foo[ , - c(1, 2)])
   }
 
   In the H-representation the convex polyhedron in question is the set of
