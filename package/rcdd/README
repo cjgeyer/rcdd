@@ -1,4 +1,4 @@
-This package requires two libraries
+This package requires one library
 
     the GNU Multiple Precision arithmetic library (libgmp)
 
@@ -6,39 +6,3 @@ Obtain from http://swox.com/gmp/ or from your operating system vendor.
 This is a standard GNU package and comes with many Linux distributions
 and may be found at the web sites of other vendors that distribute free
 software.
-
-    the cddlib library
-
-Obtain from http://www.ifor.math.ethz.ch/~fukuda/cdd_home/. You want
-version cddlib-093d.tar.gz or later, because earlier versions had print
-statements that make interactive use annoying.
-
-Then compile as per the instructions in
-
-    cddlib-093d/INSTALL
-    cddlib-093d/README 
-
-making sure to compile using the C compiler rather than the C++ compiler
-(which is the default). If the GMP library is in a standard place, and
-you want cddlib to go to a standard place (/usr/local), then something like
-
-    CXX=gcc ./configure
-    make install 
-
-should work, otherwise something like
-
-    CXX=gcc ./configure --prefix=/APPS 
-
-may be necessary (installs in /APPS/lib, /APPS/include and so forth).
-
-When both of the above libraries are installed, then
-
-    export CPPFLAGS="-I/APPS/include"
-    export LIBS="-L/APPS/lib"
-    R CMD INSTALL rcdd_0.6-2.tar.gz
-
-should install rcdd.  (If both libraries were installed in /usr/lib
-and /usr/include) then neither of the "export ..." statements is necessary.
-If they were installed in some other place, modify accordingly.
-If you are using csh for you shell you need to know how to set an environment
-variable in it.
