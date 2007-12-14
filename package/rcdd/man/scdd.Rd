@@ -45,7 +45,8 @@ or vice versa.
   \preformatted{
       l <- foo[ , 1]
       b <- foo[ , 2]
-      a <- (- foo[ , - c(1, 2)])
+      v <- foo[ , - c(1, 2)]
+      a <- (- v)
   }
 
   In the H-representation the convex polyhedron in question is the set of
@@ -59,7 +60,7 @@ or vice versa.
   In the V-representation the convex polyhedron in question is the set of
   points \code{x} for which there exists a \code{lambda} such that
   \preformatted{
-      x <- t(lambda) \%*\% a
+      x <- t(lambda) \%*\% v
   }
   where \code{lambda} satisfies the constraints
   \preformatted{

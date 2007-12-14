@@ -37,7 +37,7 @@ SEXP qsump(SEXP foo, SEXP op)
     if (the_op <= 0 || the_op > 2)
         error("'op' not recognized, must be 1 (+), 2 (*)");
 
-    mpq_t value1, value2, value3, zero;
+    mpq_t value1, value3;
     mpq_init(value1);
     mpq_init(value3);
     if (the_op == 2)

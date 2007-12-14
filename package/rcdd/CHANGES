@@ -95,3 +95,11 @@
       copied cddlibman.pdf from cddlib distribution into inst/doc
 
       added qsum and qprod to GMP arithmetic functions
+
+ 0.7-1  added qsign to GMP arithmetic functions
+
+      fixed ANOTHER bug in the documentation for scdd (before 0.7 V-rep
+      was correctly explained but H-rep was incorrectly explained, a
+      sign mistake; in 0.7 H-rep was correct, but V-rep made incorrect,
+      sign change applied to both was wrong, now hopefully both correct).
+
