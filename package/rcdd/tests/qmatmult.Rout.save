@@ -1,0 +1,100 @@
+
+R version 2.6.1 (2007-11-26)
+Copyright (C) 2007 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  A <- matrix(c("1", "2", "3", "4"), 2, 2)
+>  B <- matrix(c("1/1", "1/2", "1/3", "1/4"), 2, 2)
+>  C <- qmatmult(A, B)
+>  print(A)
+     [,1] [,2]
+[1,] "1"  "3" 
+[2,] "2"  "4" 
+>  print(B)
+     [,1]  [,2] 
+[1,] "1/1" "1/3"
+[2,] "1/2" "1/4"
+>  print(C)
+     [,1]  [,2]   
+[1,] "5/2" "13/12"
+[2,] "4"   "5/3"  
+>  all.equal(q2d(C), q2d(A) %*% q2d(B))
+[1] TRUE
+> 
+>  A <- matrix(paste(1:6), 2, 3)
+>  B <- matrix(paste("1/", 1:12, sep = ""), 3, 4)
+>  C <- qmatmult(A, B)
+>  print(A)
+     [,1] [,2] [,3]
+[1,] "1"  "3"  "5" 
+[2,] "2"  "4"  "6" 
+>  print(B)
+     [,1]  [,2]  [,3]  [,4]  
+[1,] "1/1" "1/4" "1/7" "1/10"
+[2,] "1/2" "1/5" "1/8" "1/11"
+[3,] "1/3" "1/6" "1/9" "1/12"
+>  print(C)
+     [,1]   [,2]     [,3]      [,4]     
+[1,] "25/6" "101/60" "541/504" "521/660"
+[2,] "6"    "23/10"  "61/42"   "117/110"
+>  all.equal(q2d(C), q2d(A) %*% q2d(B))
+[1] TRUE
+> 
+>  A <- matrix(paste(1:6), 3, 2)
+>  B <- matrix(paste("1/", 1:8, sep = ""), 2, 4)
+>  C <- qmatmult(A, B)
+>  print(A)
+     [,1] [,2]
+[1,] "1"  "4" 
+[2,] "2"  "5" 
+[3,] "3"  "6" 
+>  print(B)
+     [,1]  [,2]  [,3]  [,4] 
+[1,] "1/1" "1/3" "1/5" "1/7"
+[2,] "1/2" "1/4" "1/6" "1/8"
+>  print(C)
+     [,1]  [,2]    [,3]    [,4]   
+[1,] "3"   "4/3"   "13/15" "9/14" 
+[2,] "9/2" "23/12" "37/30" "51/56"
+[3,] "6"   "5/2"   "8/5"   "33/28"
+>  all.equal(q2d(C), q2d(A) %*% q2d(B))
+[1] TRUE
+> 
+>  A <- matrix(paste(1:12), 3, 4)
+>  B <- matrix(paste("1/", 1:8, sep = ""), 4, 2)
+>  C <- qmatmult(A, B)
+>  print(A)
+     [,1] [,2] [,3] [,4]
+[1,] "1"  "4"  "7"  "10"
+[2,] "2"  "5"  "8"  "11"
+[3,] "3"  "6"  "9"  "12"
+>  print(B)
+     [,1]  [,2] 
+[1,] "1/1" "1/5"
+[2,] "1/2" "1/6"
+[3,] "1/3" "1/7"
+[4,] "1/4" "1/8"
+>  print(C)
+     [,1]     [,2]      
+[1,] "47/6"   "187/60"  
+[2,] "119/12" "3151/840"
+[3,] "12"     "307/70"  
+>  all.equal(q2d(C), q2d(A) %*% q2d(B))
+[1] TRUE
+> 
+> 
