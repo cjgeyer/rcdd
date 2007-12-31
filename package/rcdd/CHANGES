@@ -96,10 +96,16 @@
 
       added qsum and qprod to GMP arithmetic functions
 
- 0.7-1  added qsign to GMP arithmetic functions
+ 0.7-1  added qsign and qmatmult to GMP arithmetic functions
 
       fixed ANOTHER bug in the documentation for scdd (before 0.7 V-rep
       was correctly explained but H-rep was incorrectly explained, a
       sign mistake; in 0.7 H-rep was correct, but V-rep made incorrect,
       sign change applied to both was wrong, now hopefully both correct).
 
+ 0.7-2  inserted dd_free_global_constants(); in scdd.c and scdd_f.c
+
+ 0.8  added lpcdd which does linear programming
+
+      added init.c to "register routines" to protect against argument
+      mismatch calling C from R

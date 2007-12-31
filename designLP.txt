@@ -1,0 +1,147 @@
+
+Notes for doing LP
+
+Start looking at cddlib-094d/src/testlp1.c
+
+It has a comment (hooray!)
+
+      /* The original LP data  m x n matrix
+         = | b   -A  |
+           | c0  c^T |,
+
+      where the LP to be solved is to
+      maximize  c^T x  +   c0
+      subj. to
+                A   x  <=  b.
+      */
+
+First it calls
+
+    dd_set_global_constants();
+
+Then it gets a file name and then reads from the file
+
+    dd_PolyFile2Matrix(reading, &error);
+
+So we continue looking at the function dd_PolyFile2Matrix in
+the file cddlib-094d/lib-src-gmp/cddio.c
+We assume it is reading cddlib-094d/examples/samplelp2.ine
+
+When it sees the line
+
+    H-representation
+
+it executes
+
+    rep=dd_Inequality; newformat=dd_TRUE;
+
+When it sees the line
+
+    linearity 2  3  4
+
+it executes
+
+    linearity=dd_TRUE;
+    fgets(comsave,dd_linelenmax,f);
+
+When it sees the line
+
+    begin
+
+it stops the first while loop
+Then when it sees the line
+
+        4    5   rational
+
+it executes
+
+    fscanf(f, "%ld %ld %s", &m_input, &d_input, numbtype);
+
+so m_input is the number of rows and d_input is the number of columns
+of the input matrix determining the constraints and numbtype is the number
+type (which we don't care about -- will use different functions for different
+number types)
+
+Then it does
+
+    M=dd_CreateMatrix(m_input, d_input);
+    M->representation=rep;
+    M->numbtype=NT;
+
+where rep is dd_Inequality and for rational NT is dd_Rational
+Then it reads in the matrix
+
+     0  1  1  0   0
+     0  0  2  0   0
+     3  0 -1  0   0
+     9/2  0  0 -1  -1
+
+executing the command
+
+    dd_set(M->matrix[i-1][j - 1],value);
+
+to set the i, j element of the matrix (note conversion from one-origin
+to zero-origin indexing)
+
+Then it checks to see that the next line is
+
+    end
+
+Then (for this file which has a linearity line) it executes
+
+    dd_SetLinearity(M,comsave);
+
+(presumably this works the same way as for conversion between H and V)
+Now the rest of the file is processed by the function dd_ProcessCommandLine
+which is also found in the file cddlib-094d/lib-src-gmp/cddio.c
+
+When it sees the line
+
+    minimize
+
+it executes
+
+    M->objective=dd_LPmin;
+
+Then it reads one row of numbers executing for the j-th
+
+    dd_set(M->rowvec[j - 1],value);
+
+So it appears M->rowvec has the linear (affine actually) functional to minimize
+
+And that finishes the call to dd_PolyFile2Matrix
+Then it does
+
+    lp=dd_Matrix2LP(M, &error);
+
+    dd_LPSolve(lp,solver,&error);
+
+    dd_WriteLPResult(stdout, lp, error);
+
+So to see how to get the data out of lp we need to look at
+the function dd_WriteLPResult in the file cddlib-094d/lib-src-gmp/cddlp.c
+
+First we look at lp->LPS which has type dd_LPStatusType and possible values
+
+    dd_LPSundecided,
+    dd_Optimal,
+    dd_Inconsistent,
+    dd_DualInconsistent,
+    dd_StrucInconsistent,
+    dd_StrucDualInconsistent,
+    dd_Unbounded,
+    dd_DualUnbounded
+
+in case dd_Optimal we have a solution a "a dual pair (x,y) of optimal solutions"
+the primal solution is lp->sol[j] for j = 1, ..., j = lp->d - 1
+the dual solution is printed out by
+
+    for (j=1; j<lp->d; j++){
+      if (lp->nbindex[j+1]>0) {
+        fprintf(f,"  %3ld : ",lp->nbindex[j+1]);
+        dd_WriteNumber(f,lp->dsol[j]); fprintf(f,"\n");
+      }
+    }
+
+the optimal value is in lp->optvalue
+

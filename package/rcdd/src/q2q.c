@@ -22,6 +22,7 @@
 #include <Rinternals.h>
 #include <gmp.h>
 #include <stdlib.h>
+#include "rcdd.h"
 
 SEXP q2q(SEXP foo)
 {

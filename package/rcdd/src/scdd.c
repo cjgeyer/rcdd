@@ -24,6 +24,7 @@
 #include <Rinternals.h>
 #include "mycddio.h"
 #include <string.h>
+#include "rcdd.h"
 
 SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     SEXP inputadjacency, SEXP incidence, SEXP inputincidence)
@@ -153,15 +154,21 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     dd_ErrorType err = dd_NoError;
     dd_PolyhedraPtr poly = dd_DDMatrix2Poly2(mf, strategy, &err);
 
-    if (poly->child != NULL && poly->child->CompStatus == dd_InProgress)
+    if (poly->child != NULL && poly->child->CompStatus == dd_InProgress) {
+        dd_FreeMatrix(mf);
+        dd_FreePolyhedra(poly);
+        dd_clear(value);
+        dd_free_global_constants();
         error("Computation failed, rational arithmetic problem\n");
+    }
 
     if (err != dd_NoError) {
         dd_WriteErrorMessages(stdout, err);
         dd_FreeMatrix(mf);
         dd_FreePolyhedra(poly);
         dd_clear(value);
-        return R_NilValue;
+        dd_free_global_constants();
+        error("failed");
     }
 
     dd_MatrixPtr aout = NULL;
@@ -279,6 +286,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     dd_FreeMatrix(mf);
     dd_FreePolyhedra(poly);
     dd_clear(value);
+    dd_free_global_constants();
 
     UNPROTECT(2 + nresult);
     return result;

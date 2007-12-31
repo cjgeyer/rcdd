@@ -19,6 +19,20 @@
  *  Suite 330, Boston, MA  02111-1307  USA.
  */
 
+#ifndef RCDD_MYCDDIO_H
+#define RCDD_MYCDDIO_H
+
+#ifndef  __CDDTYPES_H
+#include "cddtypes.h"
+#endif  /* __CDDTYPES_H */
+#ifndef  __SETOPER_H
+#include "setoper.h"
+#endif  /* __SETOPER_H */
+
+#include <Rinternals.h>
+
 SEXP rr_WriteSetFamily(dd_SetFamilyPtr f);
 SEXP rr_set_fwrite(set_type set);
+
+#endif /* RCDD_MYCDDIO_H */
 

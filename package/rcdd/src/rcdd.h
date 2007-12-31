@@ -1,6 +1,6 @@
 
 /*
- *  rcdd an R interface to cddlib
+ *  cdd an R interface to cddlib
  *  Copyright (C) 2005    Charles J. Geyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -19,37 +19,28 @@
  *  Suite 330, Boston, MA  02111-1307  USA.
  */
 
+#ifndef RCDD_RCDD_H
+#define RCDD_RCDD_H
+
 #include <Rinternals.h>
-#include <gmp.h>
-#include "rcdd.h"
 
-SEXP q2d(SEXP foo)
-{
-    if (! isString(foo))
-        error("argument must be character");
-    int n = LENGTH(foo);
+SEXP d2q(SEXP foo);
+SEXP q2d(SEXP foo);
+SEXP q2q(SEXP foo);
+SEXP qoq(SEXP foo, SEXP bar, SEXP op);
+SEXP qsign(SEXP foo);
+SEXP qsump(SEXP foo, SEXP op);
+SEXP qmatmult(SEXP foo, SEXP bar);
 
-    SEXP bar, bark;
-    PROTECT(bar = allocVector(REALSXP, n));
-    PROTECT(bark = ATTRIB(foo));
-    if (bark != R_NilValue)
-        SET_ATTRIB(bar, duplicate(bark));
-    UNPROTECT(1);
+SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver);
+SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver);
 
-    mpq_t value;
-    mpq_init(value);
+SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
+    SEXP inputadjacency, SEXP incidence, SEXP inputincidence);
+SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
+    SEXP inputadjacency, SEXP incidence, SEXP inputincidence);
 
-    int k;
-    for (k = 0; k < n; k++) {
-        char *zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(value, zstr, 10) == -1)
-            error("error converting string to GMP rational");
-        mpq_canonicalize(value);
-        double z = mpq_get_d(value);
-        REAL(bar)[k] = z;
-    }
+SEXP nonred(SEXP sets, SEXP pow2);
 
-    mpq_clear(value);
-    UNPROTECT(1);
-    return(bar);
-}
+#endif /* RCDD_RCDD_H */
+

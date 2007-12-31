@@ -24,6 +24,7 @@
 #include <Rinternals.h>
 #include "mycddio_f.h"
 #include <string.h>
+#include "rcdd.h"
 
 SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     SEXP inputadjacency, SEXP incidence, SEXP inputincidence)
@@ -149,15 +150,21 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     ddf_ErrorType err = ddf_NoError;
     ddf_PolyhedraPtr poly = ddf_DDMatrix2Poly2(mf, strategy, &err);
 
-    if (poly->child != NULL && poly->child->CompStatus == ddf_InProgress)
+    if (poly->child != NULL && poly->child->CompStatus == ddf_InProgress) {
+        ddf_FreeMatrix(mf);
+        ddf_FreePolyhedra(poly);
+        ddf_clear(value);
+        ddf_free_global_constants();
         error("Computation failed, floating-point arithmetic problem\n");
+    }
 
     if (err != ddf_NoError) {
         ddf_WriteErrorMessages(stdout, err);
         ddf_FreeMatrix(mf);
         ddf_FreePolyhedra(poly);
         ddf_clear(value);
-        return R_NilValue;
+        ddf_free_global_constants();
+        error("failed");
     }
 
     ddf_MatrixPtr aout = NULL;
@@ -272,6 +279,7 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     ddf_FreeMatrix(mf);
     ddf_FreePolyhedra(poly);
     ddf_clear(value);
+    ddf_free_global_constants();
 
     UNPROTECT(2 + nresult);
     return result;

@@ -21,6 +21,7 @@
 
 #include <Rinternals.h>
 #include <gmp.h>
+#include "rcdd.h"
 
 SEXP qsign(SEXP foo)
 {
