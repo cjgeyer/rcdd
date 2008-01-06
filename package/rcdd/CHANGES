@@ -109,3 +109,7 @@
 
       added init.c to "register routines" to protect against argument
       mismatch calling C from R
+
+ 0.9  added redundant which eliminates redundant rows from H-representation
+      or V-representation
+

@@ -120,7 +120,8 @@ If \verb@m@ is such a matrix and we let
 \begin{verbatim}
     l <- m[ , 1]
     b <- m[ , 2]
-    a <- m[ , - c(1, 2)]
+    v <- m[ , - c(1, 2)]
+    a <- (- v)
 \end{verbatim}
 then the convex polyhedron described is the set of points \verb@x@ that
 satisfy
@@ -148,12 +149,12 @@ these points such that the coefficients are (1) nonnegative if
 column one is zero and (2) sum to one where the sum runs over
 rows having a one in column two.
 
-If \verb@m@ is such an object and we define \verb@a@, \verb@b@, and
+If \verb@m@ is such an object and we define \verb@v@, \verb@b@, and
 \verb@l@ as in the preceding section (\verb@l@ is column one, \verb@b@ is
-column two, and \verb@a@ is the rest), then the polyhedron in question
+column two, and \verb@v@ is the rest), then the polyhedron in question
 is the set of points of the form
 \begin{verbatim}
-    y <- t(lambda) %*% a
+    y <- t(lambda) %*% v
 \end{verbatim}
 where \verb@lambda@ satisfies the constraints
 \begin{verbatim}

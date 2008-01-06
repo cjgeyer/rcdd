@@ -1,6 +1,6 @@
 Package: rcdd
-Version: 0.8
-Date: 2007-12-30
+Version: 0.9
+Date: 2008-01-05
 Title: rcdd (C Double Description for R)
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>, incorporates code from
