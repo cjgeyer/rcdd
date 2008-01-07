@@ -35,6 +35,8 @@ static R_CallMethodDef callMethods[]  = {
     {"lpcdd_f", (DL_FUNC) &lpcdd_f, 4},
     {"scdd", (DL_FUNC) &scdd, 7},
     {"scdd_f", (DL_FUNC) &scdd_f, 7},
+    {"allfaces", (DL_FUNC) &allfaces, 1},
+    {"allfaces_f", (DL_FUNC) &allfaces_f, 1},
     {"redundant", (DL_FUNC) &redundant, 2},
     {"redundant_f", (DL_FUNC) &redundant_f, 2},
     {"nonred", (DL_FUNC) &nonred, 2},

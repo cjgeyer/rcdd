@@ -72,7 +72,6 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 
     ddf_set_global_constants();
 
-    /* note actual type of "value" is mpq_t (defined in cddmp.h) */
     myfloat value;
     ddf_init(value);
 

@@ -43,6 +43,9 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
 SEXP redundant(SEXP m, SEXP h);
 SEXP redundant_f(SEXP m, SEXP h);
 
+SEXP allfaces(SEXP m);
+SEXP allfaces_f(SEXP m);
+
 SEXP nonred(SEXP sets, SEXP pow2);
 
 
