@@ -1,11 +1,14 @@
 
 \documentclass{article}
 
-\usepackage{indentfirst}
 \usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{natbib}
 
 \RequirePackage{amsfonts}
 \newcommand{\real}{\mathbb{R}}
+
+\newcommand{\set}[1]{\{\, #1 \,\}}
 
 \begin{document}
 
@@ -15,6 +18,10 @@
 
 % \VignetteIndexEntry{Using RCDD}
 
+<<foo,include=FALSE,echo=FALSE>>=
+options(keep.source = TRUE, width = 65)
+@
+
 \section{The Name of the Game}
 
 We call the package \verb@rcdd@ which stands
@@ -22,11 +29,10 @@ for ``C Double Description in R,'' our name being copied from
 \verb@cddlib@, the library we call to do the computations.
 This library was written by Komei Fukuda and is available at
 \begin{verbatim}
-    http://www.cs.mcgill.ca/~fukuda/soft/cdd_home/
+    http://www.ifor.math.ethz.ch/~fukuda/cdd_home/cdd.html
 \end{verbatim}
-Our \verb@rcdd@ package for R makes available some
-(by no means all) of the functionality
-of the \verb@cddlib@ library.
+Our \verb@rcdd@ package for R provides an interface to most
+of the functionality of the \verb@cddlib@ library.
 
 \section{Representations}
 
@@ -59,7 +65,7 @@ $$
 are in the latter sum).
 The fact that these two descriptions characterize the same class of
 convex sets (the \emph{polyhedral} convex sets) is Theorem~19.1
-in Rockafellar (\emph{Convex Analysis}, Princeton University Press, 1970).
+in \citet{rocky}.
 The points and directions are said to be \emph{generators} of the
 convex polyhedron.  Those who like eponyms call this the
 Minkowski-Weyl theorem
@@ -104,15 +110,31 @@ If \verb@m@ is such a matrix and we let
 \begin{verbatim}
     l <- m[ , 1]
     b <- m[ , 2]
-    a <- m[ , - c(1, 2)]
+    v <- m[ , - c(1, 2)]
+    a <- (- v)
 \end{verbatim}
-then the convex polyhedron described is the set of points \verb@x@ that
+In mathematical notation
+$$
+   M = \begin{pmatrix} l & b & - A \end{pmatrix}
+$$
+where $l$ and $b$ are column vectors and $A$ is a matrix.
+Then the convex polyhedron described is the set of points \verb@x@ that
 satisfy
 \begin{verbatim}
     axb <- a %*% x - b
     all(axb <= 0)
     all(l * axb == 0)
 \end{verbatim}
+In mathematical notation, if
+$$
+   w = A x - b
+$$
+then
+\begin{align*}
+   w_i & \le 0, \qquad \text{for all $i$}
+   \\
+   w_i & = 0, \qquad l_i = 1
+\end{align*}
 
 \subsection{The V-representation}
 
@@ -132,18 +154,36 @@ these points such that the coefficients are (1) nonnegative if
 column one is zero and (2) sum to one where the sum runs over
 rows having a one in column two.
 
-If \verb@m@ is such an object and we define \verb@a@, \verb@b@, and
+If \verb@m@ is such an object and we define \verb@v@, \verb@b@, and
 \verb@l@ as in the preceding section (\verb@l@ is column one, \verb@b@ is
-column two, and \verb@a@ is the rest), then the polyhedron in question
+column two, and \verb@v@ is the rest),
+in mathematical notation
+$$
+   M = \begin{pmatrix} l & b & V \end{pmatrix}
+$$
+where $l$ and $b$ are column vectors and $V$ is a matrix,
+then the polyhedron in question
 is the set of points of the form
 \begin{verbatim}
-    y <- t(lambda) %*% a
+    y <- t(lambda) %*% v
 \end{verbatim}
 where \verb@lambda@ satisfies the constraints
 \begin{verbatim}
     all(lambda * (1 - l) >= 0)
     sum(b * lambda) == max(b)
 \end{verbatim}
+In mathematical notation, the polyhedron is the set of points of the form
+$$
+   y = \lambda^T V
+$$
+where
+$$
+   \lambda_j \ge 0, \qquad \text{when $l_j = 0$}
+$$
+and
+$$
+   \sum_j b_j \lambda_j = 1, \qquad \text{unless all $b_j$ are zero}.
+$$
 
 \subsection{Fukuda's Representations}
 
@@ -162,7 +202,7 @@ consists of a matrix, which is our \verb@m[ , -1]@ and a vector
 
 Let's try a really simple example, so we can see what's going on:
 the unit simplex in $\real^3$ (essentially copied from the \verb@scdd@
-help page, never mind how \verb@makeH@ works, just look that the matrix
+help page, never mind how \verb@makeH@ works, just look at the matrix
 \verb@qux@ that it produces, which is an H-representation).
 <<try1a>>=
 library(rcdd)
@@ -194,9 +234,11 @@ represents the unit simplex.
 \subsection{Adding a Constraint}
 
 Now let us complicate the situation a bit.  The unit simplex represents
-possible probability vectors.  Let us say the points in the state space
-are \verb@x <- 1:d@ and we the elements of the unit simplex are probability
-vectors \verb@p@ and we want to add the equality constraint
+possible probability vectors.  Let the corresponding sample space be
+\verb@x <- 1:d@.  So the expected value of the random variable $X$ is
+\verb@sum(p * x)@.  Let us say we want to look at the
+subset of the simplex consisting of the
+probability vectors \verb@p@ and that satisfy the equality constraint
 \verb@sum(p * x) == 2.2@.
 <<try2a>>=
 # add equality constraint
@@ -208,24 +250,6 @@ print(out)
 Adding the equality constraint takes us down a dimension.  The unit
 simplex was two-dimensional (a triangle).  Now the represented convex
 polyhedron is one-dimensional (a line segment).
-
-\subsection{Convex Hull}
-
-Let's try to find convex hulls in \verb@d@ dimensions.
-<<try4a>>=
-d <- 4
-n <- 100
-set.seed(42)
-x <- matrix(rnorm(d * n), nrow = n)
-foo <- cbind(0, cbind(1, x))
-outh <- scdd(foo, inputincidence = TRUE, representation = "V")
-inies <- sapply(outh$inputincidence, length) == 0
-sum(inies)
-@
-The points on the surface of the convex hull are the rows
-of \verb@x[! inies, ]@.
-(The code in \verb@cddlib@ provides a faster way to do this, but \verb@rcdd@
-does not currently provide an interface to it.)
 
 \section{Using GMP Rational Arithmetic} \label{sec:gmp}
 
@@ -244,7 +268,8 @@ quuxq <- d2q(quux)
 print(quuxq)
 @
 What is that?  Well computers count in binary and \Sexpr{quux[5,2]} is
-\emph{not} a round number to computers (because $1/10$ is not a power of 2).
+\emph{not} a round number to computers (because $1/10$ is not a finite sum
+of powers of 2).
 We can see that the rational representation does make sense
 <<try3b>>=
 bar <- as.numeric(unlist(strsplit(quuxq[5,2], "/")))
@@ -287,29 +312,452 @@ point stuff that is wrong.
 qmq(outq$output, out$output)
 @
 
-\subsection{A More Complicated Example}
+\subsection{Convex Hull} \label{sec:conv1}
 
-Let's check our convex hull calculation.
-<<try5a>>=
-outhq <- scdd(d2q(foo), inputincidence = TRUE, representation = "V")
-iniesq <- sapply(outhq$inputincidence, length) == 0
-all.equal(inies, iniesq)
-nrow(outh$output) == nrow(outhq$output)
-outh <- scdd(foo, incidence = TRUE, representation = "V")
-outhq <- scdd(d2q(foo), incidence = TRUE, representation = "V")
-all.equal(outh$incidence, outhq$incidence)
+Let's try to find convex hulls in \verb@d@ dimensions.
+<<try4a>>=
+d <- 4
+n <- 100
+set.seed(42)
+x <- matrix(rnorm(d * n), nrow = n)
+foo <- cbind(0, cbind(1, x))
+out <- scdd(d2q(foo), representation = "V")
+l <- out$output[ , 1]
+b <- out$output[ , 2]
+v <- out$output[ , - c(1, 2)]
+a <- qxq(v, rep(-1, length(v)))
 @
-So we happened to get the same number of points on the surface of the
-hull.  And we got the same number of facets of the convex polyhedron,
-and they all had the same shape.  The inexactness of floating point
-arithmetic didn't hurt us this time.  But if you put this in a loop
-doing simulations, eventually you will get wrong answers with floating
-point.  Or worse, \verb@scdd@ will just give up on the problem being
-unable to decide whether a point is inside or on the surface of the
-hull (or whatever).  An example of this is in \verb@rcdd/tests/oops.R*@
-where the problem in \verb@oops.RData@ does make \verb@scdd@ fail
-unless rational arithmetic is used.  This problem arose in a simulation
-done by Glen Meeden.
+This code generates a matrix \texttt{x}, each row of which represents
+a point in $\real^d$.  The H-representation of the convex hull of these
+points is given by the column vectors $l$ and $b$ and the matrix $H$.
+Actually, the vector $l$ is unnecessary, because since the convex hull
+is bounded we know $l_j = 0$ for all $j$.  Note that we use
+exact arithmetic.
+
+<<try4b>>=
+axb <- qmatmult(a, t(x))
+axb <- sweep(axb, 1, b, FUN = qmq)
+fred <- apply(axb, 2, function(foo) max(qsign(foo)))
+
+all(fred <= 0)
+sum(fred < 0)
+sum(fred == 0)
+@
+Here \verb@qmatmult(a, t(x))@ is the matrix product $a x^T$, and \texttt{b}
+is the matrix resulting from subtracting $b$ from each column of $a x^T$.
+Then \texttt{fred} is the vector that gives for each point $-1$, $0$, or $+1$
+if it is in the interior, boundary, or exterior of the convex hull,
+respectively.
+
+The points on the boundary of the convex hull are the rows
+of \verb@x[fred == 0, ]@.
+If one only wants to find the set of points on the boundary,
+then Section~\ref{sec:conv3} discusses a more direct way to do this.
+If one only wants to check whether one point in the interior or exterior
+of the convex hull,
+then Section~\ref{sec:conv2} discusses a more direct way to do this.
+
+If we want to check whether other points are in the hull, this is easy
+<<try4c>>=
+y <- matrix(rnorm(2 * n * d), nrow = 2 * n)
+ayb <- qmatmult(a, t(d2q(y)))
+ayb <- sweep(ayb, 1, b, FUN = qmq)
+sally <- apply(ayb, 2, function(foo) max(qsign(foo)))
+
+sum(sally < 0)
+sum(sally == 0)
+sum(sally > 0)
+@
+There are \Sexpr{sum(sally < 0)} points (rows of $y$) in the interior of the
+hull, \Sexpr{sum(sally == 0)} points on the boundary,
+and \Sexpr{sum(sally > 0)} points in the exterior.
+
+\subsection{Linear Programming}
+
+Version 0.8 of the \texttt{rcdd} package adds linear programming.
+One might think this is not particularly interesting, because there
+are already two other R contributed packages that do linear programming,
+but \texttt{rcdd} can solve linear programs using exact rational arithmetic
+and the others cannot.
+
+Here are some simple examples taken from the help page for the \text{lpcdd}
+function.
+
+\subsubsection{A Problem Having a Solution}
+
+<<try5a>>=
+hrep <- rbind(c("0", "0", "1", "1", "0", "0"),
+              c("0", "0", "0", "2", "0", "0"),
+              c("1", "3", "0", "-1", "0", "0"),
+              c("1", "9/2", "0", "0", "-1", "-1"))
+print(hrep)
+a <- c("2", "3/5", "0", "0")
+out <- lpcdd(hrep, a)
+print(out)
+@
+In this problem, the linear program (LP) has a solution, which is
+given by the \verb@out$primal.solution@.
+We can check that this does indeed give the stated optimal value
+<<try5a-chk1>>=
+qsum(qxq(a, out$primal.solution))
+@
+Moreover, we can check the Kuhn-Tucker conditions for optimality,
+one statement of which follows.  For the problem
+\begin{align*}
+   \text{minimize} & \quad f(x)
+   \\
+   \text{subject to} & \quad g(x) \le 0
+\end{align*}
+where $f$ is scalar-valued and $g$ is vector-valued (so $g$ represents
+a set of inequality constraints).  If there are equality constraints
+(as in this problem), they can be represented as two inequality constraints.
+
+Define the Lagrangian function
+$$
+   L(x, u) = f(x) + u^T g(x)
+$$
+where $u$ is a vector of Lagrange multipliers.  Specialized to our problem
+where $f(x) = a^T x$ and $g(x) = A x - b$, the Lagrangian is
+$$
+   L(x, u) = a^T x + u^T A x - u^T b
+$$
+
+The a pair $(\bar{x}, \bar{u})$
+is optimal if
+\begin{enumerate}
+\item[(i)] $\bar{x}$ minimizes $x \mapsto L(x, \bar{u})$,
+\item[(ii)] $g(\bar{x}) \le 0$,
+\item[(iii)] $\bar{u} \ge 0$,
+\item[(iv)] $\bar{u}^T g(\bar{x}) = 0$.
+\end{enumerate}
+Condition (ii) is called \emph{primal feasibility}, condition (iii)
+\emph{dual feasibility}, and condition (iv) \emph{complementary slackness}.
+
+Note that for an equality constraint, the corresponding Lagrange multiplier
+does not need to be nonnegative, because if the constraint is $g_i(x) = 0$,
+we could instead take it to be $- g_i(x) = 0$.
+
+We claim that \verb@- out$dual.solution@ gives the Lagrange multipliers $u$.
+Then dual feasibility is clear.
+Let's check primal feasibility
+<<try5a-chk2>>=
+xbar <- out$primal.solution
+foo <- qmatmult(hrep[ , - c(1, 2)], cbind(xbar))
+foo <- qpq(hrep[ , 2], foo)
+print(foo)
+@
+We are supposed to check that the components of $A \bar{x} - b$ are
+$\le 0$ for the inequality constraints and $= 0$ for the equality constraints.
+Here \texttt{foo} is $- A \bar{x} + b$ so should check $\ge 0$ for the
+inequality constraints.  We do indeed have all components of \texttt{foo}
+nonnegative and the last two (which are for the equality constraints), zero.
+
+Now complementary slackness is also clear.  For each row, either
+the corresponding component of \texttt{foo} should be zero,
+or the corresponding component of \verb@out$dual.solution@.
+<<try5a-chk3>>=
+qxq(foo, out$dual.solution)
+@
+Finally, we need to check that $\bar{x}$ minimizes the Lagrangian function,
+condition (i).  Since the objective function is affine, and the constraints
+are linear, this can only happen the Lagrangian is a constant function of $x$,
+in which case its derivative is zero
+<<try5a-chk4>>=
+qpq(a, qmatmult(rbind(out$dual.solution), hrep[ , -c(1, 2)]))
+@
+The derivative of the Lagrangian is
+$$
+   \nabla L(x, \bar{u}) = a^T + u^T A
+$$
+This is what is calculated above (recall that \verb@out$dual.solution@ is $- u$
+and \verb@hrep[ , -c(1, 2)]@ is $- A$).
+
+\subsubsection{A Problem with Empty Feasible Region}
+
+<<try5b>>=
+hrep <- rbind(c("0", "0", "1", "0"),
+              c("0", "0", "0", "1"),
+              c("0", "-2", "-1", "-1"))
+print(hrep)
+a <- c("1", "1")
+out <- lpcdd(hrep, a)
+print(out)
+@
+
+According to the help page \verb@out$dual.direction@ is
+``coefficients of the positive combination of original
+          inequalities that proves the inconsistency''
+(this is copied from printout of \texttt{libcdd} functions that write
+solutions to files).  According to Fukuda (personal communication)
+the fact that some elements of \verb@out$dual.direction@ are negative
+may be a bug, the dual direction should be $(1, 1, 1)$ indicating that
+the sum of the three inequalities
+\begin{align*}
+   - x_1 - 0 & \le 0
+   \\
+   - x_2 - 0 & \le 0
+   \\
+   x_1 + x_2 - (- 2) & \le 0
+\end{align*}
+is $2 \le 0$, which is false (hence no point can satisfy the
+inequalities and the feasible region is empty).
+
+
+\subsubsection{A Problem with Unbounded Objective Function}
+
+<<try5c>>=
+hrep <- rbind(c("0", "0", "1", "0"),
+              c("0", "0", "0", "1"))
+print(hrep)
+a <- c("1", "1")
+out <- lpcdd(hrep, a, minimize = FALSE)
+print(out)
+@
+
+Here the problem is to maximize $f(x) = x_1 + x_2$ subject to the constraints
+\begin{align*}
+   x_1 & \ge 0
+   \\
+   x_2 & \ge 0
+\end{align*}
+The vector \verb@out$primal.direction@ is a direction of recession of
+the feasible region $C$, that is, if we call this direction $y$,
+then
+$$
+   x + s y \in C, \qquad x \in C, \ s \ge 0.
+$$
+To verify that, we need to check that
+$$
+   A (x + s y) \le b, \qquad x \in C, \ s \ge 0,
+$$
+which, if we assume $C$ is nonempty, is equivalent to
+$$
+   A y \le 0.
+$$
+<<try5c-chk1>>=
+qmatmult(hrep[ , - c(1, 2)], cbind(out$primal.direction))
+@
+It checks (recall that \verb@href[ , - c(1, 2)]@ is $- A$).
+
+We also need to verify that the objective function increases without
+bound in this direction
+<<try5c-chk2>>=
+qsum(qxq(a, out$primal.direction))
+@
+It does.
+
+\subsection{Convex Hull Revisited} \label{sec:conv2}
+
+If one wants to verify whether a single point $q$ is in or out
+of the convex hull of many other points $p_i$, then the
+``Polyhedral Computation FAQ''
+\begin{verbatim}
+    http://www.ifor.math.ethz.ch/~fukuda/polyfaq/polyfaq.html
+\end{verbatim}
+says there is a more efficient way to do it than the
+than the calculations in Section~\ref{sec:conv1}.
+
+We can prove a point $q$ in in the exterior of the convex hull of
+a set of points $\set{ p_i : i \in I }$ by finding a strongly separating
+hyperplane, which is determined by a vector $z$ and a scalar $z_0$
+satisfying
+\begin{align*}
+    z^T p_i & < z_0, \qquad i \in I
+    \\
+    z^T q & > z_0
+\end{align*}
+We can do this by solving the following LP
+\begin{align*}
+    \text{minimize} & f(z_0, z) = z^T q - z_0
+    \\
+    \text{subject to } & z^T p_i - z_0 \le 0, \qquad i \in I
+                       & z^T q - z_0 \le 1
+\end{align*}
+(the last inequality being inserted to make the LP have
+a bounded solution).  Note that the variable in the LP is the
+vector $(z_0, z)$ which has dimension one more than $q$ and $p_i$.
+
+If the optimal value is strictly positive, then
+we have a strongly separating hyperplane and $q$ is in the exterior of
+the convex hull.
+Otherwise $q$ is on the boundary or in the interior.
+
+Let's try it.  First a point in the interior.
+<<interior-lp>>=
+xin <- x[fred < 0, , drop = FALSE]
+qin <- xin[sample(nrow(xin), 1), ]
+qin
+hrep <- cbind(0, 0, 1, - x)
+hrep <- rbind(hrep, c(0, 1, 1, - qin))
+
+out <- lpcdd(d2q(hrep), d2q(c(-1, qin)), minimize = FALSE)
+out$optimal.value
+@
+So $q$ is not in the exterior.
+
+Now a point in the exterior.
+<<interior-lp>>=
+yout <- y[sally > 0, , drop = FALSE]
+qout <- yout[sample(nrow(yout), 1), ]
+qout
+hrep <- cbind(0, 0, 1, - x)
+hrep <- rbind(hrep, c(0, 1, 1, - qout))
+
+out <- lpcdd(d2q(hrep), d2q(c(-1, qout)), minimize = FALSE)
+out$optimal.value
+@
+So $q$ is in the exterior.
+
+\section{Redundant Row Elimination}
+
+In the section title ``row'' refers to a row of the matrix
+that specifies an H-representation or a V-representation.
+For an H-representation a row represents a linear equality or inequality
+constraint, so this is redundant constraint elimination.
+For a V-representation a row represents a generator (point, ray, line,
+or affine generator), so this is redundant generator elimination.
+
+\subsection{Redundant Constraints}
+
+Here is a toy problem from the on-line help for the \texttt{redundant}
+function.
+<<toy>>=
+hrep <- rbind(c(0, 0,  1,  1,  0),
+              c(0, 0, -1,  0,  0),
+              c(0, 0,  0, -1,  0),
+              c(0, 0,  0,  0, -1),
+              c(0, 0, -1, -1, -1))
+print(hrep)
+redundant(hrep, representation = "H")
+@
+
+The \texttt{output} component of the result gives another representation
+having no redundant rows of the convex polytope of the same type (H or V)
+as the input.  In this example, the constraints are
+\begin{align*}
+    - x_1 - x_2 & \le 0
+    \\
+    x_1 & \le 0
+    \\
+    x_2 & \le 0
+    \\
+    x_3 & \le 0
+    \\
+    x_1 + x_2 + x_3 & \le 0
+\end{align*}
+The first three of these imply equality constraints $x_1 = x_2 = 0$.
+This is indicated by the \texttt{implied linearity} component of the result. 
+These three inequality constraints are replaced by two equality constraints
+\begin{align*}
+    - x_1 - x_2 & - 0
+    \\
+    x_1 & = 0
+\end{align*}
+which also are equivalent to $x_1 = x_2 = 0$.  That these are now equality
+constraints is indicated by the 1 in the first column of the \texttt{output}
+matrix.  The forth row of the input implies $x_3 \le 0$, and we now see
+that the fifth row of the input is redundant, since $x_1 = x_2 = 0$,
+the fifth row implies $x_3 \le 0$, which is already implied by the forth row.
+
+The \texttt{redundant} argument of the result is what is returned by the
+\texttt{cddlib} library function (\verb@dd_MatrixCanonicalize@) that does
+the work for the R function \texttt{redundant}.   This function has decided
+to take the fourth row rather than the fifth as redundant.  It does not
+seem to count rows involved in the ``implied linearity'' as redundant here,
+nor from other examples does it seem to count any equality constraints as
+redundant even as it drops them.
+
+However, the \verb@new.position@ component of the result shows which rows
+of the input are kept in the output and which not.  So we can always tell
+which rows of the input were actually dropped from this component.
+
+\subsection{Convex Hull Revisited Again} \label{sec:conv3}
+
+Eliminating redundant generators from a set of points gives the points
+that are the \emph{vertices} or \emph{extreme points} of the hull.
+<<vertex>>=
+foo <- cbind(0, cbind(1, x))
+out <- redundant(d2q(foo))
+nrow(out$output)
+all((out$new.position == 0) == (fred < 0))
+@
+
+\section{Faces}
+
+A nonempty \emph{face} of a convex polyhedron $P$
+\citep[Chapter~18]{rocky} is the subset of $P$
+where some affine function achieves its maximum over $P$.  Note that $P$
+itself is a face (the set where constant functions achieve their maxima).
+By definition the empty set is also a face.  The empty set and $P$ are
+\emph{improper} faces of $P$.  All other faces are proper.  Proper faces
+of the highest dimension (here 2) are called \emph{facets}.
+Proper faces of dimension zero (single points) are called \emph{vertices}.
+Proper faces of dimension one (line segments) are called \emph{edges}.
+
+Given an H-representation for a convex polyhedron, the function
+\texttt{allfaces} produces a list of faces.  
+Here is a toy problem from the on-line help for the \texttt{allfaces}
+function.
+<<faces>>=
+vrep <- rbind(c(0, 1,  1,  1, 0),
+              c(0, 1,  1, -1, 0),
+              c(0, 1, -1,  1, 0),
+              c(0, 1, -1, -1, 0),
+              c(0, 1,  0,  0, 1))
+print(vrep)
+hrep <- scdd(vrep, rep = "V")$output
+print(hrep)
+@
+Here the convex polytope in question is a pyramid with a square base.
+The base is in the $x$-$y$ plane, the square centered at the origin, with
+sides parallel to the $x$ and $y$ axes, and vertices of the form
+$(\pm 1, \pm 1, 0)$.  The fifth vertex (the \emph{apex}) is above the
+base on the $z$ axis $(0, 0, 1)$.
+
+After conversion, we see that is convex polytope is also
+characterized by five inequalities, two of the form $z \pm x \le 1$,
+two of the form $z \pm y \le 1$, and $z \ge 0$.
+If this representation is nonredundant (which is obviously is --- we
+could check with the \texttt{redundant} function, but won't), then there
+will be five faces of dimension 2 (the base and four sides of the pyramid),
+eight faces of dimension 1 (the four sides of the base, and the four edges
+that connect vertices of the base with the apex), and five faces of dimension
+zero.  Plus there is one face of dimension 3 (the pyramid itself) and one
+face of dimension -1 (by convention), the empty set.
+<<faces-numbers>>=
+out <- allfaces(hrep)
+d <- unlist(out$dimension)
+nd <- tabulate(d + 1)
+names(nd) <- seq(0, 3)
+print(nd)
+@
+The empty set is omitted from the list of faces produced by \texttt{allfaces}
+(it is always a face but you don't need a computer to tell you that).
+
+<<faces-numbers>>=
+asl <- sapply(out$active.set, paste, collapse = " ")
+names(asl) <- d
+asl <- asl[order(d)]
+print(asl)
+@
+The component \verb@active.set@ of the result of \texttt{allfaces}
+gives the row numbers of the active set of constraints for a face
+(the set of inequalities that are satisfied with equality on the face).
+The active set characterizes the face.  Here we see that there are indeed
+five facets, all of which have one constraint active.
+Also there are five vertices, four of which have three constraints active
+(the vertices of the base) and one having four constraints active (the apex).
+There are eight edges, all of which have two constraints active.
+
+\begin{thebibliography}{}
+
+\bibitem[Rockafellar(1970)]{rocky}
+Rockafellar, R.~T. (1970).
+\newblock \emph{Convex Analysis}.
+\newblock Princeton University Press.
+
+\end{thebibliography}
+
 
 \end{document}
 

@@ -5,8 +5,8 @@
 allfaces(hrep)
 }
 \description{
-List all the faces of a convex polyhedron, giving for each the dimension,
-the active set of constraints, and a relative interior point.
+List all the nonempty faces of a convex polyhedron, giving for each
+the dimension, the active set of constraints, and a relative interior point.
 }
 \arguments{
   \item{hrep}{H-representation of convex polyhedron (see details).}
@@ -15,7 +15,7 @@ the active set of constraints, and a relative interior point.
   See \code{cddlibman.pdf} in the \code{doc} directory of this package,
   especially Sections 1 and 2.
 
-  This function lists all of the faces of a convex polyhedron
+  This function lists all nonempty faces of a convex polyhedron
   given by the H-representation given by the matrix \code{hrep}.
   Let
   \preformatted{
@@ -33,8 +33,9 @@ the active set of constraints, and a relative interior point.
       all(l * axb == 0)
   }
 
-  A \emph{face} of a convex polyhedron \eqn{P} is the subset of \eqn{P}
-  that is the set of points over which some linear function achieves its
+  A nonempty \emph{face} of a convex polyhedron \eqn{P} is the subset
+  of \eqn{P} that is the set of points over which some linear function
+  achieves its
   maximum over \eqn{P}.  Note that \eqn{P} is a face of \eqn{P} and appears
   in the list of faces.  By definition the empty set is also a face, but
   is not listed.   These two faces are said to be \emph{improper}, the
