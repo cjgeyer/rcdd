@@ -2,7 +2,7 @@
 \alias{lpcdd}
 \title{linear programming with exact arithmetic}
 \usage{
-lpcdd(hrep, objgrd, objcon = as(0, typeof(hrep)), minimize = TRUE,
+lpcdd(hrep, objgrd, objcon = as(0, class(objgrd)), minimize = TRUE,
     solver = c("DualSimplex", "CrissCross"))
 }
 \description{

@@ -1,4 +1,4 @@
-lpcdd <- function(hrep, objgrd, objcon = as(0, typeof(hrep)), minimize = TRUE,
+lpcdd <- function(hrep, objgrd, objcon = as(0, class(objgrd)), minimize = TRUE,
     solver = c("DualSimplex", "CrissCross")) {
 
     solver <- match.arg(solver)

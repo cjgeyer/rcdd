@@ -118,3 +118,6 @@
       added several sections to package vignette describing new functions
       added since 0.7
 
+ 0.10-1 changed "typeof(hrep)" to "class(objgrd)" in computing default
+        in signature of R function lpcdd as per e-mail from Brian Ripley
+
