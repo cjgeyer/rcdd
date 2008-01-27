@@ -105,11 +105,13 @@ static dd_ErrorType FaceEnumHelper(dd_MatrixPtr M, dd_rowset R, dd_rowset S);
 
 static SEXP dimlist, riplist, activelist;
 
+static PROTECT_INDEX dimidx, ripidx, activeidx;
+
 static SEXP FaceEnum(dd_MatrixPtr M)
 {
-    PROTECT(dimlist = R_NilValue);
-    PROTECT(riplist = R_NilValue);
-    PROTECT(activelist = R_NilValue);
+    PROTECT_WITH_INDEX(dimlist = R_NilValue, &dimidx);
+    PROTECT_WITH_INDEX(riplist = R_NilValue, &ripidx);
+    PROTECT_WITH_INDEX(activelist = R_NilValue, &activeidx);
 
     dd_rowset R, S;
     set_initialize(&R, M->rowsize);
@@ -270,10 +272,10 @@ static dd_ErrorType FaceEnumHelper(dd_MatrixPtr M, dd_rowset R, dd_rowset S)
             SET_STRING_ELT(myrip, j - 1, mkChar(zstr));
             free(zstr);
         }
-        UNPROTECT(6);
-        PROTECT(dimlist = CONS(mydim, dimlist));
-        PROTECT(riplist = CONS(myrip, riplist));
-        PROTECT(activelist = CONS(myactive, activelist));
+        REPROTECT(dimlist = CONS(mydim, dimlist), dimidx);
+        REPROTECT(riplist = CONS(myrip, riplist), ripidx);
+        REPROTECT(activelist = CONS(myactive, activelist), activeidx);
+        UNPROTECT(3);
 
         dd_FreeLPSolution(lps);
         set_free(ImL);

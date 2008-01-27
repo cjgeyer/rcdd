@@ -144,12 +144,20 @@ SEXP redundant_f(SEXP m, SEXP h)
             REAL(bar)[k] = ax;
         }
 
-    if (mf->representation == ddf_Inequality)
-        setAttrib(bar, ScalarString(mkChar("representation")),
-            ScalarString(mkChar("H")));
-    if (mf->representation == ddf_Generator)
-        setAttrib(bar, ScalarString(mkChar("representation")),
-            ScalarString(mkChar("V")));
+    if (mf->representation == ddf_Inequality) {
+        SEXP attr_name, attr_value;
+        PROTECT(attr_name = ScalarString(mkChar("representation")));
+        PROTECT(attr_value = ScalarString(mkChar("H")));
+        setAttrib(bar, attr_name, attr_value);
+        UNPROTECT(2);
+    }
+    if (mf->representation == ddf_Generator) {
+        SEXP attr_name, attr_value;
+        PROTECT(attr_name = ScalarString(mkChar("representation")));
+        PROTECT(attr_value = ScalarString(mkChar("V")));
+        setAttrib(bar, attr_name, attr_value);
+        UNPROTECT(2);
+    }
 
     int impl_size = set_card(impl_linset);
     int red_size = set_card(redset);

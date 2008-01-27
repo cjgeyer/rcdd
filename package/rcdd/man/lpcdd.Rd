@@ -79,6 +79,16 @@ Solve linear program or explain why it has no solution.
   for conversion back and forth between R floating point numbers and rationals
   and for arithmetic on GMP rationals.
 }
+\section{Bugs}{
+  The \code{dual.direction} component of the result returned when the
+  problem is primal infeasible (when the feasible region is empty) is
+  buggy.  According to Fukuda (personal communication) this is apparently
+  a bug in the \code{cddlib} code incorporated in the \code{rcdd} package.
+  In the example below the \code{dual.direction} has negative elements
+  which does not seem to be \dQuote{coefficients of the positive combination
+  of original inequalities that proves the inconsistency}, language copied
+  from the \code{cddlib} examples.
+}
 \seealso{\code{\link{scdd}}, \code{\link{ArithmeticGMP}},
   \code{\link{ConvertGMP}}}
 \examples{

@@ -155,12 +155,20 @@ SEXP redundant(SEXP m, SEXP h)
             free(zstr);
         }
 
-    if (mf->representation == dd_Inequality)
-        setAttrib(bar, ScalarString(mkChar("representation")),
-            ScalarString(mkChar("H")));
-    if (mf->representation == dd_Generator)
-        setAttrib(bar, ScalarString(mkChar("representation")),
-            ScalarString(mkChar("V")));
+    if (mf->representation == dd_Inequality) {
+        SEXP attr_name, attr_value;
+        PROTECT(attr_name = ScalarString(mkChar("representation")));
+        PROTECT(attr_value = ScalarString(mkChar("H")));
+        setAttrib(bar, attr_name, attr_value);
+        UNPROTECT(2);
+    }
+    if (mf->representation == dd_Generator) {
+        SEXP attr_name, attr_value;
+        PROTECT(attr_name = ScalarString(mkChar("representation")));
+        PROTECT(attr_value = ScalarString(mkChar("V")));
+        setAttrib(bar, attr_name, attr_value);
+        UNPROTECT(2);
+    }
 
     int impl_size = set_card(impl_linset);
     int red_size = set_card(redset);

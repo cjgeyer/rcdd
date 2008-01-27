@@ -121,3 +121,7 @@
  0.10-1 changed "typeof(hrep)" to "class(objgrd)" in computing default
         in signature of R function lpcdd as per e-mail from Brian Ripley
 
+ 0.10-2 fixed PROTECT/REPROTECT bugs in allfaces*.c and redundant*.c
+
+        added BUGS section to lpcdd man page.
+
