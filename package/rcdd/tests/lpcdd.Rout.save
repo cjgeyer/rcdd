@@ -1,6 +1,6 @@
 
-R version 2.6.1 (2007-11-26)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.6.2 RC (2008-01-31 r44297)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -88,7 +88,7 @@ $solution.type
 [1] "Inconsistent"
 
 $dual.direction
-[1] "-1" "-1" "1" 
+[1] "1" "1" "1"
 
 > 
 >  lpcdd(q2d(hrep), q2d(a))
@@ -96,7 +96,7 @@ $solution.type
 [1] "Inconsistent"
 
 $dual.direction
-[1] -1 -1  1
+[1] 1 1 1
 
 > 
 >  ### dual inconsistent problem ###

@@ -1,10 +1,10 @@
 Package: rcdd
-Version: 0.10-2
-Date: 2008-01-24
+Version: 1.0
+Date: 2008-02-08
 Title: rcdd (C Double Description for R)
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>, incorporates code from
-    cddlib (ver 0.94d) written by Komei Fukuda <fukuda@ifor.math.ethz.ch>
+    cddlib (ver 0.94f) written by Komei Fukuda <fukuda@ifor.math.ethz.ch>
 Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
 Depends: R (>= 2.4.1)
 SystemRequirements: GMP (GNU MP bignum library)

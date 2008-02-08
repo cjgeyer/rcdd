@@ -484,13 +484,7 @@ out <- lpcdd(hrep, a)
 print(out)
 @
 
-According to the help page \verb@out$dual.direction@ is
-``coefficients of the positive combination of original
-          inequalities that proves the inconsistency''
-(this is copied from printout of \texttt{libcdd} functions that write
-solutions to files).  According to Fukuda (personal communication)
-the fact that some elements of \verb@out$dual.direction@ are negative
-may be a bug, the dual direction should be $(1, 1, 1)$ indicating that
+The dual direction $(1, 1, 1)$ indicates that
 the sum of the three inequalities
 \begin{align*}
    - x_1 - 0 & \le 0
@@ -501,7 +495,6 @@ the sum of the three inequalities
 \end{align*}
 is $2 \le 0$, which is false (hence no point can satisfy the
 inequalities and the feasible region is empty).
-
 
 \subsubsection{A Problem with Unbounded Objective Function}
 
