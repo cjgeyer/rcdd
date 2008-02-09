@@ -133,7 +133,7 @@ then
 \begin{align*}
    w_i & \le 0, \qquad \text{for all $i$}
    \\
-   w_i & = 0, \qquad l_i = 1
+   w_i & = 0, \qquad \text{whenever $l_i = 1$}
 \end{align*}
 
 \subsection{The V-representation}
@@ -235,7 +235,8 @@ represents the unit simplex.
 
 Now let us complicate the situation a bit.  The unit simplex represents
 possible probability vectors.  Let the corresponding sample space be
-\verb@x <- 1:d@.  So the expected value of the random variable $X$ is
+\verb@x <- 1:d@.  So the expected value of the random variable $X$
+having probability vector \verb@p@ is
 \verb@sum(p * x)@.  Let us say we want to look at the
 subset of the simplex consisting of the
 probability vectors \verb@p@ and that satisfy the equality constraint
@@ -329,7 +330,7 @@ a <- qxq(v, rep(-1, length(v)))
 @
 This code generates a matrix \texttt{x}, each row of which represents
 a point in $\real^d$.  The H-representation of the convex hull of these
-points is given by the column vectors $l$ and $b$ and the matrix $H$.
+points is given by the column vectors $l$ and $b$ and the matrix $A$.
 Actually, the vector $l$ is unnecessary, because since the convex hull
 is bounded we know $l_j = 0$ for all $j$.  Note that we use
 exact arithmetic.
@@ -395,6 +396,11 @@ a <- c("2", "3/5", "0", "0")
 out <- lpcdd(hrep, a)
 print(out)
 @
+
+The function \verb@lpcdd@ minimizes the linear function $x \mapsto a^T x$
+subject to the abstract constraint that $x$ lie in the polyhedral convex
+set having $H$-representation given by \verb@hrep@.
+
 In this problem, the linear program (LP) has a solution, which is
 given by the \verb@out$primal.solution@.
 We can check that this does indeed give the stated optimal value

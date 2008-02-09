@@ -125,3 +125,11 @@
 
         added BUGS section to lpcdd man page.
 
+ 1.0  upgraded from cddlib 0.94d to 0.94f.  This fixes a bug we found
+      in lpcdd: the dual.direction returned when the problem had no
+      feasible solution was incorrect.
+
+      deleted BUGS section to lpcdd man page.
+
+      minor improvements to vignette.
+
