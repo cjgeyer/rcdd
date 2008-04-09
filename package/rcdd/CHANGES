@@ -133,3 +133,5 @@
 
       minor improvements to vignette.
 
+ 1.0-1  minor changes requested by Uwe Ligges to make the Windows build work.
+

@@ -1,0 +1,3 @@
+PKG_CFLAGS = -I$(LIB_GMP)/include
+PKG_CPPFLAGS =  -DGMPRATIONAL
+PKG_LIBS =  -lgmp -L$(LIB_GMP)/lib
