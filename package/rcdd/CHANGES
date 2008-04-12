@@ -135,3 +135,13 @@
 
  1.0-1  minor changes requested by Uwe Ligges to make the Windows build work.
 
+ 1.1  fix major, major bug in lpcdd, when optimal solution found and when
+      problem has equality constraints just 1.0-1 crashes when any Lagrange
+      multiplier negative (which is allowed for equality constraint).
+
+      add linearity, qneg, qinv, qabs.
+
+      update vignette to use qneg, etc. as appropriate.
+
+      more tests exercising lpcdd.
+

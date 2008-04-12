@@ -1,5 +1,5 @@
 
-R version 2.6.2 RC (2008-01-31 r44297)
+R version 2.6.2 (2008-02-08)
 Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
@@ -124,4 +124,55 @@ $solution.type
 $primal.direction
 [1] 1 0
 
+> 
+>  ### negative Lagrange multipliers
+> 
+>  set.seed(42)
+>  d <- 20
+>  k <- 6
+>  foo <- matrix(sample(seq(-1000, 1000), k * d, replace = TRUE), ncol = d)
+>  foo <- rbind(foo, diag(d))
+>  foo <- rbind(foo, - diag(d))
+>  foo <- cbind(c(rep(0, k), rep(1, 2 * d)), foo)
+>  foo <- cbind(c(rep(1, k), rep(0, 2 * d)), foo)
+> 
+>  w <- sample(seq(-1000, 1000), d, replace = TRUE)
+> 
+>  out <- lpcdd(d2q(foo), d2q(w))
+> 
+>  out$solution.type
+[1] "Optimal"
+> 
+>  q2d(out$primal.solution)
+ [1]  0.006018942 -0.683091012 -1.000000000 -1.000000000 -0.110030285
+ [6] -1.000000000 -1.000000000 -1.000000000 -0.613259326 -1.000000000
+[11] -1.000000000 -1.000000000 -0.683061014 -1.000000000 -1.000000000
+[16] -0.815424962 -1.000000000  1.000000000 -1.000000000 -1.000000000
+> 
+>  x <- out$primal.solution
+>  lambda <- qneg(out$dual.solution)   ### see tutorial
+>  l <- foo[ , 1]
+>  b <- foo[ , 2]
+>  v <- foo[ , - c(1, 2)]
+> 
+>  ##### check gradient of Lagrangian function zero
+>  all(qsign(qmq(w, qmatmult(rbind(lambda), v))) == 0)
+[1] TRUE
+> 
+>  ##### check primal feasibility
+>  slack <- qpq(b, qmatmult(v, cbind(x)))
+>  all(qsign(slack) >= 0)
+[1] TRUE
+> 
+>  ##### check dual feasibility
+>  all(qsign(lambda) * (1 - l) >= 0)
+[1] TRUE
+> 
+>  ##### check complementary slackness
+>  all(qsign(slack) * qsign(lambda) == 0)
+[1] TRUE
+> 
+>  ##### number of negative lagrange multipliers (shows exercised relevant code)
+>  sum(qsign(lambda) < 0)
+[1] 4
 > 

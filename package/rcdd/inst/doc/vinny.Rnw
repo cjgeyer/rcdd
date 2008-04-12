@@ -326,7 +326,7 @@ out <- scdd(d2q(foo), representation = "V")
 l <- out$output[ , 1]
 b <- out$output[ , 2]
 v <- out$output[ , - c(1, 2)]
-a <- qxq(v, rep(-1, length(v)))
+a <- qneg(v)
 @
 This code generates a matrix \texttt{x}, each row of which represents
 a point in $\real^d$.  The H-representation of the convex hull of these
@@ -722,7 +722,7 @@ will be five faces of dimension 2 (the base and four sides of the pyramid),
 eight faces of dimension 1 (the four sides of the base, and the four edges
 that connect vertices of the base with the apex), and five faces of dimension
 zero.  Plus there is one face of dimension 3 (the pyramid itself) and one
-face of dimension -1 (by convention), the empty set.
+face of dimension $-1$ (by convention), the empty set.
 <<faces-numbers>>=
 out <- allfaces(hrep)
 d <- unlist(out$dimension)

@@ -4,6 +4,9 @@
 \alias{qmq}
 \alias{qxq}
 \alias{qdq}
+\alias{qneg}
+\alias{qabs}
+\alias{qinv}
 \alias{qsum}
 \alias{qprod}
 \alias{qsign}
@@ -23,6 +26,9 @@ qmatmult(x, y)
 qsum(x)
 qprod(x)
 qsign(x)
+qneg(x)
+qabs(x)
+qinv(x)
 }
 \arguments{
   \item{x,y}{objects of type \code{"numeric"}
@@ -40,6 +46,9 @@ qsign(x)
   \code{qsign} is vectorizing sign like \code{sign} for ordinary numeric.
   \code{qmatmult} is matrix multiplication like \code{\%*\%} for ordinary
   numeric; both arguments must be matrices.
+  \code{qneg} is vectorizing negation like unary minus for ordinary numeric.
+  \code{qabs} is vectorizing negation like \code{abs} for ordinary numeric.
+  \code{qinv} is vectorizing inversion like \code{1 / x} for ordinary numeric.
 }
 \value{
   an object of the same form as \code{x} that is the sum, difference,
@@ -57,5 +66,6 @@ qprod(c("1", "1/2", "1/4", "1/8"))
 qsign(c("-1", "1/2", "1/-4", "1/8"))
 qmatmult(matrix(c("1", "2", "3", "4"), 2, 2),
     matrix(c("1/1", "1/2", "1/3", "1/4"), 2, 2))
+qneg(seq(-3, 3))
 }
 \keyword{misc}

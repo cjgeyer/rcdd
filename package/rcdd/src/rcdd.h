@@ -27,6 +27,7 @@
 SEXP d2q(SEXP foo);
 SEXP q2d(SEXP foo);
 SEXP q2q(SEXP foo);
+SEXP qo(SEXP foo, SEXP op);
 SEXP qoq(SEXP foo, SEXP bar, SEXP op);
 SEXP qsign(SEXP foo);
 SEXP qsump(SEXP foo, SEXP op);
@@ -48,6 +49,8 @@ SEXP allfaces_f(SEXP m);
 
 SEXP nonred(SEXP sets, SEXP pow2);
 
+SEXP impliedLinearity(SEXP m, SEXP h);
+SEXP impliedLinearity_f(SEXP m, SEXP h);
 
 #endif /* RCDD_RCDD_H */
 
