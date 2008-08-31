@@ -354,9 +354,28 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
         }
         {
             int qux = lp->re;
-            if (! (1 <= qux && qux <= nrow))
+            if (1 <= qux && qux <= len_mapto && mapto[qux - 1] != -1) {
+                int the_row = mapto[qux - 1];
+                int the_sign = mapto[qux - 1] == qux - 1;
+#ifdef WOOF_WOOF
+                fprintf(stderr, "qux = %d\n", qux);
+                fprintf(stderr, "the_row = %d\n", the_row);
+                fprintf(stderr, "the_sign = %d\n", the_sign);
+#endif /* WOOF_WOOF */
+                if (! (0 <= the_row && the_row < nrow))
+                    error("Can't happen.  Map mapto maps out of bounds");
+                if (the_sign)
+                    SET_STRING_ELT(foo, the_row, mkChar("1"));
+                else
+                    SET_STRING_ELT(foo, the_row, mkChar("-1"));
+            } else {
+#ifdef WOOF_WOOF
+                fprintf(stderr, "Third place with this error message\n");
+                fprintf(stderr, "qux = %d\n", qux);
+                fprintf(stderr, "nrow  = %d\n", nrow);
+#endif /* WOOF_WOOF */
                 error("Can't happen.  Dual solution index out of bounds");
-            SET_STRING_ELT(foo, qux - 1, mkChar("1"));
+            }
         }
 
         UNPROTECT(2);

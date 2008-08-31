@@ -280,6 +280,9 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     else
                         REAL(bar)[the_row] -= ax;
                 } else {
+#ifdef WOOF_WOOF
+                    fprintf(stderr, "First place with this error message\n");
+#endif /* WOOF_WOOF */
                     error("Can't happen.  Dual solution index out of bounds");
                 }
             }
@@ -323,15 +326,38 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     else
                         REAL(foo)[the_row] -= ax;
                 } else {
+#ifdef WOOF_WOOF
+                    fprintf(stderr, "Second place with this error message\n");
+#endif /* WOOF_WOOF */
                     error("Can't happen.  Dual solution index out of bounds");
                 }
             }
         }
         {
             int qux = lp->re;
-            if (! (1 <= qux && qux <= nrow))
+            if (1 <= qux && qux <= len_mapto && mapto[qux - 1] != -1) {
+                int the_row = mapto[qux - 1];
+                int the_sign = mapto[qux - 1] == qux - 1;
+#ifdef WOOF_WOOF
+                fprintf(stderr, "qux = %d\n", qux);
+                fprintf(stderr, "the_row = %d\n", the_row);
+                fprintf(stderr, "the_sign = %d\n", the_sign);
+#endif /* WOOF_WOOF */
+                if (! (0 <= the_row && the_row < nrow))
+                    error("Can't happen.  Map mapto maps out of bounds");
+                double ax = 1.0;
+                if (the_sign)
+                    REAL(foo)[the_row] += ax;
+                else
+                    REAL(foo)[the_row] -= ax;
+            } else {
+#ifdef WOOF_WOOF
+                fprintf(stderr, "Third place with this error message\n");
+                fprintf(stderr, "qux = %d\n", qux);
+                fprintf(stderr, "nrow  = %d\n", nrow);
+#endif /* WOOF_WOOF */
                 error("Can't happen.  Dual solution index out of bounds");
-            REAL(foo)[qux - 1] = 1.0;
+            }
         }
 
         UNPROTECT(2);

@@ -14,6 +14,8 @@ qsign.c
 qsump.c
 scdd.c
 scdd_f.c
+impliedLinearity.c
+impliedLinearity_f.c
 */
 
 #include <Rdefines.h>

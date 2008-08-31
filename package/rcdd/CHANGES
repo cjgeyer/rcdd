@@ -145,3 +145,12 @@
 
       more tests exercising lpcdd.
 
+ 1.1-1  fix major, major bug in lpcdd, when problem infeasible and when
+        problem has equality constraints 1.1-1 crashes when any Lagrange
+        multiplier negative (which is allowed for equality constraint) --
+        essentially same bug fix as in 1.1 except for infeasible case
+        (not quite the same, corner case of that case, but still a bug;
+        also not quite a crash, "Can't happen" error message, but still bad)
+
+        add bug2.R to tests to illustrate bug fix
+

@@ -58,8 +58,9 @@ Solve linear program or explain why it has no solution.
      problem.}
   \item{dual.direction}{Returned only when
      \code{solution.type = "Inconsistent"},
-     coefficients of the positive combination of original inequalities
-     that proves the inconsistency.}
+     coefficients of a linear combination of original inequalities
+     and equalities that proves the inconsistency.  Coefficients for original
+     inequalities are nonnegative.}
   \item{primal.direction}{Returned only when
      \code{solution.type = "DualInconsistent"}
      or \code{solution.type = "StrucDualInconsistent"},
