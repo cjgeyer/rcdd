@@ -154,3 +154,8 @@
 
         add bug2.R to tests to illustrate bug fix
 
+ 1.1-2  fix bug ? on p. 16 of vignette
+        add version numbers to sec 1 of vignette
+
+ 1.1-3  fix date in DESCRIPTION
+

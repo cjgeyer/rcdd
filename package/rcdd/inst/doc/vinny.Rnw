@@ -20,6 +20,11 @@
 
 <<foo,include=FALSE,echo=FALSE>>=
 options(keep.source = TRUE, width = 65)
+baz <- library(help = "rcdd")
+baz <- baz$info[[1]]
+baz <- baz[grep("Version", baz)]
+baz <- sub("^Version: *", "", baz)
+bazzer <- paste(R.version$major, R.version$minor, sep = ".")
 @
 
 \section{The Name of the Game}
@@ -33,6 +38,12 @@ This library was written by Komei Fukuda and is available at
 \end{verbatim}
 Our \verb@rcdd@ package for R provides an interface to most
 of the functionality of the \verb@cddlib@ library.
+
+The version of R used to make this document is \Sexpr{bazzer}.  The version
+of the \texttt{rcdd} package used to make this document is \Sexpr{baz}.
+<<bazzer,include=FALSE,echo=FALSE>>=
+rm(baz, bazzer)
+@
 
 \section{Representations}
 
@@ -676,7 +687,7 @@ Eliminating redundant generators from a set of points gives the points
 that are the \emph{vertices} or \emph{extreme points} of the hull.
 <<vertex>>=
 foo <- cbind(0, cbind(1, x))
-out <- redundant(d2q(foo))
+out <- redundant(d2q(foo), representation = "V")
 nrow(out$output)
 all((out$new.position == 0) == (fred < 0))
 @
