@@ -1,0 +1,104 @@
+
+R version 2.7.2 (2008-08-25)
+Copyright (C) 2008 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+>  library(rcdd)
+> 
+>  A <- matrix(scan(), byrow = TRUE, nrow = 9)
+1:     0  1.000   -1    0    0    0
+7:     0  1.000   -1    0    0    0
+13:     0 -0.001    1    0    0    0
+19:     0 -0.001    0    1    0    0
+25:     0 -0.001    0    0    1    0
+31:     0 -0.001    0    0    0    1
+37:     1  1.000   -1   -1   -1   -1
+43:     1  0.300   -1   -1   -1    0
+49:     1  7.990   -1   -3   -5   -8
+55: 
+Read 54 items
+>  b <- scan()
+1:     0 0 0 0
+5: 
+Read 4 items
+>  out <- lpcdd(A, b)
+>  out
+$solution.type
+[1] "Inconsistent"
+
+$dual.direction
+[1]  0  0  4  2  0  0  8 -3 -1
+
+> 
+>  all(A[out$dual.direction < 0, 1] == 1)
+[1] TRUE
+> 
+>  fred <- rbind(out$dual.direction) %*% A
+>  fred <- as.numeric(fred)
+>  sally <- fred[2]
+>  fred <- fred[- c(1, 2)]
+>  all.equal(max(abs(fred)), 0)
+[1] TRUE
+>  
+>  sally >= 0
+[1] FALSE
+>  ### if FALSE proves the constraints cannot be satisfied
+> 
+> 
+>  Arat <- 1000 * A
+>  Arat <- round(Arat)
+>  Arat <- z2q(Arat, 0 * Arat + 1000)
+>  Arat
+      [,1] [,2]      [,3] [,4] [,5] [,6]
+ [1,] "0"  "1"       "-1" "0"  "0"  "0" 
+ [2,] "0"  "1"       "-1" "0"  "0"  "0" 
+ [3,] "0"  "-1/1000" "1"  "0"  "0"  "0" 
+ [4,] "0"  "-1/1000" "0"  "1"  "0"  "0" 
+ [5,] "0"  "-1/1000" "0"  "0"  "1"  "0" 
+ [6,] "0"  "-1/1000" "0"  "0"  "0"  "1" 
+ [7,] "1"  "1"       "-1" "-1" "-1" "-1"
+ [8,] "1"  "3/10"    "-1" "-1" "-1" "0" 
+ [9,] "1"  "799/100" "-1" "-3" "-5" "-8"
+> 
+>  brat <- d2q(b)
+>  brat
+[1] "0" "0" "0" "0"
+> 
+>  out.rat <- lpcdd(Arat, brat)
+>  out.rat
+$solution.type
+[1] "Inconsistent"
+
+$dual.direction
+[1] "0"  "0"  "4"  "2"  "0"  "0"  "8"  "-3" "-1"
+
+> 
+>  out$solution.type == out.rat$solution.type
+[1] TRUE
+>  all.equal(out$dual.direction, q2d(out.rat$dual.direction))
+[1] TRUE
+> 
+>  fred <- qmatmult(rbind(out.rat$dual.direction), Arat)
+>  sally <- fred[2]
+>  fred <- fred[- c(1, 2)]
+>  all(fred == "0")
+[1] TRUE
+>  
+>  qsign(sally) >= 0
+[1] FALSE
+>  ### if FALSE proves the constraints cannot be satisfied
+> 
+> 
