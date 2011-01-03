@@ -159,3 +159,6 @@
 
  1.1-3  fix date in DESCRIPTION
 
+ 1.1-4  fix thinkos in man pages ("columns" instead of "rows")
+        work around misfeature in R CMD check, checking
+            for unstated dependencies in tests

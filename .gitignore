@@ -1,0 +1,16 @@
+*.pdf
+*.dvi
+*.aux
+*.log
+*.o
+*.so
+*.tar.gz
+*.Rcheck
+*.Rout
+notes
+Save
+typescript
+autom4te.cache/
+configure
+config.status
+Makevars

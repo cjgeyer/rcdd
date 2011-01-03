@@ -20,7 +20,7 @@ or V-representation (convex hull of points and directions) of convex polytope.
   See \code{cddlibman.pdf} in the \code{doc} directory of this package,
   especially Sections 1 and 2.
 
-  Both representations are (in R) matrices, the first two rows are
+  Both representations are (in R) matrices, the first two columns are
   special.  Let \code{foo} be either an H-representation or
   a V-representation and
   \preformatted{

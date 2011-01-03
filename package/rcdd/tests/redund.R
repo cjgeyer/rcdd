@@ -3,14 +3,12 @@
 
  ##### H-representation #####
 
- hrep <- scan()
- 0  0  1  1  0
- 0  0 -1  0  0
- 0  0  0 -1  0
- 0  0  0  0 -1
- 0  0 -1 -1 -1
-
- hrep <- matrix(hrep, ncol = 5, byrow = TRUE)
+ hrep <- rbind(
+ c(0,  0,  1,  1,  0),
+ c(0,  0, -1,  0,  0),
+ c(0,  0,  0, -1,  0),
+ c(0,  0,  0,  0, -1),
+ c(0,  0, -1, -1, -1))
 
  redundant(d2q(hrep), representation = "H")
 
@@ -28,13 +26,11 @@
 
  ##### another V-representation #####
 
- hrep <- scan()
- 0  0  1  0  0
- 0  0  0  1  0
- 0  0  0  0  1
- 0  0 -1 -1 -1
-
- hrep <- matrix(hrep, ncol = 5, byrow = TRUE)
+ hrep <- rbind(
+ c(0,  0,  1,  0,  0),
+ c(0,  0,  0,  1,  0),
+ c(0,  0,  0,  0,  1),
+ c(0,  0, -1, -1, -1))
 
  redundant(d2q(hrep), representation = "V")
 
@@ -42,15 +38,13 @@
 
  ##### negative new position #####
 
- hrep <- scan()
- 1  0  1  0  0
- 1  0  0  1  0
- 1  0  0  0  1
- 1  0  0  1  0
- 1  0  0  0  1
- 1  0  0  0  1
-
- hrep <- matrix(hrep, ncol = 5, byrow = TRUE)
+ hrep <- rbind(
+ c(1, 0, 1, 0, 0),
+ c(1, 0, 0, 1, 0),
+ c(1, 0, 0, 0, 1),
+ c(1, 0, 0, 1, 0),
+ c(1, 0, 0, 0, 1),
+ c(1, 0, 0, 0, 1))
 
  redundant(hrep, representation = "V")
 
