@@ -93,6 +93,17 @@ or vice versa.
   for conversion back and forth between R floating point numbers and rationals
   and for arithmetic on GMP rationals.
 }
+\section{Warning}{
+  If you want correct answers, use rational arithmetic.  If you do not,
+  this function may (1) produce approximately correct answers, (2) fail with
+  an error, (3) give answers that are nowhere near correct with no error or
+  warning, or (4) crash R losing all work done to that point.  In large
+  simulations (1) is most frequent, (2) occurs roughly one time in a thousand,
+  (3) occurs roughly one time in ten thousand, and (4) has only occured once
+  and only with the \code{\link{redundant}} function.  So the R floating point
+  arithmetic version does mostly work, but you cannot trust its results unless
+  you can check them independently.
+}
 \seealso{\code{\link{ArithmeticGMP}}, \code{\link{ConvertGMP}},
   \code{\link{validcdd}}, \code{\link{makeH}}}
 \examples{

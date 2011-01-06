@@ -47,7 +47,7 @@ qinv(x)
   \code{qmatmult} is matrix multiplication like \code{\%*\%} for ordinary
   numeric; both arguments must be matrices.
   \code{qneg} is vectorizing negation like unary minus for ordinary numeric.
-  \code{qabs} is vectorizing negation like \code{abs} for ordinary numeric.
+  \code{qabs} is vectorizing absolute value like \code{abs} for ordinary numeric.
   \code{qinv} is vectorizing inversion like \code{1 / x} for ordinary numeric.
 }
 \value{

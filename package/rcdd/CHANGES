@@ -162,3 +162,6 @@
  1.1-4  fix thinkos in man pages ("columns" instead of "rows")
         work around misfeature in R CMD check, checking
             for unstated dependencies in tests
+        add warning "use rational arithmetic" to help for
+            computational geometry functions and print brief
+            warning when library is attached

@@ -1,7 +1,8 @@
 
-R version 2.6.2 (2008-02-08)
-Copyright (C) 2008 The R Foundation for Statistical Computing
+R version 2.12.1 (2010-12-16)
+Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -17,6 +18,9 @@ Type 'q()' to quit R.
 
 > 
 >  library(rcdd)
+If you want correct answers, use rational arithmetic.
+See the Warnings sections added to help pages for
+    functions that do computational geometry.
 > 
 >  set.seed(42)
 > 

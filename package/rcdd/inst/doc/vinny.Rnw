@@ -324,6 +324,40 @@ point stuff that is wrong.
 qmq(outq$output, out$output)
 @
 
+\subsection{Warning} \label{sec:warn}
+
+The discussion in the preceding section presents rational arithmetic as
+a way to get nicer answers, but its main purpose is to get correct answers.
+In version~1.1-4 of the package the following warning was added to help
+pages for functions that do computational geometry (including \texttt{scdd}).
+\begin{quotation}
+  If you want correct answers, use rational arithmetic.  If you do not,
+  this function may (1) produce approximately correct answers, (2) fail with
+  an error, (3) give answers that are nowhere near correct with no error or
+  warning, or (4) crash R losing all work done to that point.  In large
+  simulations (1) is most frequent, (2) occurs roughly one time in a thousand,
+  (3) occurs roughly one time in ten thousand, and (4) has only occured once
+  and only with the \texttt{redundant} function.  So the R floating point
+  arithmetic version does mostly work, but you cannot trust its results unless
+  you can check them independently.
+\end{quotation}
+Using the computer's default floating point (inexact) arithmetic is more
+convenient, and usually --- but not always --- works.  In this
+the \texttt{rcdd} package is no different from any other R package.
+The only difference is that some aspects of the objects (convex polyhedra)
+are discrete (how many generators), so a small error in arithmetic may cause
+a discrete error (integer sized) in the result.  But this is no different
+from many other calculations in statistics.  For example, in linear regression
+we need to deal with collinearity, and whether a model matrix is not full rank
+is an all-or-nothing proposition.  The \texttt{lm} function uses QR
+decomposition with the default computer arithmetic to detect collinearity.
+This can produce incorrect results.  Same issue as with \texttt{rcdd}.
+
+To repeat, if you want correct (provably correct) answers, and you don't want
+to deal with cases (2), (3), and (4) in the warning, you must use rational
+arithmetic, despite its inconvenience.  And it is merely inconvenient.
+You can use it, whatever you want to do.
+
 \subsection{Convex Hull} \label{sec:conv1}
 
 Let's try to find convex hulls in \verb@d@ dimensions.
@@ -384,7 +418,7 @@ There are \Sexpr{sum(sally < 0)} points (rows of $y$) in the interior of the
 hull, \Sexpr{sum(sally == 0)} points on the boundary,
 and \Sexpr{sum(sally > 0)} points in the exterior.
 
-\subsection{Linear Programming}
+\section{Linear Programming}
 
 Version 0.8 of the \texttt{rcdd} package adds linear programming.
 One might think this is not particularly interesting, because there
@@ -395,7 +429,7 @@ and the others cannot.
 Here are some simple examples taken from the help page for the \text{lpcdd}
 function.
 
-\subsubsection{A Problem Having a Solution}
+\subsection{A Problem Having a Solution}
 
 <<try5a>>=
 hrep <- rbind(c("0", "0", "1", "1", "0", "0"),
@@ -489,7 +523,7 @@ $$
 This is what is calculated above (recall that \verb@out$dual.solution@ is $- u$
 and \verb@hrep[ , -c(1, 2)]@ is $- A$).
 
-\subsubsection{A Problem with Empty Feasible Region}
+\subsection{A Problem with Empty Feasible Region}
 
 <<try5b>>=
 hrep <- rbind(c("0", "0", "1", "0"),
@@ -513,7 +547,7 @@ the sum of the three inequalities
 is $2 \le 0$, which is false (hence no point can satisfy the
 inequalities and the feasible region is empty).
 
-\subsubsection{A Problem with Unbounded Objective Function}
+\subsection{A Problem with Unbounded Objective Function}
 
 <<try5c>>=
 hrep <- rbind(c("0", "0", "1", "0"),
