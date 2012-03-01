@@ -165,3 +165,6 @@
         add warning "use rational arithmetic" to help for
             computational geometry functions and print brief
             warning when library is attached
+
+ 1.1-5  fix makeH to work with rational arithmetic
+
