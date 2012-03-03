@@ -115,7 +115,7 @@ SEXP redundant(SEXP m, SEXP h)
     dd_MatrixCanonicalize(&mf, &impl_linset, &redset, &newpos, &err);
 
     if (err != dd_NoError) {
-        dd_WriteErrorMessages(stdout, err);
+        rr_WriteErrorMessages(err);
         dd_FreeMatrix(mf);
         dd_clear(value);
         dd_free_global_constants();

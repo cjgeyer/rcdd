@@ -22,7 +22,7 @@
 #include "setoper.h"
 #include "cdd.h"
 #include <Rinternals.h>
-#include "mycddio.h"
+#include "mycddio_f.h"
 #include <string.h>
 #include "rcdd.h"
 #ifdef WOOF
@@ -107,7 +107,7 @@ SEXP redundant_f(SEXP m, SEXP h)
     ddf_MatrixCanonicalize(&mf, &impl_linset, &redset, &newpos, &err);
 
     if (err != ddf_NoError) {
-        ddf_WriteErrorMessages(stdout, err);
+        rrf_WriteErrorMessages(err);
         ddf_FreeMatrix(mf);
         ddf_clear(value);
         ddf_free_global_constants();
@@ -167,13 +167,13 @@ SEXP redundant_f(SEXP m, SEXP h)
 
     SEXP baz = NULL;
     if (impl_size > 0) {
-        PROTECT(baz = rr_set_fwrite(impl_linset));
+        PROTECT(baz = rrf_set_fwrite(impl_linset));
         nresult++;
     }
 
     SEXP qux = NULL;
     if (red_size > 0) {
-        PROTECT(qux = rr_set_fwrite(redset));
+        PROTECT(qux = rrf_set_fwrite(redset));
         nresult++;
     }
 

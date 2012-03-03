@@ -183,7 +183,7 @@ static SEXP FaceEnum(dd_MatrixPtr M)
                 fprintf(stderr, "err bogus, WTF????\n");
         }
 #endif /* MOO */
-        dd_WriteErrorMessages(stderr, err);
+        rr_WriteErrorMessages(err);
         UNPROTECT(3);
         return R_NilValue;
     }

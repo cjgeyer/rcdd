@@ -60,7 +60,7 @@
 
  .Call("all_intersect", sets, as.integer(pow2))
  
- all.intersect(sets)
+ allIntersect(sets)
 
  ##### unions #####
 
@@ -71,5 +71,5 @@
 
  .Call("all_union", sets, as.integer(pow2))
 
- all.union(sets)
+ allUnion(sets)
 

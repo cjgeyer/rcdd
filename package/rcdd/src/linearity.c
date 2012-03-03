@@ -106,7 +106,7 @@ SEXP impliedLinearity(SEXP m, SEXP h)
     dd_rowset out = dd_ImplicitLinearityRows(mf, &err);
 
     if (err != dd_NoError) {
-        dd_WriteErrorMessages(stdout, err);
+        rr_WriteErrorMessages(err);
         dd_FreeMatrix(mf);
         set_free(out);
         dd_clear(value);

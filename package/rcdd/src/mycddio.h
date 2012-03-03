@@ -33,6 +33,7 @@
 
 SEXP rr_WriteSetFamily(dd_SetFamilyPtr f);
 SEXP rr_set_fwrite(set_type set);
+void rr_WriteErrorMessages(dd_ErrorType Error);
 
 #endif /* RCDD_MYCDDIO_H */
 

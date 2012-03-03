@@ -22,7 +22,7 @@
 #include "setoper.h"
 #include "cdd.h"
 #include <Rinternals.h>
-#include "mycddio.h"
+#include "mycddio_f.h"
 #include <string.h>
 #ifdef WOOF
 #include <stdio.h>
@@ -112,7 +112,7 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     ddf_LPPtr lp = ddf_Matrix2LP(mf, &err);
 
     if (err != ddf_NoError) {
-        ddf_WriteErrorMessages(stderr, err);
+        rrf_WriteErrorMessages(err);
         ddf_FreeLPData(lp);
         ddf_FreeMatrix(mf);
         ddf_clear(value);
@@ -197,7 +197,7 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     ddf_LPSolve(lp, sol, &err); 
 
     if (err != ddf_NoError) {
-        ddf_WriteErrorMessages(stderr, err);
+        rrf_WriteErrorMessages(err);
         ddf_FreeLPData(lp);
         ddf_FreeMatrix(mf);
         ddf_clear(value);

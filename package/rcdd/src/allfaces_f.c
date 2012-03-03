@@ -22,7 +22,7 @@
 #include "setoper.h"
 #include "cdd.h"
 #include <Rinternals.h>
-#include "mycddio.h"
+#include "mycddio_f.h"
 #include <string.h>
 #ifdef MOO
 #include <stdio.h>
@@ -181,7 +181,7 @@ static SEXP FaceEnum(ddf_MatrixPtr M)
                 fprintf(stderr, "err bogus, WTF????\n");
         }
 #endif /* MOO */
-        ddf_WriteErrorMessages(stderr, err);
+        rrf_WriteErrorMessages(err);
         UNPROTECT(3);
         return R_NilValue;
     }
@@ -259,7 +259,7 @@ static ddf_ErrorType FaceEnumHelper(ddf_MatrixPtr M, ddf_rowset R, ddf_rowset S)
 
         SEXP mydim, myactive, myrip;
         PROTECT(mydim = ScalarInteger(dim));
-        PROTECT(myactive = rr_set_fwrite(M->linset));
+        PROTECT(myactive = rrf_set_fwrite(M->linset));
         int myd = (lps->d) - 2;
         PROTECT(myrip = allocVector(REALSXP, myd));
         for (int j = 1; j <= myd; j++) {

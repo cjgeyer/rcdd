@@ -163,7 +163,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     }
 
     if (err != dd_NoError) {
-        dd_WriteErrorMessages(stdout, err);
+        rr_WriteErrorMessages(err);
         dd_FreeMatrix(mf);
         dd_FreePolyhedra(poly);
         dd_clear(value);

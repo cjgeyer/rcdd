@@ -117,7 +117,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     dd_LPPtr lp = dd_Matrix2LP(mf, &err);
 
     if (err != dd_NoError) {
-        dd_WriteErrorMessages(stderr, err);
+        rr_WriteErrorMessages(err);
         dd_FreeLPData(lp);
         dd_FreeMatrix(mf);
         dd_clear(value);
@@ -202,7 +202,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     dd_LPSolve(lp, sol, &err); 
 
     if (err != dd_NoError) {
-        dd_WriteErrorMessages(stderr, err);
+        rr_WriteErrorMessages(err);
         dd_FreeLPData(lp);
         dd_FreeMatrix(mf);
         dd_clear(value);

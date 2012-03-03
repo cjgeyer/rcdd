@@ -102,7 +102,7 @@ SEXP impliedLinearity_f(SEXP m, SEXP h)
     ddf_rowset out = ddf_ImplicitLinearityRows(mf, &err);
 
     if (err != ddf_NoError) {
-        ddf_WriteErrorMessages(stdout, err);
+        rrf_WriteErrorMessages(err);
         ddf_FreeMatrix(mf);
         set_free(out);
         ddf_clear(value);

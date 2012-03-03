@@ -1,4 +1,4 @@
-all.intersect <- function(sets, pow2) {
+allIntersect <- function(sets, pow2) {
     if (! is.list(sets))
         stop("argument must be list")
     if (! all(sapply(sets, storage.mode) == "integer"))
