@@ -273,8 +273,13 @@ numbers and we bring this facility to \verb@rcdd@ as well.
 
 In order to use rational arithmetic, we need a rational number format.
 Adding a new numeric type to R would be a job of horrendous complexity,
-so we don't even try.  We just use the representation of the rational
-as a character string, e.~g., \verb@"3/4"@ or \verb@"-15/32"@.
+so we don't even try (this has actually been done in the \texttt{gmp} package
+but that package was written long after the \texttt{rcdd} package).
+We just use the representation of the rational
+as a character string, e.~g., \verb@"3/4"@ or \verb@"-15/32"@
+(perhaps some day there will be an \texttt{rcdd2} package that uses objects
+of type \texttt{bigq} from the \texttt{gmp} package, but the \texttt{rcdd}
+cannot).
 <<try3a>>=
 quuxq <- d2q(quux)
 print(quuxq)
@@ -297,8 +302,8 @@ q2d(quuxq)
 @
 
 But that was just a preliminary explanation.  The point is that \verb@scdd@
-uses rational representations like \verb@quuxq@ just as well as (better
-actually) inexact floating point representations like \verb@quux@.
+uses rational representations like \verb@quuxq@ just as well as (actually
+better than) inexact floating point representations like \verb@quux@.
 <<try3d>>=
 outq <- scdd(quuxq)
 print(outq)
@@ -455,9 +460,9 @@ qsum(qxq(a, out$primal.solution))
 Moreover, we can check the Kuhn-Tucker conditions for optimality,
 one statement of which follows.  For the problem
 \begin{align*}
-   \text{minimize} & \quad f(x)
+   \text{minimize } & \quad f(x)
    \\
-   \text{subject to} & \quad g(x) \le 0
+   \text{subject to } & \quad g(x) \le 0
 \end{align*}
 where $f$ is scalar-valued and $g$ is vector-valued (so $g$ represents
 a set of inequality constraints).  If there are equality constraints
@@ -511,7 +516,7 @@ qxq(foo, out$dual.solution)
 @
 Finally, we need to check that $\bar{x}$ minimizes the Lagrangian function,
 condition (i).  Since the objective function is affine, and the constraints
-are linear, this can only happen the Lagrangian is a constant function of $x$,
+are linear, this can only happen if the Lagrangian is a constant function of $x$,
 in which case its derivative is zero
 <<try5a-chk4>>=
 qpq(a, qmatmult(rbind(out$dual.solution), hrep[ , -c(1, 2)]))
@@ -612,9 +617,10 @@ satisfying
 \end{align*}
 We can do this by solving the following LP
 \begin{align*}
-    \text{minimize} & f(z_0, z) = z^T q - z_0
+    \text{minimize } & f(z_0, z) = z^T q - z_0
     \\
     \text{subject to } & z^T p_i - z_0 \le 0, \qquad i \in I
+    \\
                        & z^T q - z_0 \le 1
 \end{align*}
 (the last inequality being inserted to make the LP have

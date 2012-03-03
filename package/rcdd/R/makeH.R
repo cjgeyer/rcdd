@@ -68,6 +68,13 @@ makeH <- function(a1, b1, a2, b2, x = NULL) {
         }
     }
 
+    rational.output <-
+        ((! missing(a1)) && (is.character(a1) || is.character(b1))) ||
+        ((! missing(a2)) && (is.character(a2) || is.character(b2))) ||
+        ((! is.null(x)) && is.character(x))
+
+    if (! rational.output) {
+
     foo <- NULL
     if (! missing(a1))
         foo <- cbind(0, as.vector(b1), - a1)
@@ -75,6 +82,25 @@ makeH <- function(a1, b1, a2, b2, x = NULL) {
     bar <- NULL
     if (! missing(a2))
         bar <- cbind(1, as.vector(b2), - a2)
+
+    } else {
+
+        foo <- NULL
+        if (! missing(a1)) {
+            if (is.numeric(a1)) a1 <- d2q(a1)
+            if (is.numeric(b1)) b1 <- d2q(b1)
+            foo <- cbind(0, as.vector(b1), qneg(a1))
+        }
+        bar <- NULL
+        if (! missing(a2)) {
+            if (is.numeric(a2)) a2 <- d2q(a2)
+            if (is.numeric(b2)) b2 <- d2q(b2)
+            bar <- cbind(1, as.vector(b2), qneg(a2))
+        }
+        if (! is.null(x)) {
+            if (is.numeric(x)) x <- d2q(x)
+        }
+    }
 
     mcol <- NULL
     if (! is.null(x))

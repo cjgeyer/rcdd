@@ -172,4 +172,5 @@
             get rid of all printf that might actually print
         fixed bug in calling rr_* function from *_f function (should be
             and now is (rrf_* function)
+        minor changes to documentation and vignette
 

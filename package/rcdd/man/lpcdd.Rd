@@ -75,7 +75,7 @@ Solve linear program or explain why it has no solution.
   minus sign, a string of digits of any length (the numerator),
   a slash, and another string of digits of any length (the denominator).
   The denominator must be positive.  If the denominator is one, the
-  slash and the denominator may be omitted.  The \code{cdd} package
+  slash and the denominator may be omitted.  This package
   provides several functions (see \link{ConvertGMP} and \link{ArithmeticGMP})
   for conversion back and forth between R floating point numbers and rationals
   and for arithmetic on GMP rationals.

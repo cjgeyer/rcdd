@@ -34,4 +34,14 @@ at most one of each class of duplicates is declared maximal.
   Note: \code{allIntersect} and \code{allUnion} run over the pairs
   in the same order so they can be matched up.
 }
+\section{Note}{The functions \code{allIntersect} and \code{allUnion}
+were called \code{all.intersect} and \code{all.union} in previous
+versions of this package.  The names were changed because the
+\code{\link{all}} function was made generic and these function are
+not methods of that one.  These functions were originally intended to
+be used to find the faces of a convex set using the output of
+\code{\link{scdd}} but now the \code{\link{allfaces}} function does a better
+job and does it much more efficiently.  Hence these functions have no known
+use, but have not been deleted for reasons of backwards compatibility.
+}
 \keyword{misc}
