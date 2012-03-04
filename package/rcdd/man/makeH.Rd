@@ -53,7 +53,7 @@ see \code{\link{scdd}} for description of valid representations.
   converted to GMP rationals (character) and the output is GMP rational.
 }
 \value{
-  a cdd object that can be handed to \code{\link{scdd}}.
+  a valid H-representation that can be handed to \code{\link{scdd}}.
 }
 \seealso{\code{\link{scdd}}, \code{\link{validcdd}}}
 \examples{
