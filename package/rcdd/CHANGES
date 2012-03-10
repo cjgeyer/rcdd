@@ -174,3 +174,6 @@
             and now is (rrf_* function)
         minor changes to documentation and vignette
         add function makeV to match makeH
+
+ 1.1-6  fix configure.ac to comport with instructions in "Writing R Extensions"
+
