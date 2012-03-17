@@ -92,16 +92,20 @@ void dd_DDMain(dd_ConePtr cone)
     cone->CompStatus=dd_AllFound;
     goto _L99;
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (locallog) {
      fprintf(stderr,"(Initially added rows ) = ");
      set_fwrite(stderr,cone->InitialHalfspaces);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   while (cone->Iteration <= cone->m) {
     dd_SelectNextHalfspace(cone, cone->WeaklyAddedHalfspaces, &hh);
     if (set_member(hh,cone->NonequalitySet)){  /* Skip the row hh */
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (dd_debug) {
         fprintf(stderr,"*The row # %3ld should be inactive and thus skipped.\n", hh);
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       set_addelem(cone->WeaklyAddedHalfspaces, hh);
     } else {
       if (cone->PreOrderedRun)
@@ -120,11 +124,13 @@ void dd_DDMain(dd_ConePtr cone)
       cone->OrderVector[itemp]=otemp;
         /* store the dynamic ordering in ordervec */
     }
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (locallog){
       fprintf(stderr,"(Iter, Row, #Total, #Curr, #Feas)= %5ld %5ld %9ld %6ld %6ld\n",
         cone->Iteration, hh, cone->TotalRayCount, cone->RayCount,
         cone->FeasibleRayCount);
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     if (cone->CompStatus==dd_AllFound||cone->CompStatus==dd_RegionEmpty) {
       set_addelem(cone->AddedHalfspaces, hh);
       goto _L99;
@@ -184,16 +190,20 @@ void dd_InitialDataSetup(dd_ConePtr cone)
     dd_Normalize(cone->d, Vector2);
     dd_ZeroIndexSet(cone->m, cone->d, cone->A, Vector1, ZSet);
     if (set_subset(cone->EqualitySet, ZSet)){
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (dd_debug) {
         fprintf(stderr,"add an initial ray with zero set:");
         set_fwrite(stderr,ZSet);
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       dd_AddRay(cone, Vector1);
       if (cone->InitialRayIndex[r]==0) {
         dd_AddRay(cone, Vector2);
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (dd_debug) {
           fprintf(stderr,"and add its negative also.\n");
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       }
     }
   }
@@ -326,6 +336,7 @@ dd_boolean dd_DDInputAppend(dd_PolyhedraPtr *poly, dd_MatrixPtr M,
   return found;
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 dd_boolean dd_DDFile2File(char *ifile, char *ofile, dd_ErrorType *err)
 {
   /* The representation conversion from an input file to an outfile.  */
@@ -388,5 +399,6 @@ _L99: ;
   if (writing!=NULL) fclose(writing);
   return found;
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 /* end of cddlib.c */

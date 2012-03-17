@@ -164,7 +164,9 @@ dd_LPPtr dd_Matrix2LP(dd_MatrixPtr M, dd_ErrorType *err)
      /* We represent each equation by two inequalities.
         This is not the best way but makes the code simple. */
   d=M->colsize;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) fprintf(stderr,"number of equalities = %ld\n", linc);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   lp=dd_CreateLPData(M->objective, M->numbtype, m, d);
   lp->Homogeneous = dd_TRUE;
@@ -179,7 +181,9 @@ dd_LPPtr dd_Matrix2LP(dd_MatrixPtr M, dd_ErrorType *err)
       for (j = 1; j <= M->colsize; j++) {
         dd_neg(lp->A[irev-1][j-1],M->matrix[i-1][j-1]);
       }  /*of j*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"equality row %ld generates the reverse row %ld.\n",i,irev);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     for (j = 1; j <= M->colsize; j++) {
       dd_set(lp->A[i-1][j-1],M->matrix[i-1][j-1]);
@@ -260,7 +264,9 @@ dd_LPPtr dd_Matrix2Feasibility2(dd_MatrixPtr M, dd_rowset R, dd_rowset S, dd_Err
      /* We represent each equation by two inequalities.
         This is not the best way but makes the code simple. */
   d=M->colsize+1;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) fprintf(stderr,"number of equalities = %ld\n", linc);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   lp=dd_CreateLPData(dd_LPmax, M->numbtype, m, d);
   lp->Homogeneous = dd_TRUE;
@@ -275,7 +281,9 @@ dd_LPPtr dd_Matrix2Feasibility2(dd_MatrixPtr M, dd_rowset R, dd_rowset S, dd_Err
       for (j = 1; j <= M->colsize; j++) {
         dd_neg(lp->A[irev-1][j-1],M->matrix[i-1][j-1]);
       }  /*of j*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"equality row %ld generates the reverse row %ld.\n",i,irev);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     } else if (set_member(i, S)) {
 	  dd_set(lp->A[i-1][M->colsize],dd_minusone);
     }
@@ -399,6 +407,7 @@ void dd_SetNumberType(char *line,dd_NumberType *number,dd_ErrorType *Error)
 }
 
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void dd_WriteTableau(FILE *f,dd_rowrange m_size,dd_colrange d_size,dd_Amatrix A,dd_Bmatrix T,
   dd_colindex nbindex,dd_rowindex bflag)
 /* Write the tableau  A.T   */
@@ -491,6 +500,7 @@ void dd_WriteSignTableau2(FILE *f,dd_rowrange m_size,dd_colrange d_size,dd_Amatr
   fprintf(f,"end\n");
   dd_clear(x);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 void dd_GetRedundancyInformation(dd_rowrange m_size,dd_colrange d_size,dd_Amatrix A,dd_Bmatrix T,
@@ -516,7 +526,9 @@ void dd_GetRedundancyInformation(dd_rowrange m_size,dd_colrange d_size,dd_Amatri
       set_addelem(redset,i);
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) fprintf(stderr,"\ndd_GetRedundancyInformation: %ld redundant rows over %ld\n",numbred, m_size);  
+#endif /* R_HAS_JUMPED_THE_SHARK */
   dd_clear(x);
 }
 
@@ -612,9 +624,11 @@ void dd_SelectDualSimplexPivot(dd_rowrange m_size,dd_colrange d_size,
           if (!lexicopivot || set_card(tieset)==1){
             colselected=dd_TRUE; *selected=dd_TRUE;
           } else { /* lexicographic rule with respect to the given reference cobasis.  */
+#ifdef R_HAS_JUMPED_THE_SHARK
             if (localdebug) {printf("Tie occurred at:"); set_write(tieset); printf("\n");
               dd_WriteTableau(stderr,m_size,d_size,A,T,nbindex,bflag);
             }
+#endif /* R_HAS_JUMPED_THE_SHARK */
             *s=0;
             k=2; /* k runs through the column indices except RHS. */
             do {
@@ -660,10 +674,12 @@ void dd_SelectDualSimplexPivot(dd_rowrange m_size,dd_colrange d_size,
       }
     } /* end of while */
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
      if (Phase1) fprintf(stderr,"Phase 1 : select %ld,%ld\n",*r,*s);
      else fprintf(stderr,"Phase 2 : select %ld,%ld\n",*r,*s);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   dd_clear(val); dd_clear(valn); dd_clear(minval); dd_clear(rat); dd_clear(minrat);
 }
 
@@ -712,7 +728,9 @@ void dd_SelectPivot2(dd_rowrange m_size,dd_colrange d_size,dd_Amatrix A,dd_Bmatr
     rtemp=0; i=1;
     while (i<=m_size && rtemp==0) {  /* equalityset vars have highest priorities */
       if (set_member(i,equalityset) && !set_member(i,rowexcluded)){
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) fprintf(stderr,"marked set %ld chosen as a candidate\n",i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         rtemp=i;
       }
       i++;
@@ -806,11 +824,13 @@ void dd_GaussianColumnPivot2(dd_rowrange m_size,dd_colrange d_size,
   if (entering>0) bflag[entering]=-1;
      /* original variables have negative index and should not affect the row index */
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"dd_GaussianColumnPivot2\n");
     fprintf(stderr," pivot: (leaving, entering) = (%ld, %ld)\n", r,entering);
     fprintf(stderr, " bflag[%ld] is set to %ld\n", r, s);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 }
 
 
@@ -1123,10 +1143,12 @@ void dd_FindLPBasis2(dd_rowrange m_size,dd_colrange d_size,
       set_addelem(ColSelected,s);
 
       dd_GaussianColumnPivot2(m_size,d_size,A,T,nbindex,bflag,r,s);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug && m_size <=10){
         dd_WriteBmatrix(stderr,d_size,T);
         dd_WriteTableau(stderr,m_size,d_size,A,T,nbindex,bflag);
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       pivots_p0++;
       rank++;
     } else{
@@ -1140,12 +1162,14 @@ void dd_FindLPBasis2(dd_rowrange m_size,dd_colrange d_size,
         dd_SelectPivot2(m_size,d_size,A,T,dd_MinIndex,OV,equalityset, m_size,RowSelected,ColSelected,&r,&s,&chosen);
         if (chosen) *found=dd_FALSE;  /* not supposed to be independent */
         else *found=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug){
           printf("Try to check the dependent cols:");
           set_write(DependentCols);
           if (chosen) printf("They are not dependent.  Can still pivot on (%ld, %ld)\n",r, s);
           else printf("They are indeed dependent.\n");
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       } else {
         *found=dd_TRUE;
      }   
@@ -1232,6 +1256,7 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
       }
     }
     
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug){
       fprintf(stderr,"\ndd_FindDualFeasibleBasis: curruent basis is not dual feasible.\n");
       fprintf(stderr,"because of the column %ld assoc. with var %ld   dual cost =",
@@ -1244,6 +1269,7 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
         }
       }
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     
     ms=0; 
      /* Ratio Test: ms will be now the index of column which has the largest reduced cost 
@@ -1254,7 +1280,9 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
         if (dd_Nonnegative(axvalue)) {
           *err=dd_NumericallyInconsistent; 
            /* This should not happen as they are set negative above.  Quit the phase I.*/
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"dd_FindDualFeasibleBasis: Numerical Inconsistency detected.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
           goto _L99;
         }
         dd_neg(axvalue,axvalue);
@@ -1268,19 +1296,24 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
 
     if (ms==0) {
       *err=dd_NumericallyInconsistent; /* This should not happen. Quit the phase I.*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"dd_FindDualFeasibleBasis: Numerical Inconsistency detected.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
       goto _L99;
     }
 
     /* Pivot on (local_m_size,ms) so that the dual basic solution becomes feasible */
     dd_GaussianColumnPivot2(local_m_size,d_size,A,T,nbindex,bflag,local_m_size,ms);
     pivots_p1=pivots_p1+1;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("\ndd_FindDualFeasibleBasis: Pivot on %ld %ld.\n",local_m_size,ms);
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   for (j=1; j<=d_size; j++) nbindex_ref[j]=nbindex[j];
      /* set the reference basis to be the current feasible basis. */
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     fprintf(stderr, "Store the current feasible basis:");
     for (j=1; j<=d_size; j++) fprintf(stderr, " %ld", nbindex_ref[j]);
@@ -1288,13 +1321,16 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
     if (m_size <=100 && d_size <=30)
       dd_WriteSignTableau2(stdout,m_size+1,d_size,A,T,nbindex_ref,nbindex,bflag);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
     phase1=dd_TRUE; stop=dd_FALSE;
     do {   /* Dual Simplex Phase I */
       chosen=dd_FALSE; LPSphase1=dd_LPSundecided;
       if (pivots_p1>maxpivots) {
         *err=dd_LPCycling;
+#ifdef R_HAS_JUMPED_THE_SHARK
         fprintf(stderr,"max number %ld of pivots performed in Phase I. Switch to the anticycling phase.\n", maxpivots);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         goto _L99;  /* failure due to max no. of pivots performed */
       }
       dd_SelectDualSimplexPivot(local_m_size,d_size,phase1,A,T,OV,nbindex_ref,nbindex,bflag,
@@ -1310,6 +1346,7 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
         if (dd_Negative(x)){
           *err=dd_NoError; *lps=dd_DualInconsistent;  *s=ms;
         }
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) {
           fprintf(stderr,"\ndd_FindDualFeasibleBasis: the auxiliary variable was forced to enter the basis (# pivots = %ld).\n",pivots_p1);
           fprintf(stderr," -- objrow %ld, ms %ld entry: ",objrow,ms);
@@ -1320,6 +1357,7 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
             fprintf(stderr,"->The basis is feasible. Go to phase II.\n");
           }
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
         dd_init(minval);
         r_val=0;
@@ -1337,34 +1375,42 @@ void dd_FindDualFeasibleBasis(dd_rowrange m_size,dd_colrange d_size,
         
         if (r_val==0) {
           *err=dd_NumericallyInconsistent; /* This should not happen. Quit the phase I.*/
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"dd_FindDualFeasibleBasis: Numerical Inconsistency detected (r_val is 0).\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
           goto _L99;
         }
 
         dd_GaussianColumnPivot2(local_m_size,d_size,A,T,nbindex,bflag,r_val,ms);
         pivots_p1=pivots_p1+1;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) {
           printf("\ndd_FindDualFeasibleBasis: make the %ld-th pivot on %ld  %ld to force the auxiliary variable to enter the basis.\n",pivots_p1,r_val,ms);
           if (m_size <=100 && d_size <=30)
             dd_WriteSignTableau2(stdout,m_size+1,d_size,A,T,nbindex_ref,nbindex,bflag);
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
         stop=dd_TRUE;
 
       } else {
         dd_GaussianColumnPivot2(local_m_size,d_size,A,T,nbindex,bflag,r_val,s_val);  
         pivots_p1=pivots_p1+1;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) {
           printf("\ndd_FindDualFeasibleBasis: make a %ld-th pivot on %ld  %ld\n",pivots_p1,r_val,s_val);
           if (m_size <=100 && d_size <=30)
             dd_WriteSignTableau2(stdout,local_m_size,d_size,A,T,nbindex_ref,nbindex,bflag);
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
         if (bflag[local_m_size]<0) {
           stop=dd_TRUE; 
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) 
             fprintf(stderr,"\nDualSimplex Phase I: the auxiliary variable entered the basis (# pivots = %ld).\nGo to phase II\n",pivots_p1);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         }
       }
     } while(!stop);
@@ -1464,6 +1510,7 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
 
   for (j=1; j<=lp->d; j++) nbindex_ref[j]=lp->nbindex[j];
      /* set the reference basis to be the current feasible basis. */
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     fprintf(stderr, "dd_DualSimplexMaximize: Store the current feasible basis:");
     for (j=1; j<=lp->d; j++) fprintf(stderr, " %ld", nbindex_ref[j]);
@@ -1471,9 +1518,12 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
     if (lp->m <=100 && lp->d <=30)
       dd_WriteSignTableau2(stdout,lp->m+1,lp->d,lp->A,lp->B,nbindex_ref,lp->nbindex,bflag); 
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   if (*err==dd_LPCycling || *err==dd_NumericallyInconsistent){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr, "Phase I failed and thus switch to the Criss-Cross method\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     dd_CrissCrossMaximize(lp,err);
     return;
   }
@@ -1501,13 +1551,16 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
         redpercent=100*(double)set_card(lp->redset_extra)/(double)lp->m;
         redgain=redpercent-redpercent_prev;
         redpercent_prev=redpercent;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug1){
           fprintf(stderr,"\ndd_DualSimplexMaximize: Phase II pivot %ld on (%ld, %ld).\n",pivots_ds,r,s);
           fprintf(stderr,"  redundancy %f percent: redset size = %ld\n",redpercent,set_card(lp->redset_extra));
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       }
     }
     if (!chosen && lp->LPS==dd_LPSundecided) {  
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug1){
          fprintf(stderr,"Warning: an emergency CC pivot in Phase II is performed\n");
          /* In principle this should not be executed because we already have dual feasibility
@@ -1519,6 +1572,7 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
           dd_WriteSignTableau2(stdout,lp->m,lp->d,lp->A,lp->B,nbindex_ref,lp->nbindex,bflag);
       }
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 #if !defined GMPRATIONAL
       if (pivots_pc>maxccpivots) {
@@ -1534,10 +1588,12 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
     }
     if (chosen) {
       dd_GaussianColumnPivot2(lp->m,lp->d,lp->A,lp->B,lp->nbindex,bflag,r,s);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug && lp->m <=100 && lp->d <=30){
           fprintf(stderr,"\ndd_DualSimplexMaximize: The current dictionary.\n");
           dd_WriteSignTableau2(stdout,lp->m,lp->d,lp->A,lp->B,nbindex_ref,lp->nbindex,bflag);
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       switch (lp->LPS){
         case dd_Inconsistent: lp->re=r;
@@ -1686,7 +1742,9 @@ the LP.
   int localdebug=dd_FALSE;
   
   dd_init(x); dd_init(sw);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) fprintf(stderr,"SetSolutions:\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   switch (LPS){
   case dd_Optimal:
     for (j=1;j<=d_size; j++) {
@@ -1694,7 +1752,9 @@ the LP.
       dd_TableauEntry(&x,m_size,d_size,A,T,objrow,j);
       dd_neg(dsol[j-1],x);
       dd_TableauEntry(optvalue,m_size,d_size,A,T,objrow,rhscol);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {fprintf(stderr,"dsol[%ld]= ",nbindex[j]); dd_WriteNumber(stderr, dsol[j-1]); }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     for (i=1; i<=m_size; i++) {
       if (bflag[i]==-1) {  /* i is a basic variable */
@@ -1705,28 +1765,36 @@ the LP.
 
     break;
   case dd_Inconsistent:
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"SetSolutions: LP is inconsistent.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     for (j=1;j<=d_size; j++) {
       dd_set(sol[j-1],T[j-1][rhscol-1]);
       dd_TableauEntry(&x,m_size,d_size,A,T,re,j);
       dd_neg(dsol[j-1],x);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {fprintf(stderr,"dsol[%ld]=",nbindex[j]); 
 	    dd_WriteNumber(stderr,dsol[j-1]);
 		fprintf(stderr,"\n");
 	  }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     break;
 	
   case dd_DualInconsistent:
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) printf( "SetSolutions: LP is dual inconsistent.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     for (j=1;j<=d_size; j++) {
       dd_set(sol[j-1],T[j-1][se-1]);
       dd_TableauEntry(&x,m_size,d_size,A,T,objrow,j);
       dd_neg(dsol[j-1],x);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {fprintf(stderr,"dsol[%ld]=",nbindex[j]);
 	    dd_WriteNumber(stderr,dsol[j-1]);
 		fprintf(stderr,"\n");
 	  }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
 	break;
 
@@ -1738,9 +1806,13 @@ the LP.
       dd_mul(sol[j-1],sw,T[j-1][se-1]);
       dd_TableauEntry(&x,m_size,d_size,A,T,objrow,j);
       dd_neg(dsol[j-1],x);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {fprintf(stderr,"dsol[%ld]= ",nbindex[j]);dd_WriteNumber(stderr,dsol[j-1]);}
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"SetSolutions: LP is dual inconsistent.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     break;
 
   default:break;
@@ -1761,11 +1833,15 @@ void dd_RandomPermutation2(dd_rowindex OV,long t,unsigned int seed)
     u=r/rand_max;
     xk=(double)(j*u +1);
     k=(long)xk;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"u=%g, k=%ld, r=%g, randmax= %g\n",u,k,r,rand_max);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     ovj=OV[j];
     OV[j]=OV[k];
     OV[k]=ovj;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"row %ld is exchanged with %ld\n",j,k); 
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
 }
 
@@ -1845,7 +1921,9 @@ ddf_LPPtr dd_LPgmp2LPf(dd_LPPtr lp)
   double val;
   dd_boolean localdebug=dd_FALSE;
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) fprintf(stderr,"Converting a GMP-LP to a float-LP.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   lpf=ddf_CreateLPData(Obj2Obj(lp->objective), ddf_Real, lp->m, lp->d);
   lpf->Homogeneous = lp->Homogeneous;
@@ -1909,10 +1987,14 @@ When LP is dual-inconsistent then *se returns the evidence column.
         dd_BasisStatus(lpf,lp, &LPScorrect);    /* Check the basis. */
 	  } else {LPScorrect=dd_FALSE;}
       if (!LPScorrect) {
+#ifdef R_HAS_JUMPED_THE_SHARK
          if (localdebug) printf("BasisStatus: the current basis is NOT verified with GMP. Rerun with GMP.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
          dd_CrissCrossSolve(lp,err);  /* Rerun with GMP if fails. */
       } else {
+#ifdef R_HAS_JUMPED_THE_SHARK
          if (localdebug) printf("BasisStatus: the current basis is verified with GMP. The LP Solved.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
       }
       break;
     case dd_DualSimplex:
@@ -1921,16 +2003,22 @@ When LP is dual-inconsistent then *se returns the evidence column.
         dd_BasisStatus(lpf,lp, &LPScorrect);    /* Check the basis. */
 	  } else {LPScorrect=dd_FALSE;}
       if (!LPScorrect){
+#ifdef R_HAS_JUMPED_THE_SHARK
          if (localdebug) printf("BasisStatus: the current basis is NOT verified with GMP. Rerun with GMP.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
          dd_DualSimplexSolve(lp,err);  /* Rerun with GMP if fails. */
+#ifdef R_HAS_JUMPED_THE_SHARK
          if (localdebug){
             printf("*total number pivots = %ld (ph0 = %ld, ph1 = %ld, ph2 = %ld, ph3 = %ld, ph4 = %ld)\n",
                lp->total_pivots,lp->pivots[0],lp->pivots[1],lp->pivots[2],lp->pivots[3],lp->pivots[4]);
             ddf_WriteLPResult(stdout, lpf, errf);
             dd_WriteLP(stdout, lp);
          }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       } else {
+#ifdef R_HAS_JUMPED_THE_SHARK
          if (localdebug) printf("BasisStatus: the current basis is verified with GMP. The LP Solved.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
       }
       break;
   }
@@ -2015,7 +2103,9 @@ dd_LPPtr dd_MakeLPforInteriorFinding(dd_LPPtr lp)
       dd_set(bmax,lp->A[i-1][lp->rhscol-1]);
   }
   dd_mul(bceil,bm,bmax);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {fprintf(stderr,"bceil is set to "); dd_WriteNumber(stderr, bceil);}
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   for (i=1; i <= lp->m; i++) {
     for (j=1; j <= lp->d; j++) {
@@ -2037,14 +2127,17 @@ dd_LPPtr dd_MakeLPforInteriorFinding(dd_LPPtr lp)
   }
   dd_set(lpnew->A[m-1][d-1],dd_one);    /* new obj row with (0,...,0,1) */
  
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) dd_WriteAmatrix(stderr, lp->A, lp->m, lp->d);
   if (localdebug) dd_WriteAmatrix(stderr, lpnew->A, lpnew->m, lpnew->d);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   dd_clear(bm); dd_clear(bmax); dd_clear(bceil);
 
   return lpnew;
 }
 
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void dd_WriteLPResult(FILE *f,dd_LPPtr lp,dd_ErrorType err)
 {
   long j;
@@ -2148,6 +2241,7 @@ void dd_WriteLPResult(FILE *f,dd_LPPtr lp,dd_ErrorType err)
   dd_WriteLPTimes(f, lp);
 _L99:;
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 dd_LPPtr dd_CreateLP_H_ImplicitLinearity(dd_MatrixPtr M)
 {
@@ -2191,10 +2285,12 @@ dd_LPPtr dd_CreateLP_H_ImplicitLinearity(dd_MatrixPtr M)
   dd_set(lp->A[m-1][d-1],dd_one);
       /* objective is to maximize z.  */
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"dd_CreateLP_H_ImplicitLinearity: an new lp is\n");
     dd_WriteLP(stderr,lp);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   return lp;
 }
@@ -2231,7 +2327,9 @@ dd_LPPtr dd_CreateLP_V_ImplicitLinearity(dd_MatrixPtr M)
       for (j = 2; j <= (M->colsize)+1; j++) {
         dd_neg(lp->A[irev-1][j-1],M->matrix[i-1][j-2]);
       }  /*of j*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"equality row %ld generates the reverse row %ld.\n",i,irev);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       dd_set(lp->A[i-1][d-1],dd_minusone);  /* b_I x_0 + A_I x - 1 z >= 0 (z=x_d) */
     }
@@ -2244,10 +2342,12 @@ dd_LPPtr dd_CreateLP_V_ImplicitLinearity(dd_MatrixPtr M)
   dd_set(lp->A[m-1][d-1],dd_one);
       /* objective is to maximize z.  */
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"dd_CreateLP_V_ImplicitLinearity: an new lp is\n");
     dd_WriteLP(stderr,lp);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   return lp;
 }
@@ -2281,7 +2381,9 @@ dd_LPPtr dd_CreateLP_H_Redundancy(dd_MatrixPtr M, dd_rowrange itest)
       for (j = 1; j <= M->colsize; j++) {
         dd_neg(lp->A[irev-1][j-1],M->matrix[i-1][j-1]);
       }  /*of j*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"equality row %ld generates the reverse row %ld.\n",i,irev);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     for (j = 1; j <= M->colsize; j++) {
       dd_set(lp->A[i-1][j-1],M->matrix[i-1][j-1]);
@@ -2334,7 +2436,9 @@ dd_LPPtr dd_CreateLP_V_Redundancy(dd_MatrixPtr M, dd_rowrange itest)
       for (j = 2; j <= (M->colsize)+1; j++) {
         dd_neg(lp->A[irev-1][j-1],M->matrix[i-1][j-2]);
       }  /*of j*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"equality row %ld generates the reverse row %ld.\n",i,irev);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     for (j = 2; j <= (M->colsize)+1; j++) {
       dd_set(lp->A[i-1][j-1],M->matrix[i-1][j-2]);
@@ -2346,7 +2450,9 @@ dd_LPPtr dd_CreateLP_V_Redundancy(dd_MatrixPtr M, dd_rowrange itest)
   }  /*of j*/
   dd_set(lp->A[m-1][0],dd_purezero);   /* the constant term for the objective is zero */
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) dd_WriteLP(stdout, lp);
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   return lp;
 }
@@ -2402,7 +2508,9 @@ dd_LPPtr dd_CreateLP_V_SRedundancy(dd_MatrixPtr M, dd_rowrange itest)
       for (j = 2; j <= (M->colsize)+1; j++) {
         dd_neg(lp->A[irev-1][j-1],M->matrix[i-1][j-2]);
       }  /*of j*/
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"equality row %ld generates the reverse row %ld.\n",i,irev);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     for (j = 2; j <= (M->colsize)+1; j++) {
       dd_set(lp->A[i-1][j-1],M->matrix[i-1][j-2]);
@@ -2415,7 +2523,9 @@ dd_LPPtr dd_CreateLP_V_SRedundancy(dd_MatrixPtr M, dd_rowrange itest)
   }  /*of j*/
   dd_set(lp->A[m-2][0],dd_one);   /* the constant term for the bounding constraint is 1 */
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) dd_WriteLP(stdout, lp);
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   return lp;
 }
@@ -2460,7 +2570,9 @@ dd_boolean dd_Redundant(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certificate, 
 
   *error=dd_NoError;
   if (set_member(itest, M->linset)){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) printf("The %ld th row is linearity and redundancy checking is skipped.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
   
@@ -2484,10 +2596,14 @@ dd_boolean dd_Redundant(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certificate, 
 
     if (dd_Negative(lps->optvalue)){
       answer=dd_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"==> %ld th row is nonredundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       answer=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"==> %ld th row is redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     dd_FreeLPSolution(lps);
   }
@@ -2516,7 +2632,9 @@ dd_rowset *redset,dd_ErrorType *error)
 
   *error=dd_NoError;
   if (set_member(itest, M->linset)){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) printf("The %ld th row is linearity and redundancy checking is skipped.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
   
@@ -2538,10 +2656,12 @@ dd_rowset *redset,dd_ErrorType *error)
     set_delelem(*redset, itest);  
     /* itest row might be redundant in the lp but this has nothing to do with its redundancy
     in the original system M.   Thus we must delete it.  */
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug){
       fprintf(stderr, "dd_RedundantExtensive: checking for %ld, extra redset with cardinality %ld (%ld)\n",itest,set_card(*redset),set_card(lp->redset_extra)); 
       set_fwrite(stderr, *redset); fprintf(stderr, "\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     lps=dd_CopyLPSolution(lp);
 
     for (j=0; j<lps->d; j++) {
@@ -2550,10 +2670,14 @@ dd_rowset *redset,dd_ErrorType *error)
 
     if (dd_Negative(lps->optvalue)){
       answer=dd_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"==> %ld th row is nonredundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       answer=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"==> %ld th row is redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     dd_FreeLPSolution(lps);
   }
@@ -2583,11 +2707,15 @@ dd_rowset dd_RedundantRows(dd_MatrixPtr M, dd_ErrorType *error)  /* 092 */
   set_initialize(&redset, m);
   for (i=m; i>=1; i--) {
     if (dd_Redundant(Mcopy, i, cvec, error)) {
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) printf("dd_RedundantRows: the row %ld is redundant.\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       set_addelem(redset, i);
       dd_MatrixRowRemove(&Mcopy, i);
     } else {
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) printf("dd_RedundantRows: the row %ld is essential.\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     if (*error!=dd_NoError) goto _L99;
   }
@@ -2618,9 +2746,13 @@ dd_boolean dd_MatrixRedundancyRemove(dd_MatrixPtr *M, dd_rowset *redset,dd_rowin
   M1=dd_MatrixSortedUniqueCopy(*M,newpos);
   for (i=1; i<=m; i++){
     if ((*newpos)[i]<=0) set_addelem(*redset,i);
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) printf(" %ld:%ld",i,(*newpos)[i]);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) printf("\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   if ((*M)->representation==dd_Generator){
     d=((*M)->colsize)+1;
@@ -2628,10 +2760,12 @@ dd_boolean dd_MatrixRedundancyRemove(dd_MatrixPtr *M, dd_rowset *redset,dd_rowin
     d=(*M)->colsize;
   }
   m1=M1->rowsize;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     fprintf(stderr,"dd_MatrixRedundancyRemove: By sorting, %ld rows have been removed.  The remaining has %ld rows.\n",m-m1,m1);
     /* dd_WriteMatrix(stdout,M1);  */
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   dd_InitializeArow(d,&cvec); 
   set_initialize(&redset1, M1->rowsize);
   k=1;
@@ -2651,10 +2785,12 @@ dd_boolean dd_MatrixRedundancyRemove(dd_MatrixPtr *M, dd_rowset *redset,dd_rowin
       }
       set_free(redset1);
       set_initialize(&redset1, M1->rowsize); 
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {
         printf("dd_MatrixRedundancyRemove: the row %ld is redundant. The new matrix has %ld rows.\n", k, M1->rowsize);
         /* dd_WriteMatrix(stderr, M1);  */
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       free(newpos1);
     } else {
       if (set_card(redset1)>0) {
@@ -2673,15 +2809,19 @@ dd_boolean dd_MatrixRedundancyRemove(dd_MatrixPtr *M, dd_rowset *redset,dd_rowin
         set_initialize(&redset1, M1->rowsize);
         free(newpos1);
       }
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {
         printf("dd_MatrixRedundancyRemove: the row %ld is essential. The new matrix has %ld rows.\n", k, M1->rowsize);
         /* dd_WriteMatrix(stderr, M1);  */
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       k=k+1;
     }
     if (*error!=dd_NoError) goto _L99;
   } while  (k<=M1->rowsize);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) dd_WriteMatrix(stderr, M1);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   success=dd_TRUE;
   
 _L99:
@@ -2753,7 +2893,9 @@ dd_boolean dd_SRedundant(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certificate,
 
   *error=dd_NoError;
   if (set_member(itest, M->linset)){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) printf("The %ld th row is linearity and strong redundancy checking is skipped.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
   
@@ -2775,24 +2917,32 @@ dd_boolean dd_SRedundant(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certificate,
       dd_set(certificate[j], lps->sol[j]);
     }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug){
       printf("Optimum value:");
       dd_WriteNumber(stdout, lps->optvalue);
       printf("\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
     if (M->representation==dd_Inequality){
        if (dd_Positive(lps->optvalue)){
           answer=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"==> %ld th inequality is strongly redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         } else {
           answer=dd_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"==> %ld th inequality is not strongly redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         } 
     } else {
        if (dd_Negative(lps->optvalue)){
           answer=dd_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"==> %ld th point is not strongly redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         } else {
           /* for V-representation, we have to solve another LP */
           dd_FreeLPData(lp);
@@ -2800,13 +2950,19 @@ dd_boolean dd_SRedundant(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certificate,
           lp=dd_CreateLP_V_SRedundancy(M, itest);
           dd_LPSolve(lp,dd_DualSimplex,&err);
           lps=dd_CopyLPSolution(lp);
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) dd_WriteLPResult(stdout,lp,err);
+#endif /* R_HAS_JUMPED_THE_SHARK */
           if (dd_Positive(lps->optvalue)){
             answer=dd_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
             if (localdebug) fprintf(stderr,"==> %ld th point is not strongly redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
           } else {
             answer=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
             if (localdebug) fprintf(stderr,"==> %ld th point is strongly redundant.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
           }
        }
     } 
@@ -2838,11 +2994,15 @@ dd_rowset dd_SRedundantRows(dd_MatrixPtr M, dd_ErrorType *error)  /* 093a */
   set_initialize(&redset, m);
   for (i=m; i>=1; i--) {
     if (dd_SRedundant(Mcopy, i, cvec, error)) {
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) printf("dd_SRedundantRows: the row %ld is strongly redundant.\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       set_addelem(redset, i);
       dd_MatrixRowRemove(&Mcopy, i);
     } else {
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) printf("dd_SRedundantRows: the row %ld is not strongly redundant.\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     if (*error!=dd_NoError) goto _L99;
   }
@@ -2900,7 +3060,9 @@ dd_rowset dd_RedundantRowsViaShooting(dd_MatrixPtr M, dd_ErrorType *error)  /* 0
       for (k=1; k<=d; k++) dd_set(shootdir[k-1], dd_purezero);
       dd_set(shootdir[j], dd_one);  /* j-th unit vector */
       ired=dd_RayShooting(M, lps->sol, shootdir);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) printf("nonredundant row %3ld found by shooting.\n", ired);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       if (ired>0 && rowflag[ired]<=0) {
         irow++;
         rowflag[ired]=irow;
@@ -2909,7 +3071,9 @@ dd_rowset dd_RedundantRowsViaShooting(dd_MatrixPtr M, dd_ErrorType *error)  /* 0
         
       dd_neg(shootdir[j], dd_one);  /* negative of the j-th unit vector */
       ired=dd_RayShooting(M, lps->sol, shootdir);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) printf("nonredundant row %3ld found by shooting.\n", ired);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       if (ired>0 && rowflag[ired]<=0) {
         irow++;
         rowflag[ired]=irow;
@@ -2918,16 +3082,20 @@ dd_rowset dd_RedundantRowsViaShooting(dd_MatrixPtr M, dd_ErrorType *error)  /* 0
     }
 
     M1->rowsize=irow;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("The initial nonredundant set is:");
       for (i=1; i<=m; i++) if (rowflag[i]>0) printf(" %ld", i);
       printf("\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     
     i=1;
     while(i<=m){
       if (rowflag[i]==0){ /* the ith inequality is not yet checked */
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) fprintf(stderr, "Checking redundancy of %ld th inequality\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         irow++;  M1->rowsize=irow;
         for (k=1; k<=d; k++) dd_set(M1->matrix[irow-1][k-1], M->matrix[i-1][k-1]);
         if (!dd_Redundant(M1, irow, cvec, &err)){
@@ -2935,12 +3103,16 @@ dd_rowset dd_RedundantRowsViaShooting(dd_MatrixPtr M, dd_ErrorType *error)  /* 0
           ired=dd_RayShooting(M, lps->sol, shootdir);
           rowflag[ired]=irow;
           for (k=1; k<=d; k++) dd_set(M1->matrix[irow-1][k-1], M->matrix[ired-1][k-1]);
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) {
             fprintf(stderr, "The %ld th inequality is nonredundant for the subsystem\n", i);
             fprintf(stderr, "The nonredundancy of %ld th inequality is found by shooting.\n", ired);
           }
+#endif /* R_HAS_JUMPED_THE_SHARK */
         } else {
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr, "The %ld th inequality is redundant for the subsystem and thus for the whole.\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
           rowflag[i]=-1;
           set_addelem(redset, i);
           i++;
@@ -3081,7 +3253,9 @@ dd_boolean dd_ImplicitLinearity(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certi
 
   *error=dd_NoError;
   if (set_member(itest, M->linset)){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) printf("The %ld th row is linearity and redundancy checking is skipped.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
   
@@ -3106,10 +3280,14 @@ dd_boolean dd_ImplicitLinearity(dd_MatrixPtr M, dd_rowrange itest, dd_Arow certi
 
     if (lps->LPS==dd_Optimal && dd_EqualToZero(lps->optvalue)){
       answer=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"==> %ld th data is an implicit linearity.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       answer=dd_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"==> %ld th data is not an implicit linearity.\n",itest);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     dd_FreeLPSolution(lps);
   }
@@ -3175,14 +3353,18 @@ int dd_FreeOfImplicitLinearity(dd_MatrixPtr M, dd_Arow certificate, dd_rowset *i
       dd_set(certificate[j], lp->sol[j]);
     }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) dd_WriteLPResult(stderr,lp,err);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     
     /* *posset contains a set of row indices that are recognized as nonlinearity.  */
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       fprintf(stderr,"==> The following variables are not implicit linearity:\n");
       set_fwrite(stderr, lp->posset_extra);
       fprintf(stderr,"\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     
     if (M->representation==dd_Generator){
       d1=(M->colsize)+1;
@@ -3196,17 +3378,25 @@ int dd_FreeOfImplicitLinearity(dd_MatrixPtr M, dd_Arow certificate, dd_rowset *i
     if (lp->LPS==dd_Optimal){
       if (dd_Positive(lp->optvalue)){
         answer=1;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) fprintf(stderr,"==> The matrix has no implicit linearity.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
       } else if (dd_Negative(lp->optvalue)) {
           answer=-1;
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"==> The matrix defines the trivial system.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
         } else {
             answer=0;
+#ifdef R_HAS_JUMPED_THE_SHARK
             if (localdebug) fprintf(stderr,"==> The matrix has some implicit linearity.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
           }
     } else {
           answer=-2;
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"==> The LP fails.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     if (answer==0){
       /* List the implicit linearity rows */
@@ -3214,10 +3404,12 @@ int dd_FreeOfImplicitLinearity(dd_MatrixPtr M, dd_Arow certificate, dd_rowset *i
         if (!set_member(i,lp->posset_extra)) {
           if (dd_ImplicitLinearity(M, i, cvec, error)) {
             set_addelem(*imp_linrows, i);
+#ifdef R_HAS_JUMPED_THE_SHARK
             if (localdebug) {
               fprintf(stderr," row %ld is implicit linearity\n",i);
               fprintf(stderr,"\n");
             }
+#endif /* R_HAS_JUMPED_THE_SHARK */
           }
           if (*error!=dd_NoError) goto _L999;
         }
@@ -3251,8 +3443,11 @@ dd_rowset dd_ImplicitLinearityRows(dd_MatrixPtr M, dd_ErrorType *error)  /* 092 
   }
 
   dd_InitializeArow(d,&cvec);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) fprintf(stdout, "\ndd_ImplicitLinearityRows: Check whether the system contains any implicit linearity.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   foi=dd_FreeOfImplicitLinearity(M, cvec, &imp_linset, error);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     switch (foi) {
       case 1:
@@ -3273,12 +3468,15 @@ dd_rowset dd_ImplicitLinearityRows(dd_MatrixPtr M, dd_ErrorType *error)  /* 092 
     
     }
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     fprintf(stderr, "  Implicit linearity rows are:\n");
     set_fwrite(stderr,imp_linset);
     fprintf(stderr, "\n");  
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   dd_FreeArow(d, cvec);
   return imp_linset;
 }
@@ -3511,11 +3709,15 @@ dd_rowrange dd_RayShooting(dd_MatrixPtr M, dd_Arow p, dd_Arow r)
   m=M->rowsize;
   d=M->colsize;
   if (!dd_Equal(dd_one, p[0])){
+#ifdef R_HAS_JUMPED_THE_SHARK
     fprintf(stderr, "Warning: RayShooting is called with a point with first coordinate not 1.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     dd_set(p[0],dd_one);
   }
   if (!dd_EqualToZero(r[0])){
+#ifdef R_HAS_JUMPED_THE_SHARK
     fprintf(stderr, "Warning: RayShooting is called with a direction with first coordinate not 0.\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     dd_set(r[0],dd_purezero);
   }
 
@@ -3532,20 +3734,24 @@ dd_rowrange dd_RayShooting(dd_MatrixPtr M, dd_Arow p, dd_Arow r)
         imin=i;  dd_set(min, alpha);
         dd_set(t1min, t1);  /* store the denominator. */
         started=dd_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) {
           fprintf(stderr," Level 1: imin = %ld and min = ", imin);
           dd_WriteNumber(stderr, min);
           fprintf(stderr,"\n");
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       } else {
         if (dd_Smaller(alpha, min)){
           imin=i;  dd_set(min, alpha);
           dd_set(t1min, t1);  /* store the denominator. */
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) {
             fprintf(stderr," Level 2: imin = %ld and min = ", imin);
             dd_WriteNumber(stderr, min);
             fprintf(stderr,"\n");
           }
+#endif /* R_HAS_JUMPED_THE_SHARK */
         } else {
           if (dd_Equal(alpha, min)) { /* tie break */
             for (j=1; j<= d; j++){
@@ -3555,11 +3761,13 @@ dd_rowrange dd_RayShooting(dd_MatrixPtr M, dd_Arow p, dd_Arow r)
             if (dd_LexSmaller(vec,vecmin, d)){
               imin=i;  dd_set(min, alpha);
               dd_set(t1min, t1);  /* store the denominator. */
+#ifdef R_HAS_JUMPED_THE_SHARK
               if (localdebug) {
                 fprintf(stderr," Level 3: imin = %ld and min = ", imin);
                 dd_WriteNumber(stderr, min);
                 fprintf(stderr,"\n");
               }
+#endif /* R_HAS_JUMPED_THE_SHARK */
             }
           }
         }
@@ -3604,9 +3812,11 @@ arithmetics.
   dd_boolean localdebug=dd_FALSE;
 
   if (dd_debug) localdebug=dd_debug;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
      printf("\nEvaluating dd_BasisStatusMaximize:\n");
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   dd_init(val);
   nbtemp=(long *) calloc(d_size+1,sizeof(long));
   for (i=0; i<= 4; i++) pivots[i]=0;
@@ -3628,15 +3838,19 @@ arithmetics.
 
   dd_ResetTableau(m_size,d_size,T,nbtemp,bflag,objrow,rhscol);
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
      printf("\nnbindex:");
      for (j=1; j<=d_size; j++) printf(" %ld", nbindex[j]);
      printf("\n");
      printf("re = %ld,   se=%ld\n", re, se);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   is=nbindex[se];
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) printf("se=%ld,  is=%ld\n", se, is);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   fbasisrank=d_size-1;
   for (j=1; j<=d_size; j++){
@@ -3645,10 +3859,12 @@ arithmetics.
   }
 
   if (fbasisrank<d_size-1) {
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
 	  printf("d_size = %ld, the size of basis = %ld\n", d_size, fbasisrank);
 	  printf("dd_BasisStatusMaximize: the size of basis is smaller than d-1.\nIt is safer to run the LP solver with GMP\n");
 	}
+#endif /* R_HAS_JUMPED_THE_SHARK */
 	*found=dd_FALSE;
 	goto _L99;
      /* Suspicious case.  Rerun the LP solver with GMP. */
@@ -3662,25 +3878,31 @@ arithmetics.
 /* set up the new se column and corresponding variable */
   senew=bflag[is];
   is=nbindex[senew];
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) printf("new se=%ld,  is=%ld\n", senew, is);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       
   pivots[4]=pivots0;  /*GMP postopt pivots */
   dd_statBSpivots+=pivots0;
 
   if (!(*found)){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
        printf("dd_BasisStatusMaximize: a specified basis DOES NOT exist.\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
        goto _L99;
      /* No speficied LP basis is found. */
   }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     printf("dd_BasisStatusMaximize: a specified basis exists.\n");
     if (m_size <=100 && d_size <=30)
     dd_WriteTableau(stdout,m_size,d_size,A,T,nbindex,bflag);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   /* Check whether a recomputed basis is of the type specified by LPS */
   *LPScorrect=dd_TRUE;
@@ -3690,14 +3912,18 @@ arithmetics.
          if (i!=objrow && bflag[i]==-1) {  /* i is a basic variable */
             dd_TableauEntry(&val,m_size,d_size,A,T,i,rhscol);
             if (dd_Negative(val)) {
+#ifdef R_HAS_JUMPED_THE_SHARK
                if (localdebug) printf("RHS entry for %ld is negative\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
                *LPScorrect=dd_FALSE;
                break;
             }
           } else if (bflag[i] >0) { /* i is nonbasic variable */
             dd_TableauEntry(&val,m_size,d_size,A,T,objrow,bflag[i]);
             if (dd_Positive(val)) {
+#ifdef R_HAS_JUMPED_THE_SHARK
                if (localdebug) printf("Reduced cost entry for %ld is positive\n", i);
+#endif /* R_HAS_JUMPED_THE_SHARK */
                *LPScorrect=dd_FALSE;
                break;
             }
@@ -3709,12 +3935,16 @@ arithmetics.
           dd_TableauEntry(&val,m_size,d_size,A,T,re,j);
           if (j==rhscol){
              if (dd_Nonnegative(val)){
+#ifdef R_HAS_JUMPED_THE_SHARK
                if (localdebug) printf("RHS entry for %ld is nonnegative\n", re);
+#endif /* R_HAS_JUMPED_THE_SHARK */
                *LPScorrect=dd_FALSE;
                break;             
              }
            } else if (dd_Positive(val)){
+#ifdef R_HAS_JUMPED_THE_SHARK
                if (localdebug) printf("the row entry for(%ld, %ld) is positive\n", re, j);
+#endif /* R_HAS_JUMPED_THE_SHARK */
                *LPScorrect=dd_FALSE;
                break;             
            }
@@ -3725,12 +3955,16 @@ arithmetics.
           dd_TableauEntry(&val,m_size,d_size,A,T,i,bflag[is]);
           if (i==objrow){
              if (dd_Nonpositive(val)){
+#ifdef R_HAS_JUMPED_THE_SHARK
                if (localdebug) printf("Reduced cost entry for %ld is nonpositive\n", bflag[is]);
+#endif /* R_HAS_JUMPED_THE_SHARK */
                *LPScorrect=dd_FALSE;
                break;             
              }
            } else if (dd_Negative(val)){
+#ifdef R_HAS_JUMPED_THE_SHARK
                if (localdebug) printf("the column entry for(%ld, %ld) is positive\n", i, bflag[is]);
+#endif /* R_HAS_JUMPED_THE_SHARK */
                *LPScorrect=dd_FALSE;
                break;             
            }

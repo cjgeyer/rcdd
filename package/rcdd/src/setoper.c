@@ -230,6 +230,7 @@ long set_groundsize(set_type set)
 	return set[0];
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void set_write(set_type set)
 {
 	long elem;
@@ -312,5 +313,6 @@ void set_fbinwrite(FILE *f,set_type set)
 	}
 	fprintf(f,"\n");
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 /* End of the library:  setoper.c  */

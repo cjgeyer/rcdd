@@ -56,7 +56,9 @@ dd_MatrixPtr dd_BlockElimination(dd_MatrixPtr M, dd_colset delset, dd_ErrorType 
       delindex[k]=j;  /* stores the kth deletion column index */
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) dd_WriteMatrix(stdout, M);
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   linsize=set_card(M->linset);
   ddual=m+1;
@@ -107,7 +109,9 @@ dd_MatrixPtr dd_BlockElimination(dd_MatrixPtr M, dd_colset delset, dd_ErrorType 
       }
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) printf("Size of the projection system: %ld x %ld\n", mproj, dproj);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   dd_FreePolyhedra(dualpoly);
   free(delindex);
@@ -136,25 +140,31 @@ dd_MatrixPtr dd_FourierElimination(dd_MatrixPtr M,dd_ErrorType *error)
   d= M->colsize;
   if (d<=1){
     *error=dd_ColIndexOutOfRange;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("The number of column is too small: %ld for Fourier's Elimination.\n",d);
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
 
   if (M->representation==dd_Generator){
     *error=dd_NotAvailForV;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("Fourier's Elimination cannot be applied to a V-polyhedron.\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
 
   if (set_card(M->linset)>0){
     *error=dd_CannotHandleLinearity;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("The Fourier Elimination function does not handle equality in this version.\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
 
@@ -178,10 +188,12 @@ dd_MatrixPtr dd_FourierElimination(dd_MatrixPtr M,dd_ErrorType *error)
     }
   }  /*of i*/
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     dd_WriteMatrix(stdout, M);
     printf("No of  (+  -  0) rows = (%ld, %ld, %ld)\n", mpos,mneg, mzero);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   /* The present code generates so many redundant inequalities and thus
      is quite useless, except for very small examples

@@ -18,6 +18,7 @@
 #include <math.h>
 #include <string.h>
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 /* void dd_fread_rational_value (FILE *, mytype *); */
 void dd_SetLinearity(dd_MatrixPtr, char *);
 
@@ -199,6 +200,7 @@ void dd_ProcessCommandLine(FILE *f, dd_MatrixPtr M, char *line)
   }
   dd_clear(value);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 dd_boolean dd_AppendMatrix2Poly(dd_PolyhedraPtr *poly, dd_MatrixPtr M)
 {
@@ -400,7 +402,9 @@ dd_MatrixPtr dd_MatrixNormalizedSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *new
     set_emptyset(M2->linset);
     for(i=1; i<=m; i++) {
       if (newpos2[newpos1[i]]>0){
+#ifdef R_HAS_JUMPED_THE_SHARK
          printf("newpos1[%ld]=%ld, newpos2[newpos1[%ld]]=%ld\n",i,newpos1[i], i,newpos2[newpos1[i]]);
+#endif /* R_HAS_JUMPED_THE_SHARK */
          if (set_member(i,M->linset)) set_addelem(M2->linset, newpos2[newpos1[i]]);
          (*newpos)[i]=newpos2[newpos1[i]];
       } else {
@@ -860,6 +864,7 @@ dd_ConePtr dd_ConeDataLoad(dd_PolyhedraPtr poly)
   return cone;
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void dd_SetLinearity(dd_MatrixPtr M, char *line)
 {
   int i=0;
@@ -970,6 +975,7 @@ _L99: ;
   /* if (f!=NULL) fclose(f); */
   return M;
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 dd_PolyhedraPtr dd_DDMatrix2Poly(dd_MatrixPtr M, dd_ErrorType *err)
@@ -1073,6 +1079,7 @@ void dd_CopyRay(mytype *a, dd_colrange d_origsize, dd_RayPtr RR,
   dd_clear(b);
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void dd_WriteRay(FILE *f, dd_colrange d_origsize, dd_RayPtr RR, dd_RepresentationType rep, dd_colindex reducedcol)
 {
   dd_colrange j;
@@ -1234,6 +1241,7 @@ void dd_WriteLP(FILE *f, dd_LPPtr lp)
   }
 _L99:;
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 void dd_SnapToInteger(mytype y, mytype x)
@@ -1243,6 +1251,7 @@ void dd_SnapToInteger(mytype y, mytype x)
 }
 
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void dd_WriteReal(FILE *f, mytype x)
 {
   long ix1,ix2,ix;
@@ -1314,6 +1323,7 @@ void dd_WriteAdjacency(FILE *f, dd_PolyhedraPtr poly)
   dd_WriteSetFamilyCompressed(f,A);
   dd_FreeSetFamily(A);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 void dd_ComputeAinc(dd_PolyhedraPtr poly)
@@ -1432,7 +1442,7 @@ _L99:;
   return adj;
 } 
 
-
+#ifdef R_HAS_JUMPED_THE_SHARK
 void dd_WriteInputIncidence(FILE *f, dd_PolyhedraPtr poly)
 {
   dd_SetFamilyPtr I;
@@ -1725,6 +1735,7 @@ void dd_WriteErrorMessages(FILE *f, dd_ErrorType Error)
     break;
   }
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 dd_SetFamilyPtr dd_CopyIncidence(dd_PolyhedraPtr poly)
@@ -1927,6 +1938,7 @@ dd_MatrixPtr dd_CopyInequalities(dd_PolyhedraPtr poly)
   return M;
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 /****************************************************************************************/
 /*  rational number (a/b) read is taken from Vinci by Benno Bueeler and Andreas Enge    */
 /****************************************************************************************/
@@ -2012,6 +2024,7 @@ void dd_fread_rational_value (FILE *f, mytype value)
    dd_set(value,rational_value);
    dd_clear(rational_value);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
    
 /****************************************************************************************/
 

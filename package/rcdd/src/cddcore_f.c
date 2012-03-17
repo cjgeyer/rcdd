@@ -18,6 +18,10 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+/* modifications by Geyer: really unsure whether or not die should be called
+ * below, but also unsure it shouldn't.  Better safe than sorry.
+ */
+#include "die.h"
 
 void ddf_CheckAdjacency(ddf_ConePtr cone,
     ddf_RayPtr *RP1, ddf_RayPtr *RP2, ddf_boolean *adjacent)
@@ -42,10 +46,12 @@ void ddf_CheckAdjacency(ddf_ConePtr cone,
   set_int(Face, Face1, cone->AddedHalfspaces);
   if (set_card(Face)< cone->d - 2) {
     *adjacent = ddf_FALSE;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       fprintf(stderr,"non adjacent: set_card(face) %ld < %ld = cone->d.\n",
         set_card(Face),cone->d);
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     return;
   }
   else if (cone->parent->NondegAssumed) {
@@ -136,27 +142,35 @@ void ddf_StoreRay1(ddf_ConePtr cone, myfloat *p, ddf_boolean *feasible)
   for (i = 1; i <= cone->m; i++) {
     k=cone->OrderVector[i];
     ddf_AValue(&temp, cone->d, cone->A, p, k);
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       fprintf(stderr,"ddf_StoreRay1: ddf_AValue at row %ld =",k);
       ddf_WriteNumber(stderr, temp);
       fprintf(stderr,"\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     if (ddf_EqualToZero(temp)) {
       set_addelem(RR->ZeroSet, k);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {
         fprintf(stderr,"recognized zero!\n");
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
     if (ddf_Negative(temp)){
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {
         fprintf(stderr,"recognized negative!\n");
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       *feasible = ddf_FALSE;
       if (fii>cone->m) fii=i;  /* the first violating inequality index */
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {
         fprintf(stderr,"this ray is not feasible, neg comp = %ld\n", fii);
         ddf_WriteNumber(stderr, temp);  fprintf(stderr,"\n");
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
   }
   RR->FirstInfeasIndex=fii;
@@ -218,8 +232,10 @@ void ddf_AddRay(ddf_ConePtr cone, myfloat *p)
     cone->FirstRay->Ray = (myfloat *) calloc(cone->d, sizeof(myfloat));
     for (j=0; j<cone->d; j++) ddf_init(cone->FirstRay->Ray[j]);
     ddf_init(cone->FirstRay->ARay);
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (ddf_debug)
       fprintf(stderr,"Create the first ray pointer\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     cone->LastRay = cone->FirstRay;
     cone->ArtificialRay->Next = cone->FirstRay;
   } else {
@@ -227,18 +243,22 @@ void ddf_AddRay(ddf_ConePtr cone, myfloat *p)
     cone->LastRay->Next->Ray = (myfloat *) calloc(cone->d, sizeof(myfloat));
     for (j=0; j<cone->d; j++) ddf_init(cone->LastRay->Next->Ray[j]);
     ddf_init(cone->LastRay->Next->ARay);
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (ddf_debug) fprintf(stderr,"Create a new ray pointer\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
     cone->LastRay = cone->LastRay->Next;
   }
   cone->LastRay->Next = NULL;
   cone->RayCount++;
   cone->TotalRayCount++;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug) {
     if (cone->TotalRayCount % 100 == 0) {
       fprintf(stderr,"*Rays (Total, Currently Active, Feasible) =%8ld%8ld%8ld\n",
 	 cone->TotalRayCount, cone->RayCount, cone->FeasibleRayCount);
     }
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   if (cone->parent->RelaxedEnumeration){
     ddf_StoreRay2(cone, p, &feasible, &weaklyfeasible);
     if (weaklyfeasible) (cone->WeaklyFeasibleRayCount)++;
@@ -262,7 +282,7 @@ void ddf_AddArtificialRay(ddf_ConePtr cone)
   if (cone->d<=0) d1=1; else d1=cone->d;
   ddf_InitializeArow(d1, &zerovector);
   if (cone->ArtificialRay != NULL) {
-    fprintf(stderr,"Warning !!!  FirstRay in not nil.  Illegal Call\n");
+    die("Warning !!!  FirstRay in not nil.  Illegal Call\n");
     free(zerovector); /* 086 */
     return;
   }
@@ -271,7 +291,9 @@ void ddf_AddArtificialRay(ddf_ConePtr cone)
   for (j=0; j<d1; j++) ddf_init(cone->ArtificialRay->Ray[j]);
   ddf_init(cone->ArtificialRay->ARay);
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug) fprintf(stderr,"Create the artificial ray pointer\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   cone->LastRay=cone->ArtificialRay;
   ddf_StoreRay1(cone, zerovector, &feasible);  
@@ -318,21 +340,28 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
   }
   ZSmin = Rmin->ZeroSet;
   ZSmax = Rmax->ZeroSet;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"ddf_ConditionalAddEdge: FMIN = %ld (row%ld)   FMAX=%ld\n",
       fmin, cone->OrderVector[fmin], fmax);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   if (fmin==fmax){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"ddf_ConditionalAddEdge: equal FII value-> No edge added\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
   else if (set_member(cone->OrderVector[fmin],ZSmax)){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"ddf_ConditionalAddEdge: No strong separation -> No edge added\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
   else {  /* the pair will be separated at the iteration fmin */
     lastchance=ddf_TRUE;
     /* flag to check it will be the last chance to store the edge candidate */
     set_int(Face1, ZSmax, ZSmin);
     (cone->count_int)++;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug){
       fprintf(stderr,"Face: ");
       for (it=1; it<=cone->m; it++) {
@@ -341,14 +370,17 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
       }
       fprintf(stderr,"\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     for (it=cone->Iteration+1; it < fmin && lastchance; it++){
       it_row=cone->OrderVector[it];
       if (cone->parent->EqualityIndex[it_row]>=0 && set_member(it_row, Face1)){
         lastchance=ddf_FALSE;
         (cone->count_int_bad)++;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug){
           fprintf(stderr,"There will be another chance iteration %ld (row %ld) to store the pair\n", it, it_row);
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       }
     }
     if (lastchance){
@@ -356,6 +388,7 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
       (cone->count_int_good)++;
       /* adjacent checking */
       set_int(Face, Face1, cone->AddedHalfspaces);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug){
         fprintf(stderr,"Check adjacency\n");
         fprintf(stderr,"AddedHalfspaces: "); set_fwrite(stderr,cone->AddedHalfspaces);
@@ -366,6 +399,7 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
         }
         fprintf(stderr,"\n");
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       if (set_card(Face)< cone->d - 2) {
         adjacent = ddf_FALSE;
       }
@@ -378,7 +412,9 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
           if (TempRay != Ray1 && TempRay != Ray2) {
             set_int(Face1, TempRay->ZeroSet, cone->AddedHalfspaces);
             if (set_subset(Face, Face1)) {
+#ifdef R_HAS_JUMPED_THE_SHARK
               if (localdebug) set_fwrite(stderr,Face1);
+#endif /* R_HAS_JUMPED_THE_SHARK */
               adjacent = ddf_FALSE;
             }
           }
@@ -386,8 +422,10 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
         }
       }
       if (adjacent){
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) fprintf(stderr,"The pair is adjacent and the pair must be stored for iteration %ld (row%ld)\n",
           fmin, cone->OrderVector[fmin]);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         NewEdge=(ddf_AdjacencyPtr) malloc(sizeof *NewEdge);
         NewEdge->Ray1=Rmax;  /* save the one remains in iteration fmin in the first */
         NewEdge->Ray2=Rmin;  /* save the one deleted in iteration fmin in the second */
@@ -396,7 +434,9 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
         (cone->TotalEdgeCount)++;
         if (cone->Edges[fmin]==NULL){
           cone->Edges[fmin]=NewEdge;
+#ifdef R_HAS_JUMPED_THE_SHARK
           if (localdebug) fprintf(stderr,"Create a new edge list of %ld\n", fmin);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         }else{
           NewEdge->Next=cone->Edges[fmin];
           cone->Edges[fmin]=NewEdge;
@@ -425,7 +465,9 @@ void ddf_CreateInitialEdges(ddf_ConePtr cone)
     while(Ptr2!=NULL){
       fii2=Ptr2->FirstInfeasIndex;
       count++;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) fprintf(stderr,"ddf_ CreateInitialEdges: edge %ld \n",count);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       ddf_CheckAdjacency(cone, &Ptr1, &Ptr2, &adj);
       if (fii1!=fii2 && adj) 
         ddf_ConditionalAddEdge(cone, Ptr1, Ptr2, cone->FirstRay);
@@ -452,7 +494,7 @@ void ddf_UpdateEdges(ddf_ConePtr cone, ddf_RayPtr RRbegin, ddf_RayPtr RRend)
   totalpairs=(cone->ZeroRayCount-1.0)*(cone->ZeroRayCount-2.0)+1.0;
   Ptr2begin = NULL; 
   if (RRbegin ==NULL || RRend==NULL){
-    if (1) fprintf(stderr,"Warning: ddf_UpdateEdges called with NULL pointer(s)\n");
+    die("Warning: ddf_UpdateEdges called with NULL pointer(s)\n");
     goto _L99;
   }
   Ptr1=RRbegin;
@@ -473,7 +515,9 @@ void ddf_UpdateEdges(ddf_ConePtr cone, ddf_RayPtr RRbegin, ddf_RayPtr RRend)
       quit=ddf_FALSE;
       for (Ptr2=Ptr2begin; !quit ; Ptr2=Ptr2->Next){
         count++;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) fprintf(stderr,"ddf_UpdateEdges: edge %ld \n",count);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         ddf_ConditionalAddEdge(cone, Ptr1,Ptr2,RRbegin);
         if (Ptr2==RRend || Ptr2->Next==NULL) quit=ddf_TRUE;
       }
@@ -481,11 +525,13 @@ void ddf_UpdateEdges(ddf_ConePtr cone, ddf_RayPtr RRbegin, ddf_RayPtr RRend)
     Ptr1=Ptr1->Next;
     pos1++;
     workleft = 100.0 * (cone->ZeroRayCount-pos1) * (cone->ZeroRayCount - pos1-1.0) / totalpairs;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (cone->ZeroRayCount>=500 && ddf_debug && pos1%10 ==0 && prevworkleft-workleft>=10 ) {
       fprintf(stderr,"*Work of iteration %5ld(/%ld): %4ld/%4ld => %4.1f%% left\n",
 	     cone->Iteration, cone->m, pos1, cone->ZeroRayCount, workleft);
       prevworkleft=workleft;
     }    
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }while(Ptr1!=RRend && Ptr1!=NULL);
 _L99:;  
 }
@@ -526,7 +572,9 @@ ddf_clear(cone->LastRay->Ray[j]);
     free(cone->LastRay);
     cone->LastRay = NULL;
     cone->ArtificialRay=NULL;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"%ld ray storage spaces freed\n",count);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
 /* must add (by Sato) */
   free(cone->Edges);
@@ -887,18 +935,22 @@ void ddf_ColumnReduce(ddf_ConePtr cone)
       if (j1<j) {
         for (i=1; i<=cone->m; i++) ddf_set(cone->A[i-1][j1-1],cone->A[i-1][j-1]);
         cone->newcol[j]=j1;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug){
           fprintf(stderr,"shifting the column %ld to column %ld\n", j, j1);
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
           /* shifting forward */
       }
     } else {
       cone->newcol[j]=0;
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (localdebug) {
         fprintf(stderr,"a generator (or an equation) of the linearity space: ");
         for (i=1; i<=cone->d; i++) ddf_WriteNumber(stderr, cone->B[i-1][j-1]);
         fprintf(stderr,"\n");
       }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     }
   }
   cone->d=j1;  /* update the dimension. cone->d_orig remembers the old. */
@@ -936,8 +988,10 @@ long ddf_MatrixRank(ddf_MatrixPtr M, ddf_rowset ignoredrows, ddf_colset ignoredc
   do {   /* Find a set of rows for a basis */
       ddf_SelectPivot2(M->rowsize, M->colsize,M->matrix,B,ddf_MinIndex,roworder,
        PriorityRow,M->rowsize, NopivotRow, ColSelected, &r, &s, &chosen);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (ddf_debug && chosen) 
         fprintf(stderr,"Procedure ddf_MatrixRank: pivot on (r,s) =(%ld, %ld).\n", r, s);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       if (chosen) {
         set_addelem(NopivotRow, r);
         set_addelem(*rowbasis, r);
@@ -945,7 +999,9 @@ long ddf_MatrixRank(ddf_MatrixPtr M, ddf_rowset ignoredrows, ddf_colset ignoredc
         set_addelem(*colbasis, s);
         rank++;
         ddf_GaussianColumnPivot(M->rowsize, M->colsize, M->matrix, B, r, s);
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) ddf_WriteBmatrix(stderr,M->colsize,B);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       } else {
         stop=ddf_TRUE;
       }
@@ -979,8 +1035,10 @@ void ddf_FindBasis(ddf_ConePtr cone, long *rank)
   do {   /* Find a set of rows for a basis */
       ddf_SelectPivot2(cone->m, cone->d,cone->A,cone->B,cone->HalfspaceOrder,cone->OrderVector,
        cone->EqualitySet,cone->m, NopivotRow, ColSelected, &r, &s, &chosen);
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (ddf_debug && chosen) 
         fprintf(stderr,"Procedure ddf_FindBasis: pivot on (r,s) =(%ld, %ld).\n", r, s);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       if (chosen) {
         set_addelem(cone->InitialHalfspaces, r);
         set_addelem(NopivotRow, r);
@@ -988,7 +1046,9 @@ void ddf_FindBasis(ddf_ConePtr cone, long *rank)
         cone->InitialRayIndex[s]=r;    /* cone->InitialRayIndex[s] stores the corr. row index */
         (*rank)++;
         ddf_GaussianColumnPivot(cone->m, cone->d, cone->A, cone->B, r, s);
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) ddf_WriteBmatrix(stderr,cone->d,cone->B);
+#endif /* R_HAS_JUMPED_THE_SHARK */
       } else {
         stop=ddf_TRUE;
       }
@@ -1014,25 +1074,33 @@ void ddf_FindInitialRays(ddf_ConePtr cone, ddf_boolean *found)
     cone->PreOrderedRun=ddf_FALSE;
   }
   else cone->PreOrderedRun=ddf_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug) ddf_WriteBmatrix(stderr, cone->d, cone->B);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   for (i = 1; i <= cone->m; i++)
     if (!set_member(i,cone->NonequalitySet)) set_addelem(CandidateRows, i);
     /*all rows not in NonequalitySet are candidates for initial cone*/
   ddf_FindBasis(cone, &rank);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug) ddf_WriteBmatrix(stderr, cone->d, cone->B);
   if (ddf_debug) fprintf(stderr,"ddf_FindInitialRays: rank of Amatrix = %ld\n", rank);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   cone->LinearityDim=cone->d - rank;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug) fprintf(stderr,"Linearity Dimension = %ld\n", cone->LinearityDim);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   if (cone->LinearityDim > 0) {
      ddf_ColumnReduce(cone);
      ddf_FindBasis(cone, &rank);
   }
   if (!set_subset(cone->EqualitySet,cone->InitialHalfspaces)) {
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (ddf_debug) {
       fprintf(stderr,"Equality set is dependent. Equality Set and an initial basis:\n");
       set_fwrite(stderr,cone->EqualitySet);
       set_fwrite(stderr,cone->InitialHalfspaces);
     };
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
   *found = ddf_TRUE;
   set_free(CandidateRows);
@@ -1050,8 +1118,10 @@ void ddf_CheckEquality(ddf_colrange d_size, ddf_RayPtr*RP1, ddf_RayPtr*RP2, ddf_
 {
   long j;
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug)
     fprintf(stderr,"Check equality of two rays\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
   *equal = ddf_TRUE;
   j = 1;
   while (j <= d_size && *equal) {
@@ -1060,7 +1130,7 @@ void ddf_CheckEquality(ddf_colrange d_size, ddf_RayPtr*RP1, ddf_RayPtr*RP2, ddf_
     j++;
   }
   if (*equal)
-    fprintf(stderr,"Equal records found !!!!\n");
+    die("Equal records found !!!!\n");
 }
 
 void ddf_CreateNewRay(ddf_ConePtr cone, 
@@ -1086,26 +1156,34 @@ void ddf_CreateNewRay(ddf_ConePtr cone,
 
   ddf_AValue(&a1, cone->d, cone->A, Ptr1->Ray, ii);
   ddf_AValue(&a2, cone->d, cone->A, Ptr2->Ray, ii);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"CreatNewRay: Ray1 ="); ddf_WriteArow(stderr, Ptr1->Ray, cone->d);
     fprintf(stderr,"CreatNewRay: Ray2 ="); ddf_WriteArow(stderr, Ptr2->Ray, cone->d);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   ddf_abs(v1,a1);
   ddf_abs(v2,a2);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     fprintf(stderr,"ddf_AValue1 and ABS");  ddf_WriteNumber(stderr,a1); ddf_WriteNumber(stderr,v1); fprintf(stderr,"\n");
     fprintf(stderr,"ddf_AValue2 and ABS");  ddf_WriteNumber(stderr,a2); ddf_WriteNumber(stderr,v2); fprintf(stderr,"\n");
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   for (j = 0; j < cone->d; j++){
     ddf_LinearComb(NewRay[j], Ptr1->Ray[j],v2,Ptr2->Ray[j],v1);
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"CreatNewRay: New ray ="); ddf_WriteArow(stderr, NewRay, cone->d);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   ddf_Normalize(cone->d, NewRay);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"CreatNewRay: ddf_Normalized ray ="); ddf_WriteArow(stderr, NewRay, cone->d);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   ddf_AddRay(cone, NewRay);
   ddf_clear(a1); ddf_clear(a2); ddf_clear(v1); ddf_clear(v2);
 }
@@ -1125,7 +1203,7 @@ void ddf_EvaluateARay1(ddf_rowrange i, ddf_ConePtr cone)
   Ptr = cone->FirstRay;
   PrevPtr = cone->ArtificialRay;
   if (PrevPtr->Next != Ptr) {
-    fprintf(stderr,"Error.  Artificial Ray does not point to FirstRay!!!\n");
+    die("Error.  Artificial Ray does not point to FirstRay!!!\n");
   }
   while (Ptr != NULL) {
     ddf_set(temp,ddf_purezero);
@@ -1281,7 +1359,7 @@ void ddf_DeleteNegativeRays(ddf_ConePtr cone)
   PrevPtr= cone->ArtificialRay;
   Ptr = cone->FirstRay;
   if (PrevPtr->Next != Ptr) 
-    fprintf(stderr,"Error at ddf_DeleteNegativeRays: ArtificialRay does not point the FirstRay.\n");
+    die("Error at ddf_DeleteNegativeRays: ArtificialRay does not point the FirstRay.\n");
   completed=ddf_FALSE;
   while (Ptr != NULL && !completed){
 /*    if ( (Ptr->ARay) < -zero ){ */
@@ -1300,11 +1378,13 @@ void ddf_DeleteNegativeRays(ddf_ConePtr cone)
   while (Ptr != NULL) {
     NextPtr=Ptr->Next;  /* remember the Next record */
     ddf_set(temp,Ptr->ARay);
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {fprintf(stderr,"Ptr->ARay :"); ddf_WriteNumber(stderr, temp);}
+#endif /* R_HAS_JUMPED_THE_SHARK */
 /*    if ( temp < -zero) {*/
     if ( ddf_Negative(temp)) {
       if (!negfound){
-        fprintf(stderr,"Error: An infeasible ray found after their removal\n");
+        die("Error: An infeasible ray found after their removal\n");
         negfound=ddf_TRUE;
       }
     }
@@ -1524,11 +1604,13 @@ void ddf_AddNewHalfspace1(ddf_ConePtr cone, ddf_rowrange hnew)
     }
     pos1++;
     progress = 100.0 * ((double)pos1 / pos2) * (2.0 * pos2 - pos1) / pos2;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (progress-prevprogress>=10 && pos1%10==0 && ddf_debug) {
       fprintf(stderr,"*Progress of iteration %5ld(/%ld):   %4ld/%4ld => %4.1f%% done\n",
 	     cone->Iteration, cone->m, pos1, pos2, progress);
       prevprogress=progress;
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
   if (cone->RayCount==cone->WeaklyFeasibleRayCount) cone->CompStatus=ddf_AllFound;
   _L99:;
@@ -1556,6 +1638,7 @@ void ddf_AddNewHalfspace2(ddf_ConePtr cone, ddf_rowrange hnew)
     goto _L99;   /* All rays are infeasible, and the computation must stop */
   }
   
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     pos1=0;
     fprintf(stderr,"(pos, FirstInfeasIndex, A Ray)=\n");
@@ -1567,6 +1650,7 @@ void ddf_AddNewHalfspace2(ddf_ConePtr cone, ddf_rowrange hnew)
    }
     fprintf(stderr,"\n");
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   if (cone->ZeroHead==NULL) cone->ZeroHead=cone->LastRay;
 
@@ -1592,7 +1676,9 @@ void ddf_AddNewHalfspace2(ddf_ConePtr cone, ddf_rowrange hnew)
 
   if (cone->Iteration<cone->m){
     if (cone->ZeroHead!=NULL && cone->ZeroHead!=cone->LastRay){
+#ifdef R_HAS_JUMPED_THE_SHARK
       if (cone->ZeroRayCount>200 && ddf_debug) fprintf(stderr,"*New edges being scanned...\n");
+#endif /* R_HAS_JUMPED_THE_SHARK */
       ddf_UpdateEdges(cone, cone->ZeroHead, cone->LastRay);
     }
   }
@@ -1658,9 +1744,11 @@ void ddf_SelectNextHalfspace2(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrang
       }
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (ddf_debug) {
     fprintf(stderr,"*infeasible rays (min) =%5ld, #feas rays =%5ld\n", infmin, fi);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 }
 
 void ddf_SelectNextHalfspace3(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrange *hnext)
@@ -1680,9 +1768,11 @@ void ddf_SelectNextHalfspace3(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrang
       }
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"*infeasible rays (max) =%5ld, #feas rays =%5ld\n", infmax, fi);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 }
 
 void ddf_SelectNextHalfspace4(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrange *hnext)
@@ -1709,11 +1799,13 @@ void ddf_SelectNextHalfspace4(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrang
   }
   if (!ddf_debug)
     return;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (max == fi) {
     fprintf(stderr,"*infeasible rays (min) =%5ld, #feas rays =%5ld\n", infi, fi);
   } else {
     fprintf(stderr,"*infeasible rays (max) =%5ld, #feas rays =%5ld\n", infi, fi);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 }
 
 void ddf_SelectNextHalfspace5(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrange *hnext)
@@ -1801,6 +1893,7 @@ void ddf_UniqueRows(ddf_rowindex OV, long p, long r, ddf_Amatrix A, long dmax, d
     }
   }
   *uniqrows=j;
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug){
     printf("The number of unique rows are %ld\n with order vector",*uniqrows);
     for (i=p;i<=r; i++){
@@ -1808,6 +1901,7 @@ void ddf_UniqueRows(ddf_rowindex OV, long p, long r, ddf_Amatrix A, long dmax, d
     }
     printf("\n");
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   _L99:;
 }
 
@@ -1866,11 +1960,15 @@ void ddf_RandomPermutation(ddf_rowindex OV, long t, unsigned int seed)
     u=r/rand_max;
     xk=(double)(j*u +1);
     k=(long)xk;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"u=%g, k=%ld, r=%g, randmax= %g\n",u,k,r,rand_max);
+#endif /* R_HAS_JUMPED_THE_SHARK */
     ovj=OV[j];
     OV[j]=OV[k];
     OV[k]=ovj;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) fprintf(stderr,"row %ld is exchanged with %ld\n",j,k); 
+#endif /* R_HAS_JUMPED_THE_SHARK */
   }
 }
 
@@ -1925,14 +2023,18 @@ in highest order.
   if (ddf_debug) localdebug=ddf_TRUE;
   found=ddf_TRUE;
   rr=set_card(PriorityRows);
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) set_fwrite(stderr,PriorityRows);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   for (i=1; i<=rr; i++){
     found=ddf_FALSE;
     for (j=i; j<=cone->m && !found; j++){
       oj=cone->OrderVector[j];
       if (set_member(oj, PriorityRows)){
         found=ddf_TRUE;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug) fprintf(stderr,"%ldth in sorted list (row %ld) is in PriorityRows\n", j, oj);
+#endif /* R_HAS_JUMPED_THE_SHARK */
         j1=j;
       }
     }
@@ -1941,14 +2043,16 @@ in highest order.
         /* shift everything lower: ov[i]->cone->ov[i+1]..ov[j1-1]->cone->ov[j1] */
         for (k=j1; k>=i; k--) cone->OrderVector[k]=cone->OrderVector[k-1];
         cone->OrderVector[i]=oj;
+#ifdef R_HAS_JUMPED_THE_SHARK
         if (localdebug){
           fprintf(stderr,"OrderVector updated to:\n");
           for (j = 1; j <= cone->m; j++) fprintf(stderr," %2ld", cone->OrderVector[j]);
           fprintf(stderr,"\n");
         }
+#endif /* R_HAS_JUMPED_THE_SHARK */
       }
     } else {
-      fprintf(stderr,"UpdateRowOrder: Error.\n");
+      die("UpdateRowOrder: Error.\n");
       goto _L99;
     }
   }
@@ -1969,15 +2073,19 @@ void ddf_SelectPreorderedNext(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrang
 void ddf_SelectNextHalfspace(ddf_ConePtr cone, ddf_rowset excluded, ddf_rowrange *hh)
 {
   if (cone->PreOrderedRun){
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (ddf_debug) {
       fprintf(stderr,"debug ddf_SelectNextHalfspace: Use PreorderNext\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     ddf_SelectPreorderedNext(cone, excluded, hh);
   }
   else {
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (ddf_debug) {
       fprintf(stderr,"debug ddf_SelectNextHalfspace: Use DynamicOrderedNext\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
     switch (cone->HalfspaceOrder) {
 
@@ -2094,6 +2202,7 @@ void ddf_InnerProduct(myfloat prod, ddf_colrange d, ddf_Arow v1, ddf_Arow v2)
     ddf_mul(temp,v1[j],v2[j]); 
     ddf_add(prod,prod,temp);
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     fprintf(stderr,"InnerProduct:\n"); 
     ddf_WriteArow(stderr, v1, d);
@@ -2102,6 +2211,7 @@ void ddf_InnerProduct(myfloat prod, ddf_colrange d, ddf_Arow v1, ddf_Arow v2)
     ddf_WriteNumber(stderr, prod);
     fprintf(stderr,"\n");
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   ddf_clear(temp);
 }

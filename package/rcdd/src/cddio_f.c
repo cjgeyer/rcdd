@@ -19,6 +19,7 @@
 #include <math.h>
 #include <string.h>
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 /* void ddf_fread_rational_value (FILE *, myfloat *); */
 void ddf_SetLinearity(ddf_MatrixPtr, char *);
 
@@ -200,6 +201,7 @@ void ddf_ProcessCommandLine(FILE *f, ddf_MatrixPtr M, char *line)
   }
   ddf_clear(value);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 ddf_boolean ddf_AppendMatrix2Poly(ddf_PolyhedraPtr *poly, ddf_MatrixPtr M)
 {
@@ -401,7 +403,9 @@ ddf_MatrixPtr ddf_MatrixNormalizedSortedUniqueCopy(ddf_MatrixPtr M,ddf_rowindex 
     set_emptyset(M2->linset);
     for(i=1; i<=m; i++) {
       if (newpos2[newpos1[i]]>0){
+#ifdef R_HAS_JUMPED_THE_SHARK
          printf("newpos1[%ld]=%ld, newpos2[newpos1[%ld]]=%ld\n",i,newpos1[i], i,newpos2[newpos1[i]]);
+#endif /* R_HAS_JUMPED_THE_SHARK */
          if (set_member(i,M->linset)) set_addelem(M2->linset, newpos2[newpos1[i]]);
          (*newpos)[i]=newpos2[newpos1[i]];
       } else {
@@ -861,6 +865,7 @@ ddf_ConePtr ddf_ConeDataLoad(ddf_PolyhedraPtr poly)
   return cone;
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void ddf_SetLinearity(ddf_MatrixPtr M, char *line)
 {
   int i=0;
@@ -971,6 +976,7 @@ _L99: ;
   /* if (f!=NULL) fclose(f); */
   return M;
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 ddf_PolyhedraPtr ddf_DDMatrix2Poly(ddf_MatrixPtr M, ddf_ErrorType *err)
@@ -1074,6 +1080,7 @@ void ddf_CopyRay(myfloat *a, ddf_colrange d_origsize, ddf_RayPtr RR,
   ddf_clear(b);
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void ddf_WriteRay(FILE *f, ddf_colrange d_origsize, ddf_RayPtr RR, ddf_RepresentationType rep, ddf_colindex reducedcol)
 {
   ddf_colrange j;
@@ -1235,6 +1242,7 @@ void ddf_WriteLP(FILE *f, ddf_LPPtr lp)
   }
 _L99:;
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 void ddf_SnapToInteger(myfloat y, myfloat x)
@@ -1244,6 +1252,7 @@ void ddf_SnapToInteger(myfloat y, myfloat x)
 }
 
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void ddf_WriteReal(FILE *f, myfloat x)
 {
   long ix1,ix2,ix;
@@ -1315,6 +1324,7 @@ void ddf_WriteAdjacency(FILE *f, ddf_PolyhedraPtr poly)
   ddf_WriteSetFamilyCompressed(f,A);
   ddf_FreeSetFamily(A);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 void ddf_ComputeAinc(ddf_PolyhedraPtr poly)
@@ -1434,6 +1444,7 @@ _L99:;
 } 
 
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 void ddf_WriteInputIncidence(FILE *f, ddf_PolyhedraPtr poly)
 {
   ddf_SetFamilyPtr I;
@@ -1726,6 +1737,7 @@ void ddf_WriteErrorMessages(FILE *f, ddf_ErrorType Error)
     break;
   }
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 
 ddf_SetFamilyPtr ddf_CopyIncidence(ddf_PolyhedraPtr poly)
@@ -1928,6 +1940,7 @@ ddf_MatrixPtr ddf_CopyInequalities(ddf_PolyhedraPtr poly)
   return M;
 }
 
+#ifdef R_HAS_JUMPED_THE_SHARK
 /****************************************************************************************/
 /*  rational number (a/b) read is taken from Vinci by Benno Bueeler and Andreas Enge    */
 /****************************************************************************************/
@@ -2013,6 +2026,7 @@ void ddf_fread_rational_value (FILE *f, myfloat value)
    ddf_set(value,rational_value);
    ddf_clear(rational_value);
 }
+#endif /* R_HAS_JUMPED_THE_SHARK */
    
 /****************************************************************************************/
 

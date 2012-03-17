@@ -177,3 +177,7 @@
 
  1.1-6  fix configure.ac to comport with instructions in "Writing R Extensions"
 
+ 1.1-7  a million totally unnecessary changes to cddlib to comply with
+        the draconian and terribly implemented requirement about
+        stdio/stderr in CRAN packages
+

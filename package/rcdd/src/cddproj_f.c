@@ -57,7 +57,9 @@ ddf_MatrixPtr ddf_BlockElimination(ddf_MatrixPtr M, ddf_colset delset, ddf_Error
       delindex[k]=j;  /* stores the kth deletion column index */
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) ddf_WriteMatrix(stdout, M);
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   linsize=set_card(M->linset);
   ddual=m+1;
@@ -108,7 +110,9 @@ ddf_MatrixPtr ddf_BlockElimination(ddf_MatrixPtr M, ddf_colset delset, ddf_Error
       }
     }
   }
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) printf("Size of the projection system: %ld x %ld\n", mproj, dproj);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   
   ddf_FreePolyhedra(dualpoly);
   free(delindex);
@@ -137,25 +141,31 @@ ddf_MatrixPtr ddf_FourierElimination(ddf_MatrixPtr M,ddf_ErrorType *error)
   d= M->colsize;
   if (d<=1){
     *error=ddf_ColIndexOutOfRange;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("The number of column is too small: %ld for Fourier's Elimination.\n",d);
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
 
   if (M->representation==ddf_Generator){
     *error=ddf_NotAvailForV;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("Fourier's Elimination cannot be applied to a V-polyhedron.\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
 
   if (set_card(M->linset)>0){
     *error=ddf_CannotHandleLinearity;
+#ifdef R_HAS_JUMPED_THE_SHARK
     if (localdebug) {
       printf("The Fourier Elimination function does not handle equality in this version.\n");
     }
+#endif /* R_HAS_JUMPED_THE_SHARK */
     goto _L99;
   }
 
@@ -179,10 +189,12 @@ ddf_MatrixPtr ddf_FourierElimination(ddf_MatrixPtr M,ddf_ErrorType *error)
     }
   }  /*of i*/
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   if (localdebug) {
     ddf_WriteMatrix(stdout, M);
     printf("No of  (+  -  0) rows = (%ld, %ld, %ld)\n", mpos,mneg, mzero);
   }
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
   /* The present code generates so many redundant inequalities and thus
      is quite useless, except for very small examples
