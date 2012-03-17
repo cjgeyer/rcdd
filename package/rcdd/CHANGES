@@ -181,3 +181,4 @@
         the draconian and terribly implemented requirement about
         stdio/stderr in CRAN packages
 
+        changes to vignette to use makeV

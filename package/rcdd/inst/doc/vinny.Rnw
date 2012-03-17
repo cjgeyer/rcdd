@@ -277,8 +277,8 @@ so we don't even try (this has actually been done in the \texttt{gmp} package
 but that package was written long after the \texttt{rcdd} package).
 We just use the representation of the rational
 as a character string, e.~g., \verb@"3/4"@ or \verb@"-15/32"@
-(perhaps some day there will be an \texttt{rcdd2} package that uses objects
-of type \texttt{bigq} from the \texttt{gmp} package, but the \texttt{rcdd}
+(perhaps some day there will be a version of \texttt{rcdd} that uses objects
+of type \texttt{bigq} from the \texttt{gmp} package, but the current version
 cannot).
 <<try3a>>=
 quuxq <- d2q(quux)
@@ -371,8 +371,8 @@ d <- 4
 n <- 100
 set.seed(42)
 x <- matrix(rnorm(d * n), nrow = n)
-foo <- cbind(0, cbind(1, x))
-out <- scdd(d2q(foo), representation = "V")
+foo <- makeV(d2q(x))
+out <- scdd(foo)
 l <- out$output[ , 1]
 b <- out$output[ , 2]
 v <- out$output[ , - c(1, 2)]
@@ -726,8 +726,8 @@ which rows of the input were actually dropped from this component.
 Eliminating redundant generators from a set of points gives the points
 that are the \emph{vertices} or \emph{extreme points} of the hull.
 <<vertex>>=
-foo <- cbind(0, cbind(1, x))
-out <- redundant(d2q(foo), representation = "V")
+foo <- makeV(points = d2q(x))
+out <- redundant(foo)
 nrow(out$output)
 all((out$new.position == 0) == (fred < 0))
 @
