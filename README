@@ -1,2 +1,32 @@
 This is the source tree for the R contributed package rcdd.
 The version for users is at CRAN (http://cran.r-project.org/package=rcdd)
+
+The rcdd source tree is the subdirectory package/rcdd of this repo
+
+This package uses autoconf.
+To run R CMD check, first have to do
+
+    cd package/rcdd
+    autoconf
+
+Then to run R CMD check
+
+    cd package
+    \rm -f rcdd/src/*.{o,so} rcdd/src/Makevars rcdd/config.status
+    R CMD check rcdd
+
+(the latter two commands are in the notes file in the package subdirectory
+so they don't have to be remembered)
+
+Also the vignette pdf isn't in the repo.  So to get it to R CMD check
+without a warning have to do
+
+    cd rcdd.Rcheck/rcdd/doc/
+    R --vanilla
+    library(rcdd, lib.loc = "../..")
+    Sweave("vinny.Rnw")
+    q()
+    pdflatex vinny
+    pdflatex vinny
+    cp vinny.pdf ../../../rcdd/inst/doc
+
