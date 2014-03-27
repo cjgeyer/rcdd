@@ -9,6 +9,8 @@
 \alias{qinv}
 \alias{qsum}
 \alias{qprod}
+\alias{qmax}
+\alias{qmin}
 \alias{qsign}
 \alias{qmatmult}
 \title{GMP Rational Arithmetic}
@@ -25,6 +27,8 @@ qdq(x, y)
 qmatmult(x, y)
 qsum(x)
 qprod(x)
+qmax(x)
+qmin(x)
 qsign(x)
 qneg(x)
 qabs(x)
@@ -43,6 +47,8 @@ qinv(x)
   Divide by zero is an error.  There are no rational NA, NaN, Inf.
   \code{qsum} is vectorizing summation like \code{sum} for ordinary numeric.
   \code{qprod} is vectorizing product like \code{prod} for ordinary numeric.
+  \code{qmax} is like \code{max} for ordinary numeric.
+  \code{qmin} is like \code{min} for ordinary numeric.
   \code{qsign} is vectorizing sign like \code{sign} for ordinary numeric.
   \code{qmatmult} is matrix multiplication like \code{\%*\%} for ordinary
   numeric; both arguments must be matrices.
@@ -63,6 +69,8 @@ qmq("1/5", 1/5)
 qdq("1/5", 1/5)
 qsum(c("1", "1/2", "1/4", "1/8"))
 qprod(c("1", "1/2", "1/4", "1/8"))
+qmax(c("-1", "1/2", "1/-4", "1/8"))
+qmin(c("-1", "1/2", "1/-4", "1/8"))
 qsign(c("-1", "1/2", "1/-4", "1/8"))
 qmatmult(matrix(c("1", "2", "3", "4"), 2, 2),
     matrix(c("1/1", "1/2", "1/3", "1/4"), 2, 2))

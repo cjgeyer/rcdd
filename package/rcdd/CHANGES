@@ -182,3 +182,8 @@
         stdio/stderr in CRAN packages
 
         changes to vignette to use makeV
+
+ 1.1-8  move vignette to vignettes subdirectory
+
+        add functions qmax and qmin
+

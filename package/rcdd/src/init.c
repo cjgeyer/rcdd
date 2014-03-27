@@ -12,6 +12,7 @@ qo.c
 qoq.c
 qsign.c
 qsump.c
+qminp.c
 scdd.c
 scdd_f.c
 impliedLinearity.c
@@ -34,6 +35,7 @@ static R_CallMethodDef callMethods[]  = {
     {"qoq", (DL_FUNC) &qoq, 3},
     {"qsign", (DL_FUNC) &qsign, 1},
     {"qsump", (DL_FUNC) &qsump, 2},
+    {"qminp", (DL_FUNC) &qminp, 2},
     {"qmatmult", (DL_FUNC) &qmatmult, 2},
     {"lpcdd", (DL_FUNC) &lpcdd, 4},
     {"lpcdd_f", (DL_FUNC) &lpcdd_f, 4},
