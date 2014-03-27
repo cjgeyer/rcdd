@@ -1,0 +1,2 @@
+\rm -f rcdd/src/*.{o,so} rcdd/src/Makevars rcdd/config.status
+R CMD check rcdd

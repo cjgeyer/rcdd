@@ -7,7 +7,6 @@
 *.tar.gz
 *.Rcheck
 *.Rout
-notes
 save/
 typescript
 autom4te.cache/
