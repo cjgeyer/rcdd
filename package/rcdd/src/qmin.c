@@ -1,7 +1,7 @@
 
 /*
  *  rcdd an R interface to cddlib
- *  Copyright (C) 2005    Charles J. Geyer
+ *  Copyright (C) 2014    Charles J. Geyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

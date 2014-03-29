@@ -1,6 +1,6 @@
 Package: rcdd
 Version: 1.1-8
-Date: 2014-03-27
+Date: 2014-03-29
 Title: rcdd (Computational Geometry)
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>, incorporates code from
@@ -16,5 +16,5 @@ Description: R interface to (some of) cddlib
     Also does linear programming and redundant generator elimination
     (for example, convex hull in n dimensions).  All functions can use exact
     infinite-precision rational arithmetic.
-License: GPL (>= 2)
+License: GPL-2
 URL: http://www.stat.umn.edu/geyer/rcdd/
