@@ -190,3 +190,4 @@
         changed licence from GPL (>= 2.0) to GPL-2 because it was wrong
         before.  I don't care but Fukuda's code is GPL-2.
 
+        added cleanup script
