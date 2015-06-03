@@ -78,7 +78,7 @@ the dimension, the active set of constraints, and a relative interior point.
   an error, (3) give answers that are nowhere near correct with no error or
   warning, or (4) crash R losing all work done to that point.  In large
   simulations (1) is most frequent, (2) occurs roughly one time in a thousand,
-  (3) occurs roughly one time in ten thousand, and (4) has only occured once
+  (3) occurs roughly one time in ten thousand, and (4) has only occurred once
   and only with the \code{\link{redundant}} function.  So the R floating point
   arithmetic version does mostly work, but you cannot trust its results unless
   you can check them independently.
