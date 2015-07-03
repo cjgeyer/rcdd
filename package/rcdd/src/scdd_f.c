@@ -21,6 +21,7 @@
 
 #include "setoper.h"
 #include "cdd_f.h"
+#include <R.h>
 #include <Rinternals.h>
 #include "mycddio_f.h"
 #include <string.h>
@@ -31,6 +32,7 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
 {
     int i, j, k;
 
+    GetRNGstate();
     if (! isMatrix(m))
         error("'m' must be matrix");
     if (! isLogical(h))
@@ -282,6 +284,7 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     ddf_free_global_constants();
 
     UNPROTECT(2 + nresult);
+    PutRNGstate();
     return result;
 }
 

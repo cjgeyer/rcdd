@@ -21,6 +21,7 @@
 
 #include "setoper.h"
 #include "cdd.h"
+#include <R.h>
 #include <Rinternals.h>
 #include "mycddio.h"
 #include <string.h>
@@ -31,6 +32,7 @@
 
 SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 {
+    GetRNGstate();
     if (! isMatrix(hrep))
         error("'hrep' must be matrix");
     if (! isString(hrep))
@@ -447,6 +449,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     dd_free_global_constants();
 
     UNPROTECT(1);
+    PutRNGstate();
     return result;
 }
 

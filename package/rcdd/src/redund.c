@@ -21,6 +21,7 @@
 
 #include "setoper.h"
 #include "cdd.h"
+#include <R.h>
 #include <Rinternals.h>
 #include "mycddio.h"
 #include <string.h>
@@ -31,6 +32,7 @@
 
 SEXP redundant(SEXP m, SEXP h)
 {
+    GetRNGstate();
     if (! isString(m))
         error("'m' must be character");
     if (! isMatrix(m))
@@ -237,6 +239,7 @@ SEXP redundant(SEXP m, SEXP h)
     dd_free_global_constants();
 
     UNPROTECT(nresult + 2);
+    PutRNGstate();
     return result;
 }
 

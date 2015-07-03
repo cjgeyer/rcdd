@@ -191,3 +191,8 @@
         before.  I don't care but Fukuda's code is GPL-2.
 
         added cleanup script
+
+ 1.1-9  explicitly import from methods, as required by R-3.3.0
+        remove calls to rand and srand from Fukuda's code; replace
+            by calls to unif_rand
+

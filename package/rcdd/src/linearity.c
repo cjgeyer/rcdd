@@ -21,6 +21,7 @@
 
 #include "setoper.h"
 #include "cdd.h"
+#include <R.h>
 #include <Rinternals.h>
 #include "mycddio.h"
 #include <string.h>
@@ -28,6 +29,7 @@
 
 SEXP impliedLinearity(SEXP m, SEXP h)
 {
+    GetRNGstate();
     if (! isMatrix(m))
         error("'m' must be matrix");
     if (! isLogical(h))
@@ -123,6 +125,7 @@ SEXP impliedLinearity(SEXP m, SEXP h)
     dd_free_global_constants();
 
     UNPROTECT(1);
+    PutRNGstate();
     return foo;
 }
 

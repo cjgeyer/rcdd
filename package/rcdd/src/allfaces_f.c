@@ -21,6 +21,7 @@
 
 #include "setoper.h"
 #include "cdd.h"
+#include <R.h>
 #include <Rinternals.h>
 #include "mycddio_f.h"
 #include <string.h>
@@ -33,6 +34,7 @@ static SEXP FaceEnum(ddf_MatrixPtr M);
 
 SEXP allfaces_f(SEXP hrep)
 {
+    GetRNGstate();
     if (! isMatrix(hrep))
         error("'hrep' must be matrix");
     if (! isReal(hrep))
@@ -96,6 +98,7 @@ SEXP allfaces_f(SEXP hrep)
     UNPROTECT(1);
     if (result == R_NilValue)
         error("failed");
+    PutRNGstate();
     return result;
 }
 

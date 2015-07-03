@@ -35,3 +35,4 @@ export(linearity)
 export(validcdd)
 export(z2q)
 
+importFrom(methods, as)
