@@ -1820,6 +1820,9 @@ the LP.
   dd_clear(x); dd_clear(sw);
 }
 
+#ifndef R_HAS_JUMPED_THE_SHARK
+#include "my_unif_rand.h"
+#endif /* R_HAS_JUMPED_THE_SHARK */
 
 void dd_RandomPermutation2(dd_rowindex OV,long t,unsigned int seed)
 {
@@ -1827,10 +1830,16 @@ void dd_RandomPermutation2(dd_rowindex OV,long t,unsigned int seed)
   double u,xk,r,rand_max=(double) RAND_MAX;
   int localdebug=dd_FALSE;
 
+#ifdef R_HAS_JUMPED_THE_SHARK
   srand(seed);
+#endif /* R_HAS_JUMPED_THE_SHARK */
   for (j=t; j>1 ; j--) {
+#ifdef R_HAS_JUMPED_THE_SHARK
     r=rand();
     u=r/rand_max;
+#else /* R_HAS_JUMPED_THE_SHARK */
+    u = my_unif_rand();
+#endif /* R_HAS_JUMPED_THE_SHARK */
     xk=(double)(j*u +1);
     k=(long)xk;
 #ifdef R_HAS_JUMPED_THE_SHARK

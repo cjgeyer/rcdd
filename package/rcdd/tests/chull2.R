@@ -9,7 +9,11 @@
  x <- d2q(x)
 
  foo <- cbind("0", cbind("1", x))
- out <- out <- scdd(foo, representation = "V")
+ # in order to get the same results as before save and restore .Random.seed
+ # because sccd now calls R RNG
+ save.Random.seed <- .Random.seed
+ out <- scdd(foo, representation = "V")
+ .Random.seed <- save.Random.seed
 
  l <- out$output[ , 1]
  b <- out$output[ , 2]
