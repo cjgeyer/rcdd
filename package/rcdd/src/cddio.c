@@ -17,6 +17,7 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include "die.h"
 
 #ifdef R_HAS_JUMPED_THE_SHARK
 /* void dd_fread_rational_value (FILE *, mytype *); */
@@ -590,6 +591,8 @@ dd_MatrixPtr dd_MatrixSubmatrix(dd_MatrixPtr M, dd_rowset delset) /* 092 */
     Msub->numbtype=M->numbtype;
     Msub->representation=M->representation;
     Msub->objective=M->objective;
+  } else {
+    die("dd_MatrixSubmatrix2: nrows or ncols nonpositive\n");
   }
   return Msub;
 }

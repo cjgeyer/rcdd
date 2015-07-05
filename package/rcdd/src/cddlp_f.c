@@ -19,6 +19,7 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include "die.h"
 
 #if defined ddf_GMPRATIONAL
 #include "cdd_f.h"
@@ -376,13 +377,19 @@ ddf_Arow ddf_LPCopyRow(ddf_LPPtr lp, ddf_rowrange i)
   ddf_colrange j;
   ddf_Arow a;
 
+  // fix by Geyer of bug detected by clang
+  // move this outside of loop so a is always initialized
+  ddf_InitializeArow(lp->d, &a);
+
   if (i>=1 && i<=lp->m){
-    ddf_InitializeArow(lp->d, &a);
     for (j=1; j<=lp->d; j++) {
       ddf_set(a[j-1],lp->A[i-1][j-1]);
       /* copying the i-th row to a */
     }
+  } else {
+      die("ddf_LPCopyRow: i out of range\n");
   }
+
   return a;
 }
 
@@ -3558,6 +3565,12 @@ ddf_rowindex *newpos, ddf_ErrorType *error) /* 094 */
   set_initialize(redset, m);
   revpos=(long *)calloc(m+1,sizeof(long));
   
+  // Geyer: clang complains about uninitialized stuff, let's initialize
+  *impl_linset = NULL;
+  *newpos = NULL;
+  redset1 = NULL;
+  newpos1 = NULL;
+
   success=ddf_MatrixCanonicalizeLinearity(M, impl_linset, newpos, error);
 
   if (!success) goto _L99;  
@@ -3584,6 +3597,8 @@ _L99:
   set_free(redset1);
   free(newpos1);
   free(revpos);
+  if ((impl_linset == NULL) || (newpos == NULL))
+      die("ddf_MatrixCanonicalize failed to allocate impl_linset or newpos\n");
   return success;
 }
 

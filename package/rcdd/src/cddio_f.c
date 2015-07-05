@@ -18,6 +18,7 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include "die.h"
 
 #ifdef R_HAS_JUMPED_THE_SHARK
 /* void ddf_fread_rational_value (FILE *, myfloat *); */
@@ -632,6 +633,8 @@ ddf_MatrixPtr ddf_MatrixSubmatrix2(ddf_MatrixPtr M, ddf_rowset delset,ddf_rowind
     Msub->numbtype=M->numbtype;
     Msub->representation=M->representation;
     Msub->objective=M->objective;
+  } else {
+    die("ddf_MatrixSubmatrix2: nrows or ncols nonpositive\n");
   }
   return Msub;
 }

@@ -1,0 +1,71 @@
+
+ in function dd_MatrixCanonicalize in file cddlp.c
+     clang found that redset1 may be freed when not initialized
+     is that right?
+ it looks like this function has the obligation to allocate
+     the arguments (which are vectors) impl_linset and redset
+     those are the "return values" if the actual result is TRUE
+
+ what does dd_MatrixCanonicalizeLinearity do?
+     sets impl_linset to linrows
+     what's with that?  Comes from dd_ImplicitLinearityRows
+
+ dd_ImplicitLinearityRows returns imp_linset and that is (?) allocated by
+     dd_FreeOfImplicitLinearity
+
+ This is horrible.  Never track this down.  Do something safer.
+ Check if null pointer before return
+
+ ----------------- start over -----------------
+
+ in function dd_MatrixCanonicalize in file cddlp.c
+
+ redset is always initialized (at top level of this func)
+ impl_linset is hopefully initialized somewhere, perhaps if
+     dd_MatrixCanonicalizeLinearity returns FALSE
+ redset1 is hopefully initialized somewhere, perhaps if
+     dd_MatrixRedundancyRemove returns FALSE or TRUE (either!)
+ newpos is hopefully allocated somewhere, perhaps if
+     dd_MatrixCanonicalizeLinearity returns FALSE 
+
+ So (!)
+
+ initialize redset1, newpos1, and revpos to NULL to prevent free when
+     not allocated
+ but then what about this function not allocating its "return values"
+     impl_linset, redset, newpos, error (latter is enum, so don't worry about
+     that)
+
+ same for ddf_MatrixCanonicalize ??????
+
+ ----------------- start over -----------------
+
+ what is a dd_rowset (type of impl_linset and redset) or
+     a dd_rowindex (type of newpos)?
+
+ typedef set_type dd_rowset; (cddtypes.h)
+ typedef unsigned long *set_type; (setoper.h)
+ typedef long *dd_rowindex; (cddtypes.h)
+
+ as one can see from the example redcheck.c in the cddlib distribution
+
+ impl_linset, redset, and newpos all are uninitialized before the call
+     to dd_MatrixCanonicalize and are freed before leaving main
+
+ ditto for my redund.c
+
+ The function has the signature (cdd.h)
+
+ dd_boolean dd_MatrixCanonicalize(dd_MatrixPtr *, dd_rowset *, dd_rowset *,
+     dd_rowindex *, dd_ErrorType *);
+
+ so the arguments impl_linset, redset, and newpos are pointers to
+     dd_rowset or dd_rowindex, hence pointers to pointers to long or
+     unsigned long, as the case may be.
+
+ Hence the above is radically wrong.
+
+ need to set *impl_linset and *newpos to NULL in MatrixCanonicalize
+
+ Now works again, so that does not seem to be the problem.
+
