@@ -9,11 +9,13 @@ makeV <- function(points, rays, lines, x = NULL) {
         (! is.null(x)) && is.character(x)
 
     d <- 0
+    n <- 0
     if (! missing(points)) {
         stopifnot(is.numeric(points) || is.character(points))
         if (! is.matrix(points))
             points <- rbind(points)
         d <- ncol(points)
+        n <- nrow(points)
         if (is.numeric(points)) {
             stopifnot(is.finite(points))
             if (rational.output)
@@ -28,8 +30,13 @@ makeV <- function(points, rays, lines, x = NULL) {
         stopifnot(is.numeric(rays) || is.character(rays))
         if (! is.matrix(rays))
             rays <- rbind(rays)
-        if (d > 0 && d != ncol(rays))
-            stop("column dimensions of arguments differ")
+        if (d > 0) {
+            if (d != ncol(rays))
+                stop("column dimensions of arguments differ")
+        } else {
+            d <- ncol(rays)
+        }
+        n <- n + nrow(rays)
         if (is.numeric(rays)) {
             stopifnot(is.finite(rays))
             if (rational.output)
@@ -44,8 +51,13 @@ makeV <- function(points, rays, lines, x = NULL) {
         stopifnot(is.numeric(lines) || is.character(lines))
         if (! is.matrix(lines))
             lines <- rbind(lines)
-        if (d > 0 && d != ncol(lines))
-            stop("column dimensions of arguments differ")
+        if (d > 0) {
+            if (d != ncol(lines))
+                stop("column dimensions of arguments differ")
+        } else {
+            d <- ncol(lines)
+        }
+        n <- n + nrow(lines)
         if (is.numeric(lines)) {
             stopifnot(is.finite(lines))
             if (rational.output)
@@ -70,8 +82,9 @@ makeV <- function(points, rays, lines, x = NULL) {
             if(inherits(fubar, "try-error"))
                 stop("'x' character but not GMP rational")
         }
+        n <- n + nrow(x)
     }
-    if (d == 0) stop("all arguments have row dimension zero")
+    if (n == 0) stop("all arguments have row dimension zero")
 
     fred <- attr(x, "representation")
     if ((! is.null(fred)) && (fred != "V"))

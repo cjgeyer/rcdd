@@ -196,3 +196,5 @@
         remove calls to rand and srand from Fukuda's code; replace
             by calls to unif_rand
 
+ 1.1-10 makeV was totally broken in that didn't handle rays or lines
+
