@@ -1,5 +1,5 @@
 
-useDynLib(rcdd)
+useDynLib(rcdd, .registration = TRUE, .fixes = "C_")
 
 export(addHeq)
 export(addHin)

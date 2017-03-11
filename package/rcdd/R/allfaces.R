@@ -4,9 +4,9 @@ allfaces <- function(hrep) {
     validcdd(hrep, representation = "H")
 
     if (is.character(hrep)) {
-        .Call("allfaces", hrep, PACKAGE = "rcdd")
+        .Call(C_allfaces, hrep)
     } else {
         storage.mode(hrep) <- "double"
-        .Call("allfaces_f", hrep, PACKAGE = "rcdd")
+        .Call(C_allfaces_f, hrep)
     }
 }

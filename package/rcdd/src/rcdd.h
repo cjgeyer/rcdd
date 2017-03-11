@@ -49,6 +49,9 @@ SEXP allfaces(SEXP m);
 SEXP allfaces_f(SEXP m);
 
 SEXP nonred(SEXP sets, SEXP pow2);
+SEXP test_my_subset(SEXP set1, SEXP set2, SEXP pow2);
+SEXP all_intersect(SEXP sets, SEXP pow2);
+SEXP all_union(SEXP sets, SEXP pow2);
 
 SEXP impliedLinearity(SEXP m, SEXP h);
 SEXP impliedLinearity_f(SEXP m, SEXP h);

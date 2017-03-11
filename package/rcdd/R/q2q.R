@@ -1,1 +1,1 @@
-q2q <- function(x) .Call("q2q", x, PACKAGE = "rcdd")
+q2q <- function(x) .Call(C_q2q, x)

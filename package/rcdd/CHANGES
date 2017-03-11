@@ -198,3 +198,4 @@
 
  1.1-10 makeV was totally broken in that didn't handle rays or lines
 
+ 1.1-11 modernize registration of native routines

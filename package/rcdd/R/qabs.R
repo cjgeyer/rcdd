@@ -6,5 +6,5 @@ qabs <- function(x) {
     if (is.numeric(x))
         x <- d2q(x)
 
-    .Call("qo", x, as.integer(2), PACKAGE = "rcdd")
+    .Call(C_qo, x, as.integer(2))
 }

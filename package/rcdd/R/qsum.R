@@ -10,5 +10,5 @@ qsum <- function(x) {
         stop("Cannot happen!")
     }
 
-    .Call("qsump", x, as.integer(1), PACKAGE = "rcdd")
+    .Call(C_qsump, x, as.integer(1))
 }

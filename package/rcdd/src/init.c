@@ -21,10 +21,11 @@ impliedLinearity_f.c
 
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
+#include <R_ext/Visibility.h>
 #include "rcdd.h"
 
 static R_CMethodDef cMethods[] = {
-    {NULL, NULL, 0, NULL, NULL}
+    {NULL, NULL, 0, NULL}
 };
 
 static R_CallMethodDef callMethods[]  = {
@@ -46,13 +47,18 @@ static R_CallMethodDef callMethods[]  = {
     {"redundant", (DL_FUNC) &redundant, 2},
     {"redundant_f", (DL_FUNC) &redundant_f, 2},
     {"nonred", (DL_FUNC) &nonred, 2},
+    {"test_my_subset", (DL_FUNC) &test_my_subset, 3},
+    {"all_intersect", (DL_FUNC) &all_intersect, 2},
+    {"all_union", (DL_FUNC) &all_union, 2},
     {"impliedLinearity", (DL_FUNC) &impliedLinearity, 2},
     {"impliedLinearity_f", (DL_FUNC) &impliedLinearity_f, 2},
     {NULL, NULL, 0}
 };
 
-void R_init_rcdd(DllInfo *info)
+void attribute_visible R_init_rcdd(DllInfo *info)
 {
     R_registerRoutines(info, cMethods, callMethods, NULL, NULL);
+    R_useDynamicSymbols(info, FALSE);
+    R_forceSymbols(info, TRUE);
 }
 

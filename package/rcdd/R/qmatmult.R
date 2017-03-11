@@ -19,5 +19,5 @@ qmatmult <- function(x, y) {
 
     stopifnot(ncol(x) == nrow(y))
 
-    .Call("qmatmult", x, y, PACKAGE = "rcdd")
+    .Call(C_qmatmult, x, y)
 }

@@ -10,5 +10,5 @@ qsign <- function(x) {
         stop("Cannot happen!")
     }
 
-    .Call("qsign", x, PACKAGE = "rcdd")
+    .Call(C_qsign, x)
 }

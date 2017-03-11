@@ -10,5 +10,5 @@ qmin <- function(x) {
         stop("Cannot happen!")
     }
 
-    .Call("qminp", x, as.integer(1), PACKAGE = "rcdd")
+    .Call(C_qminp, x, as.integer(1))
 }

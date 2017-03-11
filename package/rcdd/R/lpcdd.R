@@ -16,13 +16,11 @@ lpcdd <- function(hrep, objgrd, objcon = as(0, class(objgrd)), minimize = TRUE,
     validcdd(hrep, representation = "H")
 
     if (is.character(hrep)) {
-        .Call("lpcdd", hrep, c(objcon, objgrd), minimize, solver,
-            PACKAGE = "rcdd")
+        .Call(C_lpcdd, hrep, c(objcon, objgrd), minimize, solver)
     } else {
         storage.mode(hrep) <- "double"
         objgrd <- as.double(objgrd)
         objcon <- as.double(objcon)
-        .Call("lpcdd_f", hrep, c(objcon, objgrd), minimize, solver,
-            PACKAGE = "rcdd")
+        .Call(C_lpcdd_f, hrep, c(objcon, objgrd), minimize, solver)
     }
 }

@@ -14,5 +14,5 @@ qmq <- function(x, y) {
         stop("Cannot happen!")
     }
 
-    .Call("qoq", x, y, as.integer(2), PACKAGE = "rcdd")
+    .Call(C_qoq, x, y, as.integer(2))
 }

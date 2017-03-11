@@ -11,31 +11,31 @@
 
  ##### addition #####
 
- .Call("qoq", foo, bar, as.integer(1))
+ .Call(rcdd:::C_qoq, foo, bar, as.integer(1))
 
  qpq(foo, bar)
 
  ##### subtraction #####
 
- .Call("qoq", foo, bar, as.integer(2))
+ .Call(rcdd:::C_qoq, foo, bar, as.integer(2))
 
  qmq(foo, bar)
 
  ##### multiplication #####
 
- .Call("qoq", foo, bar, as.integer(3))
+ .Call(rcdd:::C_qoq, foo, bar, as.integer(3))
 
  qxq(foo, bar)
 
  ##### division #####
 
- .Call("qoq", bar, foo, as.integer(4))
+ .Call(rcdd:::C_qoq, bar, foo, as.integer(4))
 
  qdq(bar, foo)
 
  options(error=dump.frames)
 
- .Call("qoq", foo, bar, as.integer(4))
+ .Call(rcdd:::C_qoq, foo, bar, as.integer(4))
 
  qdq(foo, bar)
 
