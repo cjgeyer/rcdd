@@ -1,0 +1,7 @@
+system("R CMD build ../package/rcdd")
+library(tools)
+out <- check_packages_in_dir(".", reverse = "all")
+warnings()
+summary(out)
+summarize_check_packages_in_dir_results(".")
+summarize_check_packages_in_dir_timings(".")

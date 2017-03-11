@@ -6,7 +6,7 @@ Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>, incorporates code from
     cddlib (ver 0.94f) written by Komei Fukuda <fukuda@ifor.math.ethz.ch>
 Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
-Depends: R (>= 3.0.0)
+Depends: R (>= 3.0.2)
 Imports: methods
 SystemRequirements: GMP (GNU MP bignum library from http://gmplib.org/)
 Description: R interface to (some of) cddlib
