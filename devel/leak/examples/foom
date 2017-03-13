@@ -1,0 +1,13 @@
+#!/bin/sh
+export VALGRIND_OPTS="--leak-check=full --expensive-definedness-checks=yes"
+RD_FILES=`ls ../../../package/rcdd/man/*.Rd`
+for file in $RD_FILES
+do
+    ofile=`echo $file | sed 's/^.*\///' | sed 's/d$//'`
+    sed -n '/^\\examples{$/,/^}$/p' $file \
+        | head --lines=-1 | tail --lines=+2 \
+        | (echo 'library(rcdd, lib.loc="../../../package/rcdd.Rcheck")' \
+            && cat) \
+        > $ofile
+    R CMD BATCH --vanilla --debugger=valgrind $ofile
+done
