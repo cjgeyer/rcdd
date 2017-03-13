@@ -51,7 +51,8 @@ void set_initialize(set_type *setp, long length)
      /* if negative length is requested, it generates the shortest length */
 
 	forlim1=set_blocks(len);
-	*setp=(unsigned long *) calloc(forlim1, sizeof i);
+        /* clang static analyzer complained, so changed by CjG */
+	*setp=(unsigned long *) calloc(forlim1, sizeof(unsigned long));
 	(*setp)[0]=(unsigned long) len;  /* size of the ground set */
 	for (i=1; i<forlim1; i++)
 		(*setp)[i]=0U;

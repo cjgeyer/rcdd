@@ -53,7 +53,7 @@ SEXP impliedLinearity(SEXP m, SEXP h)
         error("no use if only one col");
 
     for (int i = 0; i < nrow; i++) {
-        char *foo = (char *) CHAR(STRING_ELT(m, i));
+        const char *foo = CHAR(STRING_ELT(m, i));
         if (strlen(foo) != 1)
             error("column one of 'm' not zero-or-one valued");
         if (! (foo[0] == '0' || foo[0] == '1'))
@@ -61,7 +61,7 @@ SEXP impliedLinearity(SEXP m, SEXP h)
     }
     if (! LOGICAL(h)[0])
         for (int i = nrow; i < 2 * nrow; i++) {
-            char *foo = (char *) CHAR(STRING_ELT(m, i));
+            const char *foo = CHAR(STRING_ELT(m, i));
             if (strlen(foo) != 1)
                 error("column two of 'm' not zero-or-one valued");
             if (! (foo[0] == '0' || foo[0] == '1'))
@@ -87,7 +87,7 @@ SEXP impliedLinearity(SEXP m, SEXP h)
 
     /* linearity */
     for (int i = 0; i < nrow; i++) {
-        char *foo = (char *) CHAR(STRING_ELT(m, i));
+        const char *foo = CHAR(STRING_ELT(m, i));
         if (foo[0] == '1')
             set_addelem(mf->linset, i + 1);
         /* note conversion from zero-origin to one-origin indexing */
@@ -96,9 +96,13 @@ SEXP impliedLinearity(SEXP m, SEXP h)
     /* matrix */
     for (int j = 1, k = nrow; j < ncol; j++)
         for (int i = 0; i < nrow; i++, k++) {
-            char *rat_str = (char *) CHAR(STRING_ELT(m, k));
-            if (mpq_set_str(value, rat_str, 10) == -1)
+            const char *rat_str = CHAR(STRING_ELT(m, k));
+            if (mpq_set_str(value, rat_str, 10) == -1) {
+                dd_FreeMatrix(mf);
+                dd_clear(value);
+                dd_free_global_constants();
                 error("error converting string to GMP rational");
+            }
             mpq_canonicalize(value);
             dd_set(mf->matrix[i][j - 1], value);
             /* note our matrix has one more column than Fukuda's */
@@ -109,8 +113,8 @@ SEXP impliedLinearity(SEXP m, SEXP h)
 
     if (err != dd_NoError) {
         rr_WriteErrorMessages(err);
-        dd_FreeMatrix(mf);
         set_free(out);
+        dd_FreeMatrix(mf);
         dd_clear(value);
         dd_free_global_constants();
         error("failed");
@@ -119,8 +123,8 @@ SEXP impliedLinearity(SEXP m, SEXP h)
     SEXP foo;
     PROTECT(foo = rr_set_fwrite(out));
 
-    dd_FreeMatrix(mf);
     set_free(out);
+    dd_FreeMatrix(mf);
     dd_clear(value);
     dd_free_global_constants();
 

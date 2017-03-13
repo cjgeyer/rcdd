@@ -386,7 +386,7 @@ dd_MatrixPtr dd_MatrixNormalizedSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *new
      of the original row i (i=1,...,M->rowsize).  *newpos[i] is negative if the original
      row is dominated by -*newpos[i] and eliminated in the new copy.
   */
-  dd_MatrixPtr M1=NULL,M2=NULL;
+  dd_MatrixPtr M2=NULL;
   dd_rowrange m,i;
   dd_colrange d;
   dd_rowindex newpos1=NULL,newpos1r=NULL,newpos2=NULL;
@@ -397,7 +397,7 @@ dd_MatrixPtr dd_MatrixNormalizedSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *new
   *newpos=(long *)calloc(m+1,sizeof(long));  
   newpos1r=(long *)calloc(m+1,sizeof(long));  
   if (m>=0 && d>=0){
-    M1=dd_MatrixNormalizedSortedCopy(M,&newpos1);
+    dd_MatrixPtr M1=dd_MatrixNormalizedSortedCopy(M,&newpos1);
     for (i=1; i<=m;i++) newpos1r[newpos1[i]]=i;  /* reverse of newpos1 */
     M2=dd_MatrixUniqueCopy(M1,&newpos2);
     set_emptyset(M2->linset);
@@ -412,8 +412,11 @@ dd_MatrixPtr dd_MatrixNormalizedSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *new
          (*newpos)[i]=-newpos1r[-newpos2[newpos1[i]]];
       }
     }
-  dd_FreeMatrix(M1);free(newpos1);free(newpos2);free(newpos1r);
+    dd_FreeMatrix(M1);
+    free(newpos2);
   }
+  free(newpos1);   /* free moved outside if by CJG */
+  free(newpos1r);  /* free moved outside if by CJG */
   
   return M2;
 }
@@ -460,8 +463,10 @@ dd_MatrixPtr dd_MatrixSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *newpos)  /* 0
       }
     }
 
-    free(newpos1);free(newpos2);free(newpos1r);
+    free(newpos2);
   }
+  free(newpos1);   /* free moved outside if by CJG */
+  free(newpos1r);  /* free moved outside if by CJG */
   
   return M2;
 }
@@ -538,13 +543,12 @@ int dd_MatrixRowRemove2(dd_MatrixPtr *M, dd_rowrange r, dd_rowindex *newpos) /* 
   dd_rowrange i,m;
   dd_colrange d;
   dd_boolean success=0;
-  dd_rowindex roworder;
   
   m=(*M)->rowsize;
   d=(*M)->colsize;
 
   if (r >= 1 && r <=m){
-    roworder=(long *)calloc(m+1,sizeof(long));
+    dd_rowindex roworder=(long *)calloc(m+1,sizeof(long));
     (*M)->rowsize=m-1;
     dd_FreeArow(d, (*M)->matrix[r-1]);
     set_delelem((*M)->linset,r);
@@ -560,6 +564,7 @@ int dd_MatrixRowRemove2(dd_MatrixPtr *M, dd_rowrange r, dd_rowindex *newpos) /* 
       }
     }
     success=1;
+    free(roworder); /* added by CJG due to complaint by clang static analyzer */
   }
   return success;
 }

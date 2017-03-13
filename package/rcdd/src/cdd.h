@@ -10,20 +10,19 @@
    the manual cddlibman.tex for detail.
 */
 
-#ifndef  __CDD_H
-#define  __CDD_H
-#endif  /* __CDD_H */
+#ifndef  CDDLIB_CDD_H
+#define  CDDLIB_CDD_H
 
-#ifndef  __CDDMP_H
+#ifndef  CDDLIB_CDDMP_H
 #include "cddmp.h"
-#endif  /* __CDDMP_H */
+#endif  /* CDDLIB_CDDMP_H */
 
-#ifndef  __CDDTYPES_H
+#ifndef  CDDLIB_CDDTYPES_H
 #include "cddtypes.h"
-#endif  /* __CDDTYPES_H */
+#endif  /* CDDLIB_CDDTYPES_H */
 
 #ifdef GMPRATIONAL
-#ifndef __CDD_HF
+#ifndef CDDLIB_CDD_HF
 #include "cdd_f.h"
 #endif
 #endif
@@ -288,3 +287,6 @@ dd_boolean dd_AppendMatrix2Poly(dd_PolyhedraPtr*, dd_MatrixPtr);
 
 
 /* end of cddlib.h */
+
+#endif  /* CDDLIB_CDD_H */
+

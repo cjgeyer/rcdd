@@ -27,11 +27,34 @@
 #include <string.h>
 #include "rcdd.h"
 
+#define ERROR_WITH_CLEANUP_5(foo) \
+do { \
+    dd_FreeMatrix(aout); \
+    dd_FreePolyhedra(poly); \
+    dd_FreeMatrix(mf); \
+    dd_clear(value); \
+    dd_free_global_constants(); \
+    error(foo); \
+} while (0)
+#define ERROR_WITH_CLEANUP_4(foo) \
+do { \
+    dd_FreePolyhedra(poly); \
+    dd_FreeMatrix(mf); \
+    dd_clear(value); \
+    dd_free_global_constants(); \
+    error(foo); \
+} while (0)
+#define ERROR_WITH_CLEANUP_3(foo) \
+do { \
+    dd_FreeMatrix(mf); \
+    dd_clear(value); \
+    dd_free_global_constants(); \
+    error(foo); \
+} while (0)
+
 SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     SEXP inputadjacency, SEXP incidence, SEXP inputincidence)
 {
-    int i, j, k;
-
     GetRNGstate();
     if (! isMatrix(m))
         error("'m' must be matrix");
@@ -80,16 +103,16 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     if (ncol <= 2)
         error("no cols in m[ , - c(1, 2)]");
 
-    for (i = 0; i < nrow; i++) {
-        char *foo = (char *) CHAR(STRING_ELT(m, i));
+    for (int i = 0; i < nrow; i++) {
+        const char *foo = CHAR(STRING_ELT(m, i));
         if (strlen(foo) != 1)
             error("column one of 'm' not zero-or-one valued");
         if (! (foo[0] == '0' || foo[0] == '1'))
             error("column one of 'm' not zero-or-one valued");
     }
     if (! LOGICAL(h)[0])
-        for (i = nrow; i < 2 * nrow; i++) {
-            char *foo = (char *) CHAR(STRING_ELT(m, i));
+        for (int i = nrow; i < 2 * nrow; i++) {
+            const char *foo = CHAR(STRING_ELT(m, i));
             if (strlen(foo) != 1)
                 error("column two of 'm' not zero-or-one valued");
             if (! (foo[0] == '0' || foo[0] == '1'))
@@ -114,26 +137,26 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     mf->numbtype = dd_Rational;
 
     /* linearity */
-    for (i = 0; i < nrow; i++) {
-        char *foo = (char *) CHAR(STRING_ELT(m, i));
+    for (int i = 0; i < nrow; i++) {
+        const char *foo = CHAR(STRING_ELT(m, i));
         if (foo[0] == '1')
             set_addelem(mf->linset, i + 1);
         /* note conversion from zero-origin to one-origin indexing */
     }
 
     /* matrix */
-    for (j = 1, k = nrow; j < ncol; j++)
-        for (i = 0; i < nrow; i++, k++) {
-            char *rat_str = (char *) CHAR(STRING_ELT(m, k));
+    for (int j = 1, k = nrow; j < ncol; j++)
+        for (int i = 0; i < nrow; i++, k++) {
+            const char *rat_str = CHAR(STRING_ELT(m, k));
             if (mpq_set_str(value, rat_str, 10) == -1)
-                error("error converting string to GMP rational");
+                ERROR_WITH_CLEANUP_3("error converting string to GMP rational");
             mpq_canonicalize(value);
             dd_set(mf->matrix[i][j - 1], value);
             /* note our matrix has one more column than Fukuda's */
         }
 
     dd_RowOrderType strategy = dd_LexMin;
-    char *row_str = (char *) CHAR(STRING_ELT(roworder, 0));
+    const char *row_str = CHAR(STRING_ELT(roworder, 0));
     if(strcmp(row_str, "maxindex") == 0)
         strategy = dd_MaxIndex;
     else if(strcmp(row_str, "minindex") == 0)
@@ -151,26 +174,17 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     else if(strcmp(row_str, "randomrow") == 0)
         strategy = dd_RandomRow;
     else
-        error("roworder not recognized");
+        ERROR_WITH_CLEANUP_3("roworder not recognized");
 
     dd_ErrorType err = dd_NoError;
     dd_PolyhedraPtr poly = dd_DDMatrix2Poly2(mf, strategy, &err);
 
-    if (poly->child != NULL && poly->child->CompStatus == dd_InProgress) {
-        dd_FreeMatrix(mf);
-        dd_FreePolyhedra(poly);
-        dd_clear(value);
-        dd_free_global_constants();
-        error("Computation failed, rational arithmetic problem\n");
-    }
+    if (poly->child != NULL && poly->child->CompStatus == dd_InProgress)
+        ERROR_WITH_CLEANUP_4("Computation failed, rational arithmetic problem");
 
     if (err != dd_NoError) {
         rr_WriteErrorMessages(err);
-        dd_FreeMatrix(mf);
-        dd_FreePolyhedra(poly);
-        dd_clear(value);
-        dd_free_global_constants();
-        error("failed");
+        ERROR_WITH_CLEANUP_4("failed");
     }
 
     dd_MatrixPtr aout = NULL;
@@ -179,15 +193,16 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     else if (poly->representation == dd_Generator)
         aout = dd_CopyInequalities(poly);
     else
-        error("Cannot happen!  poly->representation no good\n");
+        ERROR_WITH_CLEANUP_5("Cannot happen!  poly->representation no good");
     if (aout == NULL)
-        error("Cannot happen!  aout no good\n");
+        ERROR_WITH_CLEANUP_5("Cannot happen!  aout no good");
 
     int mrow = aout->rowsize;
     int mcol = aout->colsize;
 
     if (mcol + 1 != ncol)
-        error("Cannot happen!  computed matrix has wrong number of columns");
+        ERROR_WITH_CLEANUP_5("Cannot happen!  computed matrix has"
+            " wrong number of columns");
 
 #ifdef BLATHER
     printf("mrow = %d\n", mrow);
@@ -198,7 +213,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     PROTECT(bar = allocMatrix(STRSXP, mrow, ncol));
 
     /* linearity output */
-    for (i = 0; i < mrow; i++)
+    for (int i = 0; i < mrow; i++)
         if (set_member(i + 1, aout->linset))
             SET_STRING_ELT(bar, i, mkChar("1"));
         else
@@ -206,8 +221,8 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     /* note conversion from zero-origin to one-origin indexing */
 
     /* matrix output */
-    for (j = 1, k = mrow; j < ncol; j++)
-        for (i = 0; i < mrow; i++, k++) {
+    for (int j = 1, k = mrow; j < ncol; j++)
+        for (int i = 0; i < mrow; i++, k++) {
             dd_set(value, aout->matrix[i][j - 1]);
             /* note our matrix has one more column than Fukuda's */
             char *zstr = NULL;
@@ -282,7 +297,7 @@ SEXP scdd(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     namesgets(result, resultnames);
 
     if (aout->objective != dd_LPnone)
-        error("Cannot happen!  aout->objective != dd_LPnone\n");
+        ERROR_WITH_CLEANUP_5("Cannot happen!  aout->objective != dd_LPnone");
 
     dd_FreeMatrix(aout);
     dd_FreeMatrix(mf);

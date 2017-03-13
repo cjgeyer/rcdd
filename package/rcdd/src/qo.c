@@ -46,10 +46,11 @@ SEXP qo(SEXP foo, SEXP op)
 
     for (int k = 0; k < n; k++) {
 
-        char *zstr;
-        zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(value, zstr, 10) == -1)
+        const char *zstr = CHAR(STRING_ELT(foo, k));
+        if (mpq_set_str(value, zstr, 10) == -1) {
+            mpq_clear(value);
             error("error converting string to GMP rational");
+        }
         mpq_canonicalize(value);
 
         switch (the_op) {
@@ -60,15 +61,17 @@ SEXP qo(SEXP foo, SEXP op)
                 mpq_abs(value, value);
                 break;
             case 3:
-                if (mpq_sgn(value) == 0)
+                if (mpq_sgn(value) == 0) {
+                    mpq_clear(value);
                     error("rational divide by zero");
+                }
                 mpq_inv(value, value);
                 break;
         }
 
-        zstr = mpq_get_str(NULL, 10, value);
-        SET_STRING_ELT(baz, k, mkChar(zstr));
-        free(zstr);
+        char *zstr2 = mpq_get_str(NULL, 10, value);
+        SET_STRING_ELT(baz, k, mkChar(zstr2));
+        free(zstr2);
     }
 
     mpq_clear(value);

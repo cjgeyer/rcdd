@@ -123,7 +123,7 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     }
 
     ddf_LPSolverType sol = ddf_DualSimplex;
-    char *sol_str = (char *) CHAR(STRING_ELT(solver, 0));
+    const char *sol_str = CHAR(STRING_ELT(solver, 0));
     if(strcmp(sol_str, "DualSimplex") == 0)
         sol = ddf_DualSimplex;
     else if(strcmp(sol_str, "CrissCross") == 0)

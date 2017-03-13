@@ -52,7 +52,7 @@ SEXP allfaces(SEXP hrep)
         error("three or fewer cols in hrep");
 
     for (int i = 0; i < nrow; ++i) {
-        char *foo = (char *) CHAR(STRING_ELT(hrep, i));
+        const char *foo = CHAR(STRING_ELT(hrep, i));
         if (strlen(foo) != 1)
             error("column one of 'hrep' not zero-or-one valued");
         if (! (foo[0] == '0' || foo[0] == '1'))
@@ -73,7 +73,7 @@ SEXP allfaces(SEXP hrep)
 
     /* linearity */
     for (int i = 0; i < nrow; ++i) {
-        char *foo = (char *) CHAR(STRING_ELT(hrep, i));
+        const char *foo = CHAR(STRING_ELT(hrep, i));
         if (foo[0] == '1')
             set_addelem(mf->linset, i + 1);
         /* note conversion from zero-origin to one-origin indexing */
@@ -82,9 +82,13 @@ SEXP allfaces(SEXP hrep)
     /* matrix */
     for (int j = 1, k = nrow; j < ncol; ++j)
         for (int i = 0; i < nrow; ++i, ++k) {
-            char *rat_str = (char *) CHAR(STRING_ELT(hrep, k));
-            if (mpq_set_str(value, rat_str, 10) == -1)
+            const char *rat_str = CHAR(STRING_ELT(hrep, k));
+            if (mpq_set_str(value, rat_str, 10) == -1) {
+                dd_FreeMatrix(mf);
+                dd_clear(value);
+                dd_free_global_constants();
                 error("error converting string to GMP rational");
+            }
             mpq_canonicalize(value);
             dd_set(mf->matrix[i][j - 1], value);
             /* note our matrix has one more column than Fukuda's */
@@ -253,6 +257,9 @@ static dd_ErrorType FaceEnumHelper(dd_MatrixPtr M, dd_rowset R, dd_rowset S)
             fprintf(stderr, "err from dd_FindRelativeInterior\n");
             fprintf(stderr, "err = %d\n", err);
 #endif /* MOO */
+            dd_FreeLPSolution(lps);
+            set_free(ImL);
+            set_free(Lbasis);
             set_free(LL);
             set_free(RR);
             set_free(SS);

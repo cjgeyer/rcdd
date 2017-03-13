@@ -413,8 +413,11 @@ ddf_MatrixPtr ddf_MatrixNormalizedSortedUniqueCopy(ddf_MatrixPtr M,ddf_rowindex 
          (*newpos)[i]=-newpos1r[-newpos2[newpos1[i]]];
       }
     }
-  ddf_FreeMatrix(M1);free(newpos1);free(newpos2);free(newpos1r);
+    ddf_FreeMatrix(M1);
+    free(newpos2);
   }
+  free(newpos1);   /* free moved outside if by CJG */
+  free(newpos1r);  /* free moved outside if by CJG */
   
   return M2;
 }
@@ -461,8 +464,10 @@ ddf_MatrixPtr ddf_MatrixSortedUniqueCopy(ddf_MatrixPtr M,ddf_rowindex *newpos)  
       }
     }
 
-    free(newpos1);free(newpos2);free(newpos1r);
+    free(newpos2);
   }
+  free(newpos1);   /* free moved outside if by CJG */
+  free(newpos1r);  /* free moved outside if by CJG */
   
   return M2;
 }
@@ -539,13 +544,12 @@ int ddf_MatrixRowRemove2(ddf_MatrixPtr *M, ddf_rowrange r, ddf_rowindex *newpos)
   ddf_rowrange i,m;
   ddf_colrange d;
   ddf_boolean success=0;
-  ddf_rowindex roworder;
   
   m=(*M)->rowsize;
   d=(*M)->colsize;
 
   if (r >= 1 && r <=m){
-    roworder=(long *)calloc(m+1,sizeof(long));
+    ddf_rowindex roworder=(long *)calloc(m+1,sizeof(long));
     (*M)->rowsize=m-1;
     ddf_FreeArow(d, (*M)->matrix[r-1]);
     set_delelem((*M)->linset,r);
@@ -561,6 +565,7 @@ int ddf_MatrixRowRemove2(ddf_MatrixPtr *M, ddf_rowrange r, ddf_rowindex *newpos)
       }
     }
     success=1;
+    free(roworder); /* added by CJG due to complaint by clang static analyzer */
   }
   return success;
 }

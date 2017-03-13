@@ -68,15 +68,23 @@ SEXP qmatmult(SEXP foo, SEXP bar)
 
             for (int k = 0; k < ncol_foo; ++k) {
 
-                char *foo_ik = (char *) CHAR(STRING_ELT(foo, i + nrow_foo * k));
-                char *bar_kj = (char *) CHAR(STRING_ELT(bar, k + nrow_bar * j));
+                const char *foo_ik = CHAR(STRING_ELT(foo, i + nrow_foo * k));
+                const char *bar_kj = CHAR(STRING_ELT(bar, k + nrow_bar * j));
 
-                if (mpq_set_str(value1, foo_ik, 10) == -1)
+                if (mpq_set_str(value1, foo_ik, 10) == -1) {
+                    mpq_clear(value1);
+                    mpq_clear(value2);
+                    mpq_clear(value3);
                     error("error converting string to GMP rational");
+                }
                 mpq_canonicalize(value1);
 
-                if (mpq_set_str(value2, bar_kj, 10) == -1)
+                if (mpq_set_str(value2, bar_kj, 10) == -1) {
+                    mpq_clear(value1);
+                    mpq_clear(value2);
+                    mpq_clear(value3);
                     error("error converting string to GMP rational");
+                }
                 mpq_canonicalize(value2);
 
                 mpq_mul(value2, value1, value2);

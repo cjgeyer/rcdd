@@ -46,9 +46,12 @@ SEXP qminp(SEXP foo, SEXP op)
 
     for (int k = 0; k < n; k++) {
 
-        char *zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(current, zstr, 10) == -1)
+        const char *zstr = CHAR(STRING_ELT(foo, k));
+        if (mpq_set_str(current, zstr, 10) == -1) {
+            mpq_clear(current);
+            mpq_clear(result);
             error("error converting string to GMP rational");
+        }
         mpq_canonicalize(current);
 
         if (k == 0) {

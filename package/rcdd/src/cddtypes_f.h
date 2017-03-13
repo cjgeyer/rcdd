@@ -11,9 +11,8 @@
    the manual cddlibman.tex for detail.
 */
 
-#ifndef  _CDDTYPES_HF
-#define  _CDDTYPES_HF
-#endif  /* _CDDTYPES_HF */
+#ifndef CDDLIB_CDDTYPES_HF
+#define CDDLIB_CDDTYPES_HF
 
 #define ddf_COPYRIGHT   "Copyright (C) 1996, Komei Fukuda, fukuda@ifor.math.ethz.ch"
 #define ddf_DDVERSION   "Version 0.94f (February 7, 2008)"
@@ -330,3 +329,6 @@ extern ddf_boolean ddf_debug;
 extern ddf_boolean ddf_log;
 
 /* end of cddtypes.h */
+
+#endif  /* CDDLIB_CDDTYPES_HF */
+

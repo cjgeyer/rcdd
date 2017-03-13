@@ -24,6 +24,14 @@
 #include <stdlib.h>
 #include "rcdd.h"
 
+#define ERROR_WITH_CLEANUP(foo) \
+do { \
+    mpq_clear(value1); \
+    mpq_clear(value2); \
+    mpq_clear(value3); \
+    error(foo); \
+} while (0)
+
 SEXP qoq(SEXP foo, SEXP bar, SEXP op)
 {
     if ((! isString(foo)) || (! isString(bar)))
@@ -43,25 +51,22 @@ SEXP qoq(SEXP foo, SEXP bar, SEXP op)
     SEXP baz;
     PROTECT(baz = duplicate(foo));
 
-    mpq_t value1, value2, value3, zero;
+    mpq_t value1, value2, value3;
     mpq_init(value1);
     mpq_init(value2);
     mpq_init(value3);
-    mpq_init(zero);
 
     int k;
     for (k = 0; k < n; k++) {
 
-        char *zstr;
-
-        zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(value1, zstr, 10) == -1)
-            error("error converting string to GMP rational");
+        const char *zstr1 = CHAR(STRING_ELT(foo, k));
+        if (mpq_set_str(value1, zstr1, 10) == -1)
+            ERROR_WITH_CLEANUP("error converting string to GMP rational");
         mpq_canonicalize(value1);
 
-        zstr = (char *) CHAR(STRING_ELT(bar, k));
-        if (mpq_set_str(value2, zstr, 10) == -1)
-            error("error converting string to GMP rational");
+        const char *zstr2 = CHAR(STRING_ELT(bar, k));
+        if (mpq_set_str(value2, zstr2, 10) == -1)
+            ERROR_WITH_CLEANUP("error converting string to GMP rational");
         mpq_canonicalize(value2);
 
         switch (the_op) {
@@ -75,13 +80,13 @@ SEXP qoq(SEXP foo, SEXP bar, SEXP op)
                 mpq_mul(value3, value1, value2);
                 break;
             case 4:
-                if (mpq_equal(value2, zero))
-                    error("rational divide by zero");
+                if (mpq_sgn(value2) == 0)
+                    ERROR_WITH_CLEANUP("rational divide by zero");
                 mpq_div(value3, value1, value2);
                 break;
         }
 
-        zstr = mpq_get_str(NULL, 10, value3);
+        char *zstr = mpq_get_str(NULL, 10, value3);
         SET_STRING_ELT(baz, k, mkChar(zstr));
         free(zstr);
     }
@@ -89,7 +94,6 @@ SEXP qoq(SEXP foo, SEXP bar, SEXP op)
     mpq_clear(value1);
     mpq_clear(value2);
     mpq_clear(value3);
-    mpq_clear(zero);
     UNPROTECT(1);
     return(baz);
 }

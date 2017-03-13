@@ -40,9 +40,11 @@ SEXP qsign(SEXP foo)
     mpq_init(value);
 
     for (int k = 0; k < n; k++) {
-        char *zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(value, zstr, 10) == -1)
+        const char *zstr = CHAR(STRING_ELT(foo, k));
+        if (mpq_set_str(value, zstr, 10) == -1) {
+            mpq_clear(value);
             error("error converting string to GMP rational");
+        }
         mpq_canonicalize(value);
         INTEGER(bar)[k] = mpq_sgn(value);
     }

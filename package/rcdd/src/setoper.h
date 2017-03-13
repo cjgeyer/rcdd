@@ -6,9 +6,8 @@
  * last modified on June 1, 2000
  */
 
-#ifndef  __SETOPER_H
-#define  __SETOPER_H
-#endif  /* __SETOPER_H */
+#ifndef  CDDLIB_SETOPER_H
+#define  CDDLIB_SETOPER_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,4 +46,6 @@ void set_fbinwrite(FILE *f,set_type set);
 #endif
 
 /* End of File: setoper.h */
+
+#endif  /* CDDLIB_SETOPER_H */
 

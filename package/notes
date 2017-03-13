@@ -3,3 +3,15 @@ export CFLAGS="-W -Wall -Wextra"
 rm -f rcdd_*.tar.gz # if version number changed
 R CMD build rcdd
 R CMD check rcdd_*.tar.gz
+
+# do this if changes to C code
+script
+R CMD check --no-vignettes --use-valgrind rcdd_*.tar.gz
+egrep --color=never 'lost:|ERROR SUMMARY' rcdd.Rcheck/rcdd-Ex.Rout
+exit
+grep "ERROR SUMMARY: .* errors" typescript
+grep "lost: .* bytes" typescript
+
+# for further info, rerun with
+export VALGRIND_OPTS="--leak-check=full"
+

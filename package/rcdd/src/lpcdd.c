@@ -30,6 +30,20 @@
 #endif /* WOOF */
 #include "rcdd.h"
 
+#define ERROR_WITH_CLEANUP_4(foo) \
+do { \
+    dd_FreeLPData(lp); \
+    dd_FreeMatrix(mf); \
+    dd_clear(value); \
+    error(foo); \
+} while (0)
+#define ERROR_WITH_CLEANUP_3(foo) \
+do { \
+    dd_FreeMatrix(mf); \
+    dd_clear(value); \
+    error(foo); \
+} while (0)
+
 SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 {
     GetRNGstate();
@@ -63,7 +77,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
         error("length(objfun) != ncol(hrep) - 1");
 
     for (int i = 0; i < nrow; ++i) {
-        char *foo = (char *) CHAR(STRING_ELT(hrep, i));
+        const char *foo = CHAR(STRING_ELT(hrep, i));
         if (strlen(foo) != 1)
             error("column one of 'hrep' not zero-or-one valued");
         if (! (foo[0] == '0' || foo[0] == '1'))
@@ -84,7 +98,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 
     /* linearity */
     for (int i = 0; i < nrow; ++i) {
-        char *foo = (char *) CHAR(STRING_ELT(hrep, i));
+        const char *foo = CHAR(STRING_ELT(hrep, i));
         if (foo[0] == '1')
             set_addelem(mf->linset, i + 1);
         /* note conversion from zero-origin to one-origin indexing */
@@ -93,9 +107,9 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     /* matrix */
     for (int j = 1, k = nrow; j < ncol; ++j)
         for (int i = 0; i < nrow; ++i, ++k) {
-            char *rat_str = (char *) CHAR(STRING_ELT(hrep, k));
+            const char *rat_str = CHAR(STRING_ELT(hrep, k));
             if (mpq_set_str(value, rat_str, 10) == -1)
-                error("error converting string to GMP rational");
+                ERROR_WITH_CLEANUP_3("error converting string to GMP rational");
             mpq_canonicalize(value);
             dd_set(mf->matrix[i][j - 1], value);
             /* note our matrix has one more column than Fukuda's */
@@ -103,9 +117,9 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 
     /* rowvec */
     for (int j = 0; j < ncol - 1; ++j) {
-        char *rat_str = (char *) CHAR(STRING_ELT(objfun, j));
+        const char *rat_str = CHAR(STRING_ELT(objfun, j));
         if (mpq_set_str(value, rat_str, 10) == -1)
-            error("error converting string to GMP rational");
+            ERROR_WITH_CLEANUP_3("error converting string to GMP rational");
         mpq_canonicalize(value);
         dd_set(mf->rowvec[j], value);
     }
@@ -120,21 +134,17 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 
     if (err != dd_NoError) {
         rr_WriteErrorMessages(err);
-        dd_FreeLPData(lp);
-        dd_FreeMatrix(mf);
-        dd_clear(value);
-        dd_free_global_constants();
-        error("failed");
+        ERROR_WITH_CLEANUP_4("failed");
     }
 
     dd_LPSolverType sol = dd_DualSimplex;
-    char *sol_str = (char *) CHAR(STRING_ELT(solver, 0));
+    const char *sol_str = CHAR(STRING_ELT(solver, 0));
     if(strcmp(sol_str, "DualSimplex") == 0)
         sol = dd_DualSimplex;
     else if(strcmp(sol_str, "CrissCross") == 0)
         sol = dd_CrissCross;
     else
-        error("solver not recognized");
+        ERROR_WITH_CLEANUP_4("solver not recognized");
 
 #ifdef WOOF
     dd_WriteLP(stderr, lp);
@@ -205,11 +215,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
 
     if (err != dd_NoError) {
         rr_WriteErrorMessages(err);
-        dd_FreeLPData(lp);
-        dd_FreeMatrix(mf);
-        dd_clear(value);
-        dd_free_global_constants();
-        error("failed");
+        ERROR_WITH_CLEANUP_4("failed");
     }
 
 #ifdef WOOF
@@ -265,7 +271,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
         SET_VECTOR_ELT(result, 3, baz);
 
         if (lp->d != ncol - 1)
-            error("Can't happen.  Dimension changed.");
+            ERROR_WITH_CLEANUP_4("Can't happen.  Dimension changed.");
         for (int j = 1; j < ncol - 1; j++) {
             dd_set(value, lp->sol[j]);
             char *zstr = NULL;
@@ -283,10 +289,12 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     int the_row = mapto[qux - 1];
                     int the_sign = mapto[qux - 1] == qux - 1;
                     if (! (0 <= the_row && the_row < nrow))
-                        error("Can't happen.  Map mapto maps out of bounds");
-                    char *rat_str = (char *) CHAR(STRING_ELT(bar, the_row));
+                        ERROR_WITH_CLEANUP_4("Can't happen.  Map mapto"
+                            " maps out of bounds");
+                    const char *rat_str = CHAR(STRING_ELT(bar, the_row));
                     if (mpq_set_str(value, rat_str, 10) == -1)
-                        error("error converting string to GMP rational");
+                        ERROR_WITH_CLEANUP_4("error converting string"
+                            " to GMP rational");
                     mpq_canonicalize(value);
                     if (the_sign)
                         dd_add(value, value, lp->dsol[j]);
@@ -297,7 +305,8 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     SET_STRING_ELT(bar, the_row, mkChar(zstr));
                     free(zstr);
                 } else {
-                    error("Can't happen.  Dual solution index out of bounds");
+                    ERROR_WITH_CLEANUP_4("Can't happen.  Dual solution"
+                        " index out of bounds");
                 }
             }
         }
@@ -325,7 +334,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
         SET_VECTOR_ELT(result, 1, foo);
 
         if (lp->d != ncol - 1)
-            error("Can't happen.  Dimension changed.");
+            ERROR_WITH_CLEANUP_4("Can't happen.  Dimension changed.");
         for (int j = 0; j < nrow; j++) {
             SET_STRING_ELT(foo, j, mkChar("0"));
         }
@@ -336,10 +345,12 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     int the_row = mapto[qux - 1];
                     int the_sign = mapto[qux - 1] == qux - 1;
                     if (! (0 <= the_row && the_row < nrow))
-                        error("Can't happen.  Map mapto maps out of bounds");
-                    char *rat_str = (char *) CHAR(STRING_ELT(foo, the_row));
+                        ERROR_WITH_CLEANUP_4("Can't happen.  Map mapto"
+                            " maps out of bounds");
+                    const char *rat_str = CHAR(STRING_ELT(foo, the_row));
                     if (mpq_set_str(value, rat_str, 10) == -1)
-                        error("error converting string to GMP rational");
+                        ERROR_WITH_CLEANUP_4("error converting string to"
+                            " GMP rational");
                     mpq_canonicalize(value);
                     if (the_sign)
                         dd_add(value, value, lp->dsol[j]);
@@ -350,7 +361,8 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     SET_STRING_ELT(foo, the_row, mkChar(zstr));
                     free(zstr);
                 } else {
-                    error("Can't happen.  Dual solution index out of bounds");
+                    ERROR_WITH_CLEANUP_4("Can't happen.  Dual solution"
+                        " index out of bounds");
                 }
             }
         }
@@ -365,7 +377,8 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                 fprintf(stderr, "the_sign = %d\n", the_sign);
 #endif /* WOOF_WOOF */
                 if (! (0 <= the_row && the_row < nrow))
-                    error("Can't happen.  Map mapto maps out of bounds");
+                    ERROR_WITH_CLEANUP_4("Can't happen.  Map mapto maps"
+                        " out of bounds");
                 if (the_sign)
                     SET_STRING_ELT(foo, the_row, mkChar("1"));
                 else
@@ -376,7 +389,8 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                 fprintf(stderr, "qux = %d\n", qux);
                 fprintf(stderr, "nrow  = %d\n", nrow);
 #endif /* WOOF_WOOF */
-                error("Can't happen.  Dual solution index out of bounds");
+                ERROR_WITH_CLEANUP_4("Can't happen.  Dual solution"
+                    " index out of bounds");
             }
         }
 
@@ -401,7 +415,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
         SET_VECTOR_ELT(result, 1, foo);
 
         if (lp->d != ncol - 1)
-            error("Can't happen.  Dimension changed.");
+            ERROR_WITH_CLEANUP_4("Can't happen.  Dimension changed.");
         for (int j = 1; j < ncol - 1; j++) {
             dd_set(value, lp->sol[j]);
             char *zstr = NULL;
@@ -437,7 +451,7 @@ SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
                     ScalarString(mkChar("DualUnbounded")));
                 break;
             default:
-                error("unrecognized solution type");
+                ERROR_WITH_CLEANUP_4("unrecognized solution type");
         }
 
         UNPROTECT(1);

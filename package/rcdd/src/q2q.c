@@ -36,11 +36,12 @@ SEXP q2q(SEXP foo)
     mpq_t value;
     mpq_init(value);
 
-    int k;
-    for (k = 0; k < n; k++) {
+    for (int k = 0; k < n; k++) {
         char *zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(value, zstr, 10) == -1)
+        if (mpq_set_str(value, zstr, 10) == -1) {
+            mpq_clear(value);
             error("error converting string to GMP rational");
+        }
         mpq_canonicalize(value);
         zstr = NULL;
         zstr = mpq_get_str(zstr, 10, value);

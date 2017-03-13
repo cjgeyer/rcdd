@@ -18,9 +18,8 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef  __CDDMP_H
-#define  __CDDMP_H
-#endif  /* __CDDMP_H */
+#ifndef  CDDLIB_CDDMP_H
+#define  CDDLIB_CDDMP_H
 
 /**********************************/
 /*         MACROS                 */
@@ -125,3 +124,6 @@ void dd_free_global_constants(void);  /* 094d */
 #endif
 
 /* end of  cddmp.h  */
+
+#endif  /* CDDLIB_CDDMP_H */
+

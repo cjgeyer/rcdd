@@ -311,7 +311,6 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
   long it,it_row,fii1,fii2,fmin,fmax;
   ddf_boolean adjacent,lastchance;
   ddf_RayPtr TempRay,Rmin,Rmax;
-  ddf_AdjacencyType *NewEdge;
   ddf_boolean localdebug=ddf_FALSE;
   ddf_rowset ZSmin, ZSmax;
   static ddf_rowset Face, Face1;
@@ -426,21 +425,14 @@ void ddf_ConditionalAddEdge(ddf_ConePtr cone,
         if (localdebug) fprintf(stderr,"The pair is adjacent and the pair must be stored for iteration %ld (row%ld)\n",
           fmin, cone->OrderVector[fmin]);
 #endif /* R_HAS_JUMPED_THE_SHARK */
-        NewEdge=(ddf_AdjacencyPtr) malloc(sizeof *NewEdge);
+        ddf_AdjacencyType *NewEdge =
+            (ddf_AdjacencyPtr) malloc(sizeof(ddf_AdjacencyType));
         NewEdge->Ray1=Rmax;  /* save the one remains in iteration fmin in the first */
         NewEdge->Ray2=Rmin;  /* save the one deleted in iteration fmin in the second */
-        NewEdge->Next=NULL;
         (cone->EdgeCount)++; 
         (cone->TotalEdgeCount)++;
-        if (cone->Edges[fmin]==NULL){
-          cone->Edges[fmin]=NewEdge;
-#ifdef R_HAS_JUMPED_THE_SHARK
-          if (localdebug) fprintf(stderr,"Create a new edge list of %ld\n", fmin);
-#endif /* R_HAS_JUMPED_THE_SHARK */
-        }else{
-          NewEdge->Next=cone->Edges[fmin];
-          cone->Edges[fmin]=NewEdge;
-        }
+        NewEdge->Next=cone->Edges[fmin];
+        cone->Edges[fmin]=NewEdge;
       }
     }
   }

@@ -47,11 +47,12 @@ SEXP qsump(SEXP foo, SEXP op)
     int k;
     for (k = 0; k < n; k++) {
 
-        char *zstr;
-
-        zstr = (char *) CHAR(STRING_ELT(foo, k));
-        if (mpq_set_str(value1, zstr, 10) == -1)
+        const char *zstr1 = CHAR(STRING_ELT(foo, k));
+        if (mpq_set_str(value1, zstr1, 10) == -1) {
+            mpq_clear(value1);
+            mpq_clear(value3);
             error("error converting string to GMP rational");
+        }
         mpq_canonicalize(value1);
 
         switch (the_op) {
@@ -62,7 +63,6 @@ SEXP qsump(SEXP foo, SEXP op)
                 mpq_mul(value3, value1, value3);
                 break;
         }
-
     }
 
     SEXP baz;
