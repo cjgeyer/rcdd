@@ -1,0 +1,114 @@
+DONE
+
+    allfaces.c
+    linearity.c
+    lpcdd.c
+    qoq.c
+    q2q.c
+    qmatmult.c
+    qmin.c
+    qo.c
+    qsign.c
+    qsump.c
+    redund.c
+    scdd.c
+
+TODO
+
+    cddcore.c
+    cddlp.c
+
+What does scdd do that allocates?
+
+    118: dd_set_global_constants();
+    122: dd_init(value);
+    124: dd_MatrixPtr mf = dd_CreateMatrix(nrow, ncol - 1);
+    176: dd_PolyhedraPtr poly = dd_DDMatrix2Poly2(mf, strategy, &err);
+    188: aout = dd_CopyGenerators(poly);
+    190: aout = dd_CopyInequalities(poly);
+    224: zstr = mpq_get_str(zstr, 10, value);
+
+Last one (line 224) is immediately freed before any error exit.
+Rest need to be freed (as at bottom of scdd function) before any error exit.
+Correction: SOME of the rest, depending on where error occurs and what
+   has been allocated by then.
+
+What does lpcdd do that allocates?
+
+     85: dd_set_global_constants();
+     89: dd_init(value);
+     91: dd_MatrixPtr mf = dd_CreateMatrix(nrow, ncol - 1);
+    131: dd_LPPtr lp = dd_Matrix2LP(mf, &err);
+    276: zstr = mpq_get_str(zstr, 10, value);
+    300: zstr = mpq_get_str(zstr, 10, value);
+    311: zstr = mpq_get_str(zstr, 10, value);
+    353: zstr = mpq_get_str(zstr, 10, value);
+    412: zstr = mpq_get_str(zstr, 10, value);
+
+Last bunch (results of mpq_get_str) are immediately freed before any error exit.
+Whichever of the rest are allocated when the error occurs need to be freed
+    before any error exit.
+
+What does lpcdd do that allocates?
+
+     71: dd_set_global_constants();
+     75: dd_init(value);
+     77: dd_MatrixPtr mf = dd_CreateMatrix(nrow, ncol - 1);
+    108: dd_rowset out = dd_ImplicitLinearityRows(mf, &err);
+
+What does redund do that allocates?
+
+     90: dd_set_global_constants();
+     94: dd_init(value);
+     96: dd_MatrixPtr mf = dd_CreateMatrix(nrow, ncol - 1);
+    130: dd_MatrixCanonicalize(&mf, &impl_linset, &redset, &newpos, &err);
+    165: zstr = mpq_get_str(zstr, 10, value);
+
+Where does allfaces allocate and free (indent means conditional)?
+
+     62: dd_set_global_constants();
+     66: dd_init(value);
+     68: dd_MatrixPtr mf = dd_CreateMatrix(nrow, ncol - 1);
+     88: dd_clear(value);
+     89: dd_free_global_constants();
+    100: dd_FreeMatrix(mf);
+    101: dd_clear(value);
+    102: dd_free_global_constants();
+
+at this point nothing allocated
+
+    124: set_initialize(&R, M->rowsize);
+    125: set_initialize(&S, M->rowsize);
+    129:    set_free(R);
+    130:    set_free(S);
+
+at this point nothing allocated
+
+    224: set_initialize(&LL, M->rowsize);
+    225: set_initialize(&RR, M->rowsize);
+    226: set_initialize(&SS, M->rowsize);
+    233: dd_init(value);
+    242:     set_free(LL);
+    243:     set_free(RR);
+    244:     set_free(SS);
+    245:     dd_clear(value);
+    257: dd_FindRelativeInterior(M, &ImL, &Lbasis, &lps, &err);
+    260:     set_free(LL);
+    261:     set_free(RR);
+    262:     set_free(SS);
+    263:     dd_clear(value);
+    278: zstr = mpq_get_str(zstr, 10, value);
+    280: free(zstr);
+    287: dd_FreeLPSolution(lps);
+    288: set_free(ImL);
+    289: set_free(Lbasis);
+    309:     set_free(LL);
+    310:     set_free(RR);
+    311:     set_free(SS);
+    312:     dd_clear(value);
+    321: set_free(LL);
+    322: set_free(RR);
+    323: set_free(SS);
+    324: dd_clear(value);
+
+

@@ -16,3 +16,5 @@ Makevars
 vinny.tex
 symbols.rds
 reverse_dependencies/*
+static_analysis/*
+devel/leak/examples/*

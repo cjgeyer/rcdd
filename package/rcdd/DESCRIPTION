@@ -8,9 +8,9 @@ Author: Charles J. Geyer <charlie@stat.umn.edu> and
 Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
 Depends: R (>= 3.0.2)
 Imports: methods
-SystemRequirements: GMP (GNU MP bignum library from http://gmplib.org/)
+SystemRequirements: GMP (GNU MP bignum library from <http://gmplib.org/>)
 Description: R interface to (some of) cddlib
-    (http://www.ifor.math.ethz.ch/~fukuda/cdd_home/cdd.html).
+    (<http://www.ifor.math.ethz.ch/~fukuda/cdd_home/cdd.html>).
     Converts back and forth between two representations of a convex polytope:
     as solution of a set of linear equalities and inequalities and as
     convex hull of set of points and rays.
