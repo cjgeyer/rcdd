@@ -18,15 +18,6 @@
 
 % \VignetteIndexEntry{Using RCDD}
 
-<<foo,include=FALSE,echo=FALSE>>=
-options(keep.source = TRUE, width = 65)
-baz <- library(help = "rcdd")
-baz <- baz$info[[1]]
-baz <- baz[grep("Version", baz)]
-baz <- sub("^Version: *", "", baz)
-bazzer <- paste(R.version$major, R.version$minor, sep = ".")
-@
-
 \section{The Name of the Game}
 
 We call the package \verb@rcdd@ which stands
@@ -39,11 +30,9 @@ This library was written by Komei Fukuda and is available at
 Our \verb@rcdd@ package for R provides an interface to most
 of the functionality of the \verb@cddlib@ library.
 
-The version of R used to make this document is \Sexpr{bazzer}.  The version
-of the \texttt{rcdd} package used to make this document is \Sexpr{baz}.
-<<bazzer,include=FALSE,echo=FALSE>>=
-rm(baz, bazzer)
-@
+The version of R used to make this document is \Sexpr{getRversion()}.
+The version of the \texttt{rcdd} package used to make this document is
+\Sexpr{packageVersion("rcdd")}.
 
 \section{Representations}
 
