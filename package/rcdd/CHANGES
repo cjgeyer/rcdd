@@ -200,3 +200,10 @@
 
  1.1-11 modernize registration of native routines
         fix a lot of compiler warnings
+
+ 1.1-12 Fix PROTECT/UNPROTECT errors found by static analysis tools
+        of Tomas Kalibera (https://github.com/kalibera/rprotect/)
+        All of the errors in this package were UNPROTECT being called
+        before PutRNGstate rather that after (this is an error because
+        PutRNGstate can allocate and perhaps cause garbage collection).
+

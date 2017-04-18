@@ -427,8 +427,9 @@ SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver)
     ddf_clear(value);
     ddf_free_global_constants();
 
-    UNPROTECT(1);
     PutRNGstate();
+
+    UNPROTECT(1);
     return result;
 }
 

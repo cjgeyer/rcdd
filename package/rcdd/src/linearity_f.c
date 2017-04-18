@@ -120,8 +120,9 @@ SEXP impliedLinearity_f(SEXP m, SEXP h)
     ddf_clear(value);
     ddf_free_global_constants();
 
-    UNPROTECT(1);
     PutRNGstate();
+
+    UNPROTECT(1);
     return foo;
 }
 

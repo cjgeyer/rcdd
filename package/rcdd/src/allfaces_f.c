@@ -95,10 +95,12 @@ SEXP allfaces_f(SEXP hrep)
     ddf_clear(value);
     ddf_free_global_constants();
 
-    UNPROTECT(1);
     if (result == R_NilValue)
         error("failed");
+
     PutRNGstate();
+
+    UNPROTECT(1);
     return result;
 }
 

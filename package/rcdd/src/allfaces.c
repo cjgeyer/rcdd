@@ -101,10 +101,12 @@ SEXP allfaces(SEXP hrep)
     dd_clear(value);
     dd_free_global_constants();
 
-    UNPROTECT(1);
     if (result == R_NilValue)
         error("failed");
+
     PutRNGstate();
+
+    UNPROTECT(1);
     return result;
 }
 
