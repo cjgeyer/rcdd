@@ -1,6 +1,6 @@
 Package: rcdd
-Version: 1.1-12
-Date: 2017-04-18
+Version: 1.1-13
+Date: 2017-04-19
 Title: Computational Geometry
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>, incorporates code from
