@@ -207,3 +207,5 @@
         before PutRNGstate rather that after (this is an error because
         PutRNGstate can allocate and perhaps cause garbage collection).
 
+ 1.2    Add rational Gram-Schmidt
+

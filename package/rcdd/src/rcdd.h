@@ -33,6 +33,7 @@ SEXP qsign(SEXP foo);
 SEXP qsump(SEXP foo, SEXP op);
 SEXP qminp(SEXP foo, SEXP op);
 SEXP qmatmult(SEXP foo, SEXP bar);
+SEXP qgram(SEXP foo);
 
 SEXP lpcdd(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver);
 SEXP lpcdd_f(SEXP hrep, SEXP objfun, SEXP minimize, SEXP solver);

@@ -8,6 +8,7 @@ nonred.c
 q2d.c
 q2q.c
 qmatmult.c
+qgram.c
 qo.c
 qoq.c
 qsign.c
@@ -38,6 +39,7 @@ static R_CallMethodDef callMethods[]  = {
     {"qsump", (DL_FUNC) &qsump, 2},
     {"qminp", (DL_FUNC) &qminp, 2},
     {"qmatmult", (DL_FUNC) &qmatmult, 2},
+    {"qgram", (DL_FUNC) &qgram, 1},
     {"lpcdd", (DL_FUNC) &lpcdd, 4},
     {"lpcdd_f", (DL_FUNC) &lpcdd_f, 4},
     {"scdd", (DL_FUNC) &scdd, 7},
