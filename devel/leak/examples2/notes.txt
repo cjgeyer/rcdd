@@ -1,0 +1,18 @@
+
+When all of the examples are run together in one R process, which is
+what R CMD check does, there are more complaints than when they
+are run in separate R processes, which is what ../examples/foom does.
+
+Specifically valgrind complains about
+
+ dd_FindDualFeasibleBasis (cddlp.c:1234)
+     this is initiation of GMP rationals in vector rcost
+ dd_SelectDualSimplexPivot (cddlp.c:575)
+     this is initiation of GMP rationals in vector rcost
+ dd_TableauEntry (cddlp.c:703)
+     this is addition of GMP rationals in scalar temp
+ dd_TableauEntry (cddlp.c:703)
+     this is same line as previous
+ ddf_ConditionalAddEdge (cddcore_f.c:428)
+     this is malloc of object of typedef ddf_AdjacencyType in pointer NewEdge
+
