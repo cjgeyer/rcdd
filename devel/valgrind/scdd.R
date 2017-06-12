@@ -1,10 +1,11 @@
 
- set.seed(42)
+ library("rcdd", lib.loc = "../../package/rcdd.Rcheck")
 
- library("rcdd")
+ set.seed(42)
 
  d <- 15
  ng <- 25 
+
  x <- rnorm(d * ng)
  x <- matrix(x, ncol = d)
  vrep <- cbind(as.numeric(runif(ng) < 0.5), x)
