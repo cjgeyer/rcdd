@@ -1,6 +1,8 @@
-# maybe want this export, maybe not
-export CFLAGS="-W -Wall -Wextra"
-rm -f rcdd_*.tar.gz # if version number changed
+# to add extra compiler warnings
+# note that file myMakevars must be a copy of aster/src/Makevars
+#     with extra stuff added
+export R_MAKEVARS_USER=`pwd`/myMakevars
+
 R CMD build rcdd
 R CMD check rcdd_*.tar.gz
 

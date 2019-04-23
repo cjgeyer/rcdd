@@ -209,3 +209,9 @@
 
  1.2    Add rational Gram-Schmidt
 
+ 1.2-1  Apparently did not fix all PROTECT/UNPROTECT errors.  Had
+        PutRNGstate after UNPROTECT in 4 functions (scdd, redund, scdd_f,
+        redund_f).  Also clean up some apparent errors complained about
+        by gcc.
+
+ 1.2-2  Deal with changes to R function sample in R-3.6.0 in one test

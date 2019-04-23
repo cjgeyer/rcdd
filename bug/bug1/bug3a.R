@@ -1,5 +1,5 @@
 
- library(rcdd)
+ library(rcdd, lib.loc = "../../package/rcdd.Rcheck/")
 
  zut2 <- rbind(
  c(0, 1, 0.8917580, 14.709400, 5.000000e-06),

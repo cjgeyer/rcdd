@@ -254,8 +254,8 @@ SEXP redundant(SEXP m, SEXP h)
     dd_clear(value);
     dd_free_global_constants();
 
-    UNPROTECT(nresult + 2);
     PutRNGstate();
+    UNPROTECT(nresult + 2);
     return result;
 }
 

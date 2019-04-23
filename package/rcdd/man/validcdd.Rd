@@ -1,6 +1,6 @@
 \name{validcdd}
 \alias{validcdd}
-\title{validate and H-representation or V-representation of convex polyhedron}
+\title{validate an H-representation or V-representation of convex polyhedron}
 \usage{
 validcdd(x, representation = c("H", "V"))
 }

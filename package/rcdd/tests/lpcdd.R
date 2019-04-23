@@ -54,7 +54,11 @@
 
  ### negative Lagrange multipliers
 
+ # needed because of the change in R function "sample" in R-devel
+ suppressWarnings(RNGversion("3.5.2"))
+
  set.seed(42)
+
  d <- 20
  k <- 6
  foo <- matrix(sample(seq(-1000, 1000), k * d, replace = TRUE), ncol = d)

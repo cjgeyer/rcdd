@@ -1602,8 +1602,9 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
 #endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       switch (lp->LPS){
-        case dd_Inconsistent: lp->re=r;
-        case dd_DualInconsistent: lp->se=s;
+        /* CJG: think adding break to next two statements is OK */
+        case dd_Inconsistent: lp->re=r; break;
+        case dd_DualInconsistent: lp->se=s; break;
 
         default: break;
       }
@@ -1715,8 +1716,9 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
       pivots1++;
     } else {
       switch (lp->LPS){
-        case dd_Inconsistent: lp->re=r;
-        case dd_DualInconsistent: lp->se=s;
+        /* CJG: think adding break to next two statements is OK */
+        case dd_Inconsistent: lp->re=r; break;
+        case dd_DualInconsistent: lp->se=s; break;
 
         default: break;
       }
@@ -4022,7 +4024,7 @@ void dd_BasisStatusMinimize(dd_rowrange m_size,dd_colrange d_size,
      LPS,optvalue,sol,dsol,posset,nbindex,re,se,nse,pivots,found,LPScorrect);
    dd_neg(*optvalue,*optvalue);
    for (j=1; j<=d_size; j++){
-	if (LPS!=dd_Inconsistent) {
+	if (LPS!=ddf_Inconsistent) {
 	   /* Inconsistent certificate stays valid for minimization, 0.94e */
        dd_neg(dsol[j-1],dsol[j-1]);
 	 }

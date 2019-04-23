@@ -1604,8 +1604,9 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
 #endif /* R_HAS_JUMPED_THE_SHARK */
     } else {
       switch (lp->LPS){
-        case ddf_Inconsistent: lp->re=r;
-        case ddf_DualInconsistent: lp->se=s;
+        /* CJG: think adding break to next two statements is OK */
+        case ddf_Inconsistent: lp->re=r; break;
+        case ddf_DualInconsistent: lp->se=s; break;
 
         default: break;
       }
@@ -1719,8 +1720,9 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
       pivots1++;
     } else {
       switch (lp->LPS){
-        case ddf_Inconsistent: lp->re=r;
-        case ddf_DualInconsistent: lp->se=s;
+        /* CJG: think adding break to next two statements is OK */
+        case ddf_Inconsistent: lp->re=r; break;
+        case ddf_DualInconsistent: lp->se=s; break;
 
         default: break;
       }

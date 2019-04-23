@@ -8,6 +8,7 @@
  */
  
 #include "setoper.h"
+#include "die.h" // added by CJG
 
 #include <limits.h>
 #define SETBITS (sizeof(long) * CHAR_BIT)
@@ -91,7 +92,11 @@ void set_addelem(set_type set, long elem)
 	unsigned long change;
 	unsigned long one=1U;
 	
-	if (elem<=set[0])    
+        // added by CJG to avoid gcc complaint about signed/unsigned comparison
+        if (elem < 0)
+            die("set_addelem: elem arg negative\n");
+           
+	if ((unsigned long) elem <= set[0])
 	{
 		i=(elem-1)/SETBITS+1;
 		j=(elem-1)%SETBITS;
@@ -107,7 +112,11 @@ void set_delelem(set_type set, long elem)
 	unsigned long change;
 	unsigned long one=1U;	 
 	
-	if (elem<=set[0])
+        // added by CJG to avoid gcc complaint about signed/unsigned comparison
+        if (elem < 0)
+            die("set_delelem: elem arg negative\n");
+           
+	if ((unsigned long) elem <= set[0])
 	{
 		i=(elem-1)/SETBITS+1;
 		j=(elem-1)%SETBITS;
@@ -161,7 +170,9 @@ void set_compl(set_type set,set_type set1)
    Bremner's trick counts these bits as well.  (000601KF)
 */
 	l=(set[0]-1)%SETBITS; /* the position of the last elem in the last block */
-    	for (j=l+1; j<=SETBITS-1; j++){
+
+        // modified by CJG to avoid gcc complaint about signed/unsigned compare
+    	for (j=l+1; j<=((long)SETBITS)-1; j++){
 		change=one << j;
 		set[forlim]=(set[forlim] | change) ^ change;
     	}
@@ -188,7 +199,11 @@ int set_member(long elem, set_type set)
 	unsigned long testset;
 	unsigned long one=1U;	 
 	
-	if (elem<=set[0])
+        // added by CJG to avoid gcc complaint about signed/unsigned comparison
+        if (elem < 0)
+            die("set_member: elem arg negative\n");
+           
+	if ((unsigned long) elem <= set[0])
 	{
 		i=(elem-1)/SETBITS+1;
 		j=(elem-1)%SETBITS;

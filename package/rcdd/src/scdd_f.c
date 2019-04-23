@@ -283,8 +283,8 @@ SEXP scdd_f(SEXP m, SEXP h, SEXP roworder, SEXP adjacency,
     ddf_clear(value);
     ddf_free_global_constants();
 
-    UNPROTECT(2 + nresult);
     PutRNGstate();
+    UNPROTECT(2 + nresult);
     return result;
 }
 
