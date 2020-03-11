@@ -130,6 +130,8 @@ out <- scdd(quux, roworder = "maxcutoff", adjacency = TRUE)
 print(out)
 
 # convex hull
+# not the efficient way to do convex hull
+# see ?redundant and sections 5.4 and 6.2 of the package vignette
 np <- 50
 x <- matrix(rnorm(d * np), ncol = d)
 foo <- cbind(0, cbind(1, x))
