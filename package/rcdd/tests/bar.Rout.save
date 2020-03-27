@@ -1,7 +1,7 @@
 
-R version 3.2.1 (2015-06-18) -- "World-Famous Astronaut"
-Copyright (C) 2015 The R Foundation for Statistical Computing
-Platform: i686-pc-linux-gnu (32-bit)
+R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -18,9 +18,8 @@ Type 'q()' to quit R.
 > 
 >  library(rcdd)
 If you want correct answers, use rational arithmetic.
-See the Warnings sections added to help pages for
+See the Warnings sections in help pages for
     functions that do computational geometry.
-
 > 
 >  # needed because now uses R RNG for matrix row permutation
 >  set.seed(42)
@@ -89,4 +88,4 @@ attr(,"representation")
 > 
 > proc.time()
    user  system elapsed 
-  0.248   0.024   0.263 
+  0.146   0.009   0.145 

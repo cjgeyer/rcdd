@@ -1,5 +1,5 @@
 # to add extra compiler warnings
-# note that file myMakevars must be a copy of aster/src/Makevars
+# note that file myMakevars must be a copy of rcdd/src/Makevars
 #     with extra stuff added
 export R_MAKEVARS_USER=`pwd`/myMakevars
 

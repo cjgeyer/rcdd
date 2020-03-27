@@ -1,0 +1,24 @@
+
+exported R functions that call C functions to do computational geometry
+    (as opposed to functions that just do rational arithmetic or conversion
+    or fuss with H- and V-representations for convex polyhedra)
+
+    allfaces
+    linearity
+    lpcdd
+    redundant
+    scdd
+
+C functions that these call
+
+    dd_ExistsRestrictedFace
+    dd_FindRelativeInterior
+    dd_ImplicitLinearityRows
+    dd_LPSolve
+    dd_MatrixCanonicalize
+    dd_DDMatrix2Poly2
+
+or the same with dd_ replaced by ddf_ if rational arithmetic is not being
+used (only ordinary computer arithmetic) -- at least these are the
+time-consuming functions that do the real work (I think).
+

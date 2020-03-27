@@ -1,6 +1,6 @@
 
-R version 3.4.0 RC (2017-04-16 r72514) -- "You Stupid Darkness"
-Copyright (C) 2017 The R Foundation for Statistical Computing
+R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
+Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -18,9 +18,8 @@ Type 'q()' to quit R.
 > 
 >  library(rcdd)
 If you want correct answers, use rational arithmetic.
-See the Warnings sections added to help pages for
+See the Warnings sections in help pages for
     functions that do computational geometry.
-
 > 
 >  hrep <- rbind(c(0, 1,  1,  1, -1),
 +                c(0, 1,  1, -1, -1),
@@ -221,4 +220,4 @@ $relative.interior.point[[19]]
 > 
 > proc.time()
    user  system elapsed 
-  0.180   0.012   0.187 
+  0.136   0.017   0.144 

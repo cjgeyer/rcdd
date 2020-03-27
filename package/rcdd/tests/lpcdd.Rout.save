@@ -1,6 +1,6 @@
 
-R version 3.5.3 (2019-03-11) -- "Great Truth"
-Copyright (C) 2019 The R Foundation for Statistical Computing
+R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
+Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -18,9 +18,8 @@ Type 'q()' to quit R.
 > 
 >  library(rcdd)
 If you want correct answers, use rational arithmetic.
-See the Warnings sections added to help pages for
+See the Warnings sections in help pages for
     functions that do computational geometry.
-
 > 
 >  ### optimal solution exists -- file samplelp1.ine in cddlib ###
 > 
@@ -178,4 +177,4 @@ $primal.direction
 > 
 > proc.time()
    user  system elapsed 
-  0.131   0.008   0.131 
+  0.149   0.008   0.146 

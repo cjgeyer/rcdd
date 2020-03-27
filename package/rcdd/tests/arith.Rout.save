@@ -1,6 +1,6 @@
 
-R version 3.5.1 (2018-07-02) -- "Feather Spray"
-Copyright (C) 2018 The R Foundation for Statistical Computing
+R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
+Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -18,9 +18,8 @@ Type 'q()' to quit R.
 > 
 >  library(rcdd)
 If you want correct answers, use rational arithmetic.
-See the Warnings sections added to help pages for
+See the Warnings sections in help pages for
     functions that do computational geometry.
-
 > 
 >  foo <- z2q(c(1:5), c(6:10))
 > 
@@ -75,4 +74,4 @@ Error in qdq(foo, bar) : rational divide by zero
 > 
 > proc.time()
    user  system elapsed 
-  0.115   0.025   0.131 
+  0.135   0.027   0.155 

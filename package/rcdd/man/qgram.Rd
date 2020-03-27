@@ -15,15 +15,16 @@ qgram(x, remove.zero.vectors = TRUE)
   \item{remove.zero.vectors}{logical.}
 }
 \value{
-  an matrix of the same form as \code{x} whose columns are orthogonal
+  If \code{remove.zero.vectors == FALSE},
+  a matrix of the same dimensions as \code{x} whose columns are orthogonal
   and span the same vector subspace as the columns of \code{x}.
   Since making the columns unit vectors in the L2 sense could require
   irrational numbers, the columns are made unit vectors in the L1 sense
   unless they are zero vectors (which, of course, cannot be normalized).
 
-  If \code{remove.zero.vectors == TRUE}, then zero vectors are removed
-  from the result, so the columns of the result form a basis of the
-  subspace.
+  If \code{remove.zero.vectors == TRUE}, then the result is the same
+  except zero vectors are removed,
+  so the columns of the result form a basis of the subspace.
 }
 \seealso{\code{\link{ConvertGMP}}}
 \examples{
@@ -32,5 +33,6 @@ foo <- cbind(c("1", "1", "0", "0", "0"),
              c("3", "1", "0", "0", "0"),
              c("1", "2", "3", "4", "5"))
 qgram(foo)
+qgram(foo, remo = FALSE)
 }
 \keyword{misc}
