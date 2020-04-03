@@ -25,7 +25,7 @@ for ``C Double Description in R,'' our name being copied from
 \verb@cddlib@, the library we call to do the computations.
 This library was written by Komei Fukuda and is available at
 \begin{verbatim}
-    http://www.ifor.math.ethz.ch/~fukuda/cdd_home/cdd.html
+    https://github.com/cddlib/cddlib
 \end{verbatim}
 Our \verb@rcdd@ package for R provides an interface to most
 of the functionality of the \verb@cddlib@ library.
