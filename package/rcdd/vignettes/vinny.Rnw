@@ -4,11 +4,15 @@
 \usepackage{amsmath}
 \usepackage{indentfirst}
 \usepackage{natbib}
+\usepackage{url}
+\usepackage{doi}
 
 \RequirePackage{amsfonts}
 \newcommand{\real}{\mathbb{R}}
 
 \newcommand{\set}[1]{\{\, #1 \,\}}
+
+\DeclareMathOperator{\dom}{dom}
 
 \begin{document}
 
@@ -74,6 +78,7 @@ Minkowski-Weyl theorem
 \end{verbatim}
 
 \subsection{The H-representation}
+\label{sec:h-rep}
 
 In the terminology of the \verb@cddlib@ documentation,
 the two descriptions are called
@@ -137,6 +142,7 @@ then
 \end{align*}
 
 \subsection{The V-representation}
+\label{sec:v-rep}
 
 For both efficiency and computational stability, the V-representation
 allows not only points and directions, but also lines and something I
@@ -330,7 +336,7 @@ pages for functions that do computational geometry (including \texttt{scdd}).
   an error, (3) give answers that are nowhere near correct with no error or
   warning, or (4) crash R losing all work done to that point.  In large
   simulations (1) is most frequent, (2) occurs roughly one time in a thousand,
-  (3) occurs roughly one time in ten thousand, and (4) has only occured once
+  (3) occurs roughly one time in ten thousand, and (4) has only occurred once
   and only with the \texttt{redundant} function.  So the R floating point
   arithmetic version does mostly work, but you cannot trust its results unless
   you can check them independently.
@@ -788,7 +794,189 @@ Also there are five vertices, four of which have three constraints active
 (the vertices of the base) and one having four constraints active (the apex).
 There are eight edges, all of which have two constraints active.
 
+\section{Image and Preimage}
+
+\subsection{Image}
+
+In this section we consider the image and preimage of a convex polyhedron
+under a linear transformation.  Since we have H-representations and
+V-representations of convex polyhedra, we have two sorts of image and
+preimage problems.
+
+The simplest of our problems is the image of a V-representation.
+If 
+$$
+   M = \begin{pmatrix} l & b & V \end{pmatrix}
+$$
+(copied from Section~\ref{sec:v-rep} above)
+is our V-representation and $T$ is the matrix representing our linear
+transformation (that is $x \mapsto T x$ is the linear transformation),
+then
+$$
+   M_\text{trans} = \begin{pmatrix} l & b & V T^T \end{pmatrix}
+$$
+is a V-representation of the image of the convex polyhedron under $T$,
+the set of points
+$$
+   \set{ T x, x \in P }
+$$
+where $P$ is the convex polyhedron having $V$-representation $M$.
+
+Let's try an example.
+In the original theory of completion of exponential families,
+due to \citet[Theorem 9.15 and surrounding discussion]{barndorff-nielsen},
+the MLE exists if and only if the observed value of the canonical statistic
+is in the relative interior of the convex support of the canonical statistic.
+For a canonical affine submodel \citep[Section~3.9]{geyer-gdor}
+the submodel canonical statistic has the form $X^T y$ where $X$ is the
+model matrix for the submodel and $y$ is the saturated model canonical
+statistic.  Thus we are interested in the case where $T = X^T$.
+
+Section~6.5.1 of \citet{agresti} introduces a simple logistic regression
+problem with data
+<<agresti-one>>=
+x <- seq(10, 90, 10)
+x <- x[x != 50]
+x
+y <- as.numeric(x > 50)
+y
+@
+The convex polyhedron for the saturated model is the unit hypercube.
+All components of the response vector for logistic regression have
+values zero or one, so the convex polyhedron is $[0, 1]^8$ because
+8 is the dimension of this example.  The model matrix has
+the form $X = \begin{pmatrix} 1 & x \end{pmatrix}$
+where $x$ is the vector defined in the R code above.
+
+So we have $2^8$ vertices of the original convex polytope.
+<<agresti-one-generators>>=
+yy <- matrix(0:1, nrow = 2, ncol = length(x))
+colnames(yy) <- paste0("y", x)
+yy <- expand.grid(as.data.frame(yy))
+head(yy)
+nrow(yy)
+@
+
+The vertices of the submodel canonical statistic are in two dimensional
+space because the model matrix has two columns.
+<<agresti-one-v-rep>>=
+yy <- as.matrix(yy) # was data frame
+yy.trans = yy %*% cbind(1, x)
+dim(yy.trans)
+@
+
+So this is the V-representation for this example.  But of course, it
+has many redundant generators.  We eliminate them as in
+Section~\ref{sec:conv2} above.
+<<agresti-one-convex-hull>>=
+foo <- makeV(points = d2q(yy.trans))
+out <- redundant(foo)
+nrow(out$output)
+yy.trans <- out$output[ , - c(1, 2)]
+dim(yy.trans)
+@
+
+We can plot these points as follows.
+Figure~\ref{fig:one} (p.~\pageref{fig:one})
+is produced by the following code
+<<label=fig1plot,include=FALSE>>=
+plot(yy.trans[ , 1], yy.trans[ , 2], xlab = "sum(y)", ylab = "sum(x * y)")
+@
+\begin{figure}
+\begin{center}
+<<label=fig1,fig=TRUE,echo=FALSE>>=
+<<fig1plot>>
+@
+\end{center}
+\caption{Vertices of Convex Support of Submodel Canonical Statistic}
+\label{fig:one}
+\end{figure}
+
+If we want an H-representation, R function \texttt{scdd} can give it to us.
+<<agresti-one-v-rep>>=
+out <- scdd(out$output)
+nrow(out$output)
+@
+
+But a little thought makes it clear that there is no way to put
+an H-representation through a linear transformation.  So if we
+were given the convex support of the saturated model (the unit hypercube)
+as an H-representation, we would have to use R function \texttt{scdd}
+to convert it to a V-representation, then put the V-representation
+through the linear transformation, as above, and then (if wanted)
+put the result back through R function \texttt{scdd} to get
+the H-representation for the result.
+
+We note that this problem involves extreme computing resources
+(exponential in the dimension of the problem) and just does not work
+for non-toy problems.  Example~2.2 of \citet{geyer} (still a toy problem)
+has dimension 30 for the saturated model hence $2^{30}$ vertices
+for the unit hypercube.  An R just crashes when it tries to make the
+V-representation for this example.
+Thus one of the main points of \citet{geyer-gdor} is to propose methods
+that work without doing so much computing (using only V-representation
+for tangent cones and R function \texttt{linearity} in R package
+\texttt{rcdd}).
+The computing for \citet{geyer-gdor} is fully reproducible, being
+done in technical reports cited therein, which were done in Sweave
+like this vignette.
+
+\subsection{Preimage}
+
+The preimage of a set $S$ under a function $f$, denoted $f^{-1}(S)$
+whether or not $f$ is invertible, is the set
+$$
+   \set{ x \in \dom(f) : f(x) \in S }
+$$
+where $\dom(f)$ is the domain of the function $f$.
+
+A little thought gives no way to put a V-representation through a linear
+transformation the other way giving a preimage.
+So perhaps an H-representation?
+
+If the H-representation is the set of $x$ satisfying
+$$
+   A_1 x \le b_1 \quad \text{and} \quad A_2 x = b_2
+$$
+copied from Section~\ref{sec:h-rep} above, and $x = f(y)$, then
+the H-representation of the preimage is
+$$
+   A_1 f(y) \le b_1 \quad \text{and} \quad A_2 f(y) = b_2
+$$
+if $f$ is a linear transformation. If $T$ is the matrix representing
+the transformation, as in the preceding section, then the H-representation is
+$$
+   A_1 T y \le b_1 \quad \text{and} \quad A_2 T y = b_2
+$$
+
+So we have the opposite result from the preceding section.
+\begin{itemize}
+\item
+Only V-representations can put through a linear transformation in the forward
+direction obtaining a V-representation for the image.
+\item
+Only H-representations can put through a linear transformation in the backward
+direction obtaining an H-representation for the preimage.
+\end{itemize}
+
 \begin{thebibliography}{}
+
+\bibitem[Agresti(2013)]{agresti}
+Agresti, A. (2013).
+\newblock \emph{Categorical Data Analysis}.
+\newblock Wiley, Hoboken, NJ.
+
+\bibitem[Barndorff-Nielsen(1978)]{barndorff-nielsen}
+Barndorff-Nielsen, O.~E. (1978).
+\newblock \emph{Information and Exponential Families}.
+\newblock Wiley, Chichester, UK.
+
+\bibitem[Geyer(2009)]{geyer-gdor}
+Geyer, C.~J. (2009).
+\newblock Likelihood inference in exponential families and
+    directions of recession.
+\newblock \emph{Electronic Journal of Statistics}, \textbf{3}, 259--289.
+\newblock \doi{10.1214/08-EJS349}.
 
 \bibitem[Rockafellar(1970)]{rocky}
 Rockafellar, R.~T. (1970).

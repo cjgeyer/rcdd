@@ -1,6 +1,6 @@
 Package: rcdd
-Version: 1.3
-Date: 2020-03-22
+Version: 1.4
+Date: 2021-10-20
 Title: Computational Geometry
 Author: Charles J. Geyer <charlie@stat.umn.edu> and
     Glen D. Meeden <glen@stat.umn.edu>, incorporates code from
@@ -8,7 +8,7 @@ Author: Charles J. Geyer <charlie@stat.umn.edu> and
 Maintainer: Charles J. Geyer <charlie@stat.umn.edu>
 Depends: R (>= 3.0.2)
 Imports: methods
-SystemRequirements: GMP (GNU MP bignum library from <http://gmplib.org/>)
+SystemRequirements: GMP (GNU MP bignum library from <https://gmplib.org/>)
 Description: R interface to (some of) cddlib
     (<https://github.com/cddlib/cddlib>).
     Converts back and forth between two representations of a convex polytope:
@@ -18,4 +18,4 @@ Description: R interface to (some of) cddlib
     (for example, convex hull in n dimensions).  All functions can use exact
     infinite-precision rational arithmetic.
 License: GPL-2
-URL: http://www.stat.umn.edu/geyer/rcdd/
+URL: https://www.stat.umn.edu/geyer/rcdd/, https://github.com/cjgeyer/rcdd
