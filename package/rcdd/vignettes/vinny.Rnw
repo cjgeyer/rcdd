@@ -245,7 +245,7 @@ possible probability vectors.  Let the corresponding sample space be
 having probability vector \verb@p@ is
 \verb@sum(p * x)@.  Let us say we want to look at the
 subset of the simplex consisting of the
-probability vectors \verb@p@ and that satisfy the equality constraint
+probability vectors \verb@p@ that satisfy the equality constraint
 \verb@sum(p * x) == 2.2@.
 <<try2a>>=
 # add equality constraint
@@ -389,7 +389,7 @@ all(fred <= 0)
 sum(fred < 0)
 sum(fred == 0)
 @
-Here \verb@qmatmult(a, t(x))@ is the matrix product $a x^T$, and \texttt{b}
+Here \verb@qmatmult(a, t(x))@ is the matrix product $a x^T$, and \texttt{axb}
 is the matrix resulting from subtracting $b$ from each column of $a x^T$.
 Then \texttt{fred} is the vector that gives for each point $-1$, $0$, or $+1$
 if it is in the interior, boundary, or exterior of the convex hull,
@@ -426,7 +426,7 @@ are already two other R contributed packages that do linear programming,
 but \texttt{rcdd} can solve linear programs using exact rational arithmetic
 and the others cannot.
 
-Here are some simple examples taken from the help page for the \text{lpcdd}
+Here are some simple examples taken from the help page for the \texttt{lpcdd}
 function.
 
 \subsection{A Problem Having a Solution}
@@ -734,10 +734,15 @@ A nonempty \emph{face} of a convex polyhedron $P$
 where some affine function achieves its maximum over $P$.  Note that $P$
 itself is a face (the set where constant functions achieve their maxima).
 By definition the empty set is also a face.  The empty set and $P$ are
-\emph{improper} faces of $P$.  All other faces are proper.  Proper faces
-of the highest dimension (here 2) are called \emph{facets}.
+\emph{improper} faces of $P$.  All other faces are proper.
+Proper faces of the highest dimension are called \emph{facets}.
+Proper faces of the next highest dimension are called \emph{ridges}.
 Proper faces of dimension zero (single points) are called \emph{vertices}.
 Proper faces of dimension one (line segments) are called \emph{edges}.
+In this example the convex polyhedron has dimension 3,
+so facets have dimension two, and ridges and edges have dimension one
+(so are the same thing).  But in higher dimensions ridges and edges are
+different.
 
 Given an H-representation for a convex polyhedron, the function
 \texttt{allfaces} produces a list of faces.  
@@ -909,9 +914,9 @@ the H-representation for the result.
 
 We note that this problem involves extreme computing resources
 (exponential in the dimension of the problem) and just does not work
-for non-toy problems.  Example~2.2 of \citet{geyer} (still a toy problem)
+for non-toy problems.  Example~2.2 of \citet{geyer-gdor} (still a toy problem)
 has dimension 30 for the saturated model hence $2^{30}$ vertices
-for the unit hypercube.  An R just crashes when it tries to make the
+for the unit hypercube.  And R just crashes when it tries to make the
 V-representation for this example.
 Thus one of the main points of \citet{geyer-gdor} is to propose methods
 that work without doing so much computing (using only V-representation

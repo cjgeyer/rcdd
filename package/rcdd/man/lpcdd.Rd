@@ -2,7 +2,7 @@
 \alias{lpcdd}
 \title{linear programming with exact arithmetic}
 \usage{
-lpcdd(hrep, objgrd, objcon = as(0, class(objgrd)), minimize = TRUE,
+lpcdd(hrep, objgrd, objcon, minimize = TRUE,
     solver = c("DualSimplex", "CrissCross"))
 }
 \description{
@@ -12,7 +12,8 @@ Solve linear program or explain why it has no solution.
   \item{hrep}{H-representation of convex polyhedron (see details) over
       which an affine function is maximized or minimized.}
   \item{objgrd}{gradient vector of affine function.}
-  \item{objcon}{constant term of affine function.}
+  \item{objcon}{constant term of affine function. May be missing, in
+      which case, taken to be zero.}
   \item{minimize}{minimize if \code{TRUE}, otherwise maximize.}
   \item{solver}{type of solver.  Use the default unless you know better.}
 }

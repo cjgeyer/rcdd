@@ -1,12 +1,12 @@
-This version adds to the vignette.
+This version fixes a bug suggested by Brian Ripley.  I shouldn't have
+taken the suggestion.  Problem now fixed in a different way.
 
 Reverse dependencies have been checked.  Some have notes in R CMD check,
 but none seem to be my fault.  Some are about package size.  Some are
-about Imports.  Some were about LazyData.
+about Imports.  Some are about LazyData.  Some are about taking too long.
 
 There were complaints from the python script checkbashisms done by
 R CMD check --as-cran, but they were about the configure script produced
 by autoconf version 2.69 which is fairly recent, so I guess it is OK.
 Anyway I do not want to mess with its output.
-
 

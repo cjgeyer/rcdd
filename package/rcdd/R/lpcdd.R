@@ -1,16 +1,18 @@
-lpcdd <- function(hrep, objgrd, objcon = as(0, class(objgrd)), minimize = TRUE,
+lpcdd <- function(hrep, objgrd, objcon, minimize = TRUE,
     solver = c("DualSimplex", "CrissCross")) {
 
     solver <- match.arg(solver)
     stopifnot(is.character(hrep) || is.numeric(hrep))
     stopifnot(is.character(objgrd) || is.numeric(objgrd))
-    stopifnot(is.character(objcon) || is.numeric(objcon))
+    stopifnot(missing(objcon) || is.character(objcon) || is.numeric(objcon))
     stopifnot(is.character(hrep) == is.character(objgrd))
-    stopifnot(is.character(hrep) == is.character(objcon))
     stopifnot(is.logical(minimize))
 
     stopifnot(ncol(hrep) - 2 == length(objgrd))
+    if (missing(objcon))
+        objcon <- as(0, class(objgrd))
     stopifnot(length(objcon) == 1)
+    stopifnot(is.character(objcon) == is.character(objgrd))
     stopifnot(length(minimize) == 1)
 
     validcdd(hrep, representation = "H")

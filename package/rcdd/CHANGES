@@ -215,3 +215,8 @@
         by gcc.
 
  1.2-2  Deal with changes to R function sample in R-3.6.0 in one test
+
+ 1.4    Changes to vignette, new section at end of vignette.
+
+ 1.5    Fix bug in signature of lpcdd that Brian Ripley told me to do
+
