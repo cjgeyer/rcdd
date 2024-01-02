@@ -34,6 +34,9 @@ extern myfloat ddf_one;
 extern myfloat ddf_purezero;
 extern myfloat ddf_minuszero;
 extern myfloat ddf_minusone;
+// Added by Charlie
+void ddf_set_global_constants(void);
+void ddf_free_global_constants(void);
 
 extern time_t ddf_statStartTime; /* cddlib starting time */
 extern long ddf_statBApivots;  /* basis finding pivots */

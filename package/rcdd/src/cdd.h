@@ -33,6 +33,9 @@ extern mytype dd_one;
 extern mytype dd_purezero;
 extern mytype dd_minuszero;
 extern mytype dd_minusone;
+// Added by Charlie
+void dd_set_global_constants(void);
+void dd_free_global_constants(void);
 
 extern time_t dd_statStartTime; /* cddlib starting time */
 extern long dd_statBApivots;  /* basis finding pivots */

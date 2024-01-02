@@ -21,7 +21,7 @@
 #include "setoper.h"  /* set operation library header (Ver. March 16,1995 or later) */
 #include "cdd_f.h"
 
-void ddf_set_global_constants()
+void ddf_set_global_constants(void)
 {
  ddf_init(ddf_zero);
  ddf_init(ddf_minuszero);
@@ -61,7 +61,7 @@ void ddf_set_global_constants()
  ddf_neg(ddf_minuszero,ddf_zero);
 }
 
-void ddf_free_global_constants()
+void ddf_free_global_constants(void)
 {
  ddf_clear(ddf_zero);
  ddf_clear(ddf_minuszero);

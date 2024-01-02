@@ -20,7 +20,7 @@
 #include "setoper.h"  /* set operation library header (Ver. March 16,1995 or later) */
 #include "cdd.h"
 
-void dd_set_global_constants()
+void dd_set_global_constants(void)
 {
  dd_init(dd_zero);
  dd_init(dd_minuszero);
@@ -60,7 +60,7 @@ void dd_set_global_constants()
  dd_neg(dd_minuszero,dd_zero);
 }
 
-void dd_free_global_constants()
+void dd_free_global_constants(void)
 {
  dd_clear(dd_zero);
  dd_clear(dd_minuszero);

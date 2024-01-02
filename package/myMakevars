@@ -1,3 +1,3 @@
-PKG_CFLAGS = $(C_VISIBILITY) -Wstrict-prototypes
+PKG_CFLAGS = $(C_VISIBILITY) -Wstrict-prototypes -Wold-style-declaration -Wold-style-definition
 PKG_CPPFLAGS = -DGMPRATIONAL
 PKG_LIBS = -lgmp

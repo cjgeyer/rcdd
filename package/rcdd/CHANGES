@@ -220,3 +220,5 @@
 
  1.5    Fix bug in signature of lpcdd that Brian Ripley told me to do
 
+ 1.6    Fix lack of prototypes for void foo(void) functions
+        Fix -Wformat-security clang warning

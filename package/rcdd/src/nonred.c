@@ -25,6 +25,7 @@
 
 static void hash_setup(int pow2);
 static int my_subset(SEXP set1, SEXP set2);
+static void hash_clear(void);
 
 SEXP nonred(SEXP sets, SEXP pow2)
 {
@@ -96,7 +97,7 @@ static void hash_setup(int pow2)
 #endif /* BLEAT */
 }
 
-static void hash_clear()
+static void hash_clear(void)
 {
     memset(hashtable, -1, hashsize * sizeof(int));
 }
