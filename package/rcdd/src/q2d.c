@@ -29,12 +29,9 @@ SEXP q2d(SEXP foo)
         error("argument must be character");
     int n = LENGTH(foo);
 
-    SEXP bar, bark;
+    SEXP bar;
     PROTECT(bar = allocVector(REALSXP, n));
-    PROTECT(bark = ATTRIB(foo));
-    if (bark != R_NilValue)
-        SET_ATTRIB(bar, duplicate(bark));
-    UNPROTECT(1);
+    DUPLICATE_ATTRIB(bar, foo);
 
     mpq_t value;
     mpq_init(value);

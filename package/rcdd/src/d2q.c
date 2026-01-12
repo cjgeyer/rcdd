@@ -34,12 +34,9 @@ SEXP d2q(SEXP foo)
         if (! R_finite(REAL(foo)[i]))
             error("argument not finite-valued");
 
-    SEXP bar, bark;
+    SEXP bar;
     PROTECT(bar = allocVector(STRSXP, n));
-    PROTECT(bark = ATTRIB(foo));
-    if (bark != R_NilValue)
-        SET_ATTRIB(bar, duplicate(bark));
-    UNPROTECT(1);
+    DUPLICATE_ATTRIB(bar, foo);
 
     mpq_t value;
     mpq_init(value);
@@ -58,3 +55,4 @@ SEXP d2q(SEXP foo)
     UNPROTECT(1);
     return(bar);
 }
+

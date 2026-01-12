@@ -222,3 +222,5 @@
 
  1.6    Fix lack of prototypes for void foo(void) functions
         Fix -Wformat-security clang warning
+
+ 1.6-1  Remove ATTRIB calls, which are not in C API

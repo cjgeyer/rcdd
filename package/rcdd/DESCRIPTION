@@ -1,12 +1,13 @@
 Package: rcdd
-Version: 1.6
-Date: 2023-12-14
+Version: 1.6-1
+Date: 2026-01-11
 Title: Computational Geometry
-Author: Charles J. Geyer <geyer@umn.edu> and
-    Glen D. Meeden <gmeeden@umn.edu>, incorporates code from
-    cddlib (ver 0.94f) written by Komei Fukuda <fukuda@ifor.math.ethz.ch>
-Maintainer: Charles J. Geyer <geyer@umn.edu>
-Depends: R (>= 3.0.2)
+Authors@R: c(person(c("Charles", "J."), "Geyer", email = "geyer@umn.edu",
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0003-1471-1703")),
+    person(c("Glen", "D."), "Meeden", email = "gmeeden@umn.edu", role = "aut"),
+    person("Komei", "Fukuda", email = "fukuda@ifor.math.ethz.ch", role = "aut",
+    comment = "author of cddlib (ver 0.94f), which this package incorporates"))
+Depends: R (>= 4.2.0)
 Imports: methods
 SystemRequirements: GMP (GNU MP bignum library from <https://gmplib.org/>)
 Description: R interface to (some of) cddlib
